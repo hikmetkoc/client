@@ -1,0 +1,229 @@
+<ng-container *ngIf="utils.hasOperation('Rapor_Alıcısı')">
+
+	<kt-grid #mainGrid [entity]="model.name" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current"></kt-grid>
+
+	<ng-container *ngIf="current">
+		<kt-portlet>
+			<kt-portlet-header [class]="'kt-portlet__head--lg'">
+				<ng-container ktPortletTitle>
+					<button mat-icon-button mat-button matTooltip="Geri dön" (click)="current = undefined" class="kt-margin-r-5">
+						<mat-icon>keyboard_arrow_left</mat-icon>
+					</button>
+					<h3 class="kt-portlet__head-title">
+						<span>Rapor Detayı <span style="color: #999999">&nbsp;({{current.instanceName}})</span></span>
+					</h3>
+				</ng-container>
+				<ng-container ktPortletTools>
+					<div class="page-header-buttons">
+						<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Düzenle" (click)="mainGrid.edit(current)">
+							<mat-icon>create</mat-icon>
+						</button>
+						<button *ngIf="baseService.getPermissionRule(model.name,'delete')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="warn" matTooltip="Sil" (click)="delete(current)">
+							<mat-icon>delete</mat-icon>
+						</button>
+						<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Ekran Düzeni" (click)="drawer1.toggle(); drawer2.toggle();">
+							<mat-icon>view_column</mat-icon>
+						</button>
+						<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Excel İndir" (click)="export()">
+							<mat-icon>arrow_downward</mat-icon>
+						</button>
+						<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Değişiklikleri Kaydet" (click)="save()">
+							<mat-icon>save</mat-icon>
+						</button>
+						<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Çalıştır" (click)="run()">
+							<mat-icon>play_arrow</mat-icon>
+						</button>
+					</div>
+				</ng-container>
+			</kt-portlet-header>
+			<kt-portlet-body style="padding: unset">
+				<mat-drawer-container class="drawer-container" autosize>
+					<mat-drawer #drawer1 mode="side" opened>
+						<div class="kt-padding-10">
+							<kt-objecttree (nodeClick)="nodeClick($event)" [subject]="subject" (subjectChange)="subjectChange($event)"></kt-objecttree>
+						</div>
+					</mat-drawer>
+					<mat-drawer-content>
+						<mat-drawer-container class="drawer-container" autosize>
+							<mat-drawer #drawer2 mode="side" opened>
+								<ngb-tabset (tabChange)="tabChange($event)">
+									<ngb-tab title="Sütunlar" id="columnsTab">
+										<ng-template ngbTabContent>
+											<div class="kt-padding-10 kt-padding-r-15">
+												<mat-chip-list class="mat-chip-list-stacked" aria-orientation="vertical">
+													<mat-chip *ngFor="let column of columns" [removable]="true" #popover="ngbPopover" [ngbPopover]="columnEdit" [popoverTitle]="'Düzenle \'' + column.originalTitle + '\''" [autoClose]="false" placement="right" container="body" triggers="manual" (removed)="columnRemoved(column)" (click)="columnSelected(column, popover)">
+														{{column.title}}
+														<mat-icon matChipRemove class="pull-right">cancel</mat-icon>
+														<ng-template #columnEdit>
+															<mat-form-field class="mat-form-field-fluid">
+																<input type="text" matInput placeholder="Başlık" [(ngModel)]="currentColumn.title" />
+															</mat-form-field>
+															<mat-form-field class="mat-form-field-fluid">
+																<mat-select placeholder="İşlem" [(ngModel)]="currentColumn.columnType">
+																	<mat-option *ngFor="let aggregate of utils.aggregates" [value]="aggregate.name">{{aggregate.title}}</mat-option>
+																</mat-select>
+															</mat-form-field>
+															<div style="display:flex; align-items: center; justify-content: center;">
+																<button type="button" style="line-height: 30px;" mat-raised-button (click)="closePopovers()" matTooltip="Pencereyi kapat">
+																	Kapat
+																</button>
+															</div>
+														</ng-template>
+													</mat-chip>
+												</mat-chip-list>
+											</div>
+										</ng-template>
+									</ngb-tab>
+									<ngb-tab title="Filtreler" id="filtersTab">
+										<ng-template ngbTabContent>
+											<div class="kt-padding-10 kt-padding-r-15">
+												<mat-chip-list class="mat-chip-list-stacked" aria-orientation="vertical">
+													<mat-chip *ngFor="let filter of filters" [removable]="true" #popover="ngbPopover" [ngbPopover]="filterEdit" [popoverTitle]="'Düzenle \'' + filter.title + '\''" [autoClose]="false" placement="right" container="body" triggers="manual" (removed)="filterRemoved(filter)" (click)="filterSelected(filter, popover)">
+														{{filter.title}}
+														<mat-icon matChipRemove class="pull-right">cancel</mat-icon>
+														<ng-template #filterEdit>
+															<mat-form-field class="mat-form-field-fluid">
+																<mat-select placeholder="Operatör" [(ngModel)]="currentFilter.operator">
+																	<mat-option *ngFor="let operator of utils.getOperators(filter.fieldType)" [value]="operator.name">{{operator.title}}</mat-option>
+																</mat-select>
+															</mat-form-field>
+															<ng-container [ngSwitch]="filter.fieldType">
+																<mat-form-field *ngSwitchCase="'time'" class="mat-form-field-fluid">
+																	<input matInput [matDatepicker]="picker" placeholder="Değer" [(ngModel)]="currentFilter.value" (focus)="picker.open()">
+																	<mat-datepicker-toggle matSuffix [for]="picker" tabIndex="-1">
+																	</mat-datepicker-toggle>
+																	<mat-datepicker touchUi="false" #picker>
+																	</mat-datepicker>
+																</mat-form-field>
+																<mat-form-field *ngSwitchCase="'select'" class="mat-form-field-fluid">
+																	<mat-select placeholder="Değer" [(ngModel)]="currentFilter.value">
+																		<mat-option *ngFor="let option of baseService.getAttr(filter.attributeName)?.values" [value]="option.id">{{option.label}}</mat-option>
+																	</mat-select>
+																</mat-form-field>
+																<mat-form-field *ngSwitchDefault class="mat-form-field-fluid">
+																	<input type="text" matInput placeholder="Değer" [(ngModel)]="currentFilter.value" />
+																</mat-form-field>
+															</ng-container>
+															<div style="display:flex; align-items: center; justify-content: center;">
+																<button type="button" style="line-height: 30px;" mat-raised-button (click)="closePopovers()" matTooltip="Pencereyi kapat">
+																	Kapat
+																</button>
+															</div>
+														</ng-template>
+													</mat-chip>
+												</mat-chip-list>
+											</div>
+										</ng-template>
+									</ngb-tab>
+								</ngb-tabset>
+							</mat-drawer>
+							<mat-drawer-content>
+								<kt-simpletable [data]="data">
+								</kt-simpletable>
+							</mat-drawer-content>
+						</mat-drawer-container>
+					</mat-drawer-content>
+				</mat-drawer-container>
+			</kt-portlet-body>
+		</kt-portlet>
+	</ng-container>
+
+</ng-container>
+
+<ng-template #reportsModal let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h4 class="modal-title">Hazır Raporlar</h4>
+		<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<table>
+			<tr>
+				<td width="100%">İşlemler Raporu</td>
+				<td>
+					<button mat-icon-button color="primary" matTooltip="İndir" (click)="getReportDialog('İşlemler Raporu', 'activities/report?')">
+						<mat-icon>archive</mat-icon>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td>Hedef Raporu</td>
+				<td>
+					<button mat-icon-button color="primary" matTooltip="İndir" (click)="getReportDialog('Hedef Raporu', 'targets/report?', 'year')">
+						<mat-icon>archive</mat-icon>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td>Ortalama Tüketim Raporu</td>
+				<td>
+					<button mat-icon-button color="primary" matTooltip="İndir" (click)="getReportDialog('Ortalama Tüketim Raporu', 'opet-service/avg-consumption-report?')">
+						<mat-icon>archive</mat-icon>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td>Tüketim Raporu (Müşteri Bazlı)</td>
+				<td>
+					<button mat-icon-button color="primary" matTooltip="İndir" (click)="getReportDialog('Tüketim Raporu (Müşteri Bazlı)', 'opet-service/consumption-report?groupByCustomer=true&')">
+						<mat-icon>archive</mat-icon>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td>Tüketim Raporu (Kullanıcı Bazlı)</td>
+				<td>
+					<button mat-icon-button color="primary" matTooltip="İndir" (click)="getReportDialog('Tüketim Raporu (Kullanıcı Bazlı)', 'opet-service/consumption-report?groupByCustomer=false&')">
+						<mat-icon>archive</mat-icon>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td>Teminat Gerçekleşme Raporu</td>
+				<td>
+					<button mat-icon-button color="primary" matTooltip="İndir" (click)="getReportDialog('Teminat Gerçekleşme Raporu', 'customers/pending-activated-customers?')">
+						<mat-icon>archive</mat-icon>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td>Planlama Raporu</td>
+				<td>
+					<button mat-icon-button color="primary" matTooltip="İndir" (click)="getReportDialog('Planlama Raporu', 'tasks/report-task-wizard?')">
+						<mat-icon>archive</mat-icon>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td>Talepler Raporu</td>
+				<td>
+					<button mat-icon-button color="primary" matTooltip="İndir" (click)="getReportDialog('Talepler Raporu', 'tasks/report?')">
+						<mat-icon>archive</mat-icon>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td>Eşleşmeyen Müşteriler Raporu</td>
+				<td>
+					<button mat-icon-button color="primary" matTooltip="İndir" (click)="getReportDialog('Eşleşmeyen Müşteriler Raporu', 'opet-service/non-matching-customers-report?', 'nofilter')">
+						<mat-icon>archive</mat-icon>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td>Satış Değişim Raporu</td>
+				<td>
+					<button mat-icon-button color="primary" matTooltip="İndir" (click)="getReportDialog('Satış Değişim Raporu', 'opet-service/sale-change-report?', 'nofilter')">
+						<mat-icon>archive</mat-icon>
+					</button>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<!-- <div class="modal-footer">
+		<button (click)="sendDocuments()" [disabled]="loading$ | async" mat-raised-button matTooltip="Müşteriye Gönder" color="primary" type="button">
+			<i class="la la-check" style="margin-top:-2px;"></i>&nbsp;Müşteriye Gönder
+		</button>
+	</div> -->
+</ng-template>

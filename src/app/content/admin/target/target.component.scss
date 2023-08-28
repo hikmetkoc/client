@@ -1,0 +1,26 @@
+kt-target {
+	.table-container {
+		display: flex;
+		flex-direction: column;
+		min-width: 300px;
+	}
+
+	.mat-form-field {
+		font-size: 14px;
+		width: 100%;
+	}
+
+	.mat-table {
+		overflow: auto;
+	}
+
+	.mat-column-user {
+		flex: 0 0 220px;
+	}
+
+	.mat-icon-button {
+		width: 30px !important;
+		height: 30px !important;
+		line-height: unset !important;
+	}
+}

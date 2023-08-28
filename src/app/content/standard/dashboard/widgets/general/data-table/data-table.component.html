@@ -1,0 +1,82 @@
+<!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
+<div perfectScrollbar [ngStyle]="{'max-height': '43vh', 'position': 'relative'}" class="mat-table__wrapper mat-table__wrapper--dashboard mb-4">
+	<!-- Checkbox Column -->
+	<!-- Table with selection -->
+	<!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
+	<mat-table class="lmat-elevation-z8" [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="ASC" matSortDisableClear>
+		<ng-container matColumnDef="id">
+			<mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+			<mat-cell *matCellDef="let product" class="mat-column-vinCode">{{product.id}}</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="cManufacture">
+			<mat-header-cell *matHeaderCellDef mat-sort-header>Manufacture</mat-header-cell>
+			<mat-cell *matCellDef="let product">{{product.cManufacture}}</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="cModel">
+			<mat-header-cell *matHeaderCellDef mat-sort-header>Model</mat-header-cell>
+			<mat-cell *matCellDef="let product">{{product.cModel}}</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="cModelYear">
+			<mat-header-cell *matHeaderCellDef mat-sort-header>Model Year</mat-header-cell>
+			<mat-cell *matCellDef="let product">{{product.cModelYear}}</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="cMileage">
+			<mat-header-cell *matHeaderCellDef mat-sort-header>Mileage</mat-header-cell>
+			<mat-cell *matCellDef="let product">{{product.cMileage}}</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="cColor">
+			<mat-header-cell *matHeaderCellDef mat-sort-header>Color</mat-header-cell>
+			<mat-cell *matCellDef="let product" [ngStyle]="{ 'color' : product.cColor }">{{product.cColor}}</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="cPrice">
+			<mat-header-cell *matHeaderCellDef mat-sort-header>Price</mat-header-cell>
+			<mat-cell *matCellDef="let product">${{product.cPrice}}</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="cStatus">
+			<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+			<mat-cell *matCellDef="let product">
+				<span class="kt-badge kt-badge--inline kt-badge--pill kt-badge--{{ getItemCssClassByStatus(product.cStatus) }} kt-badge--wide">{{ getItemStatusString(product.cStatus) }}</span>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="cCondition">
+			<mat-header-cell *matHeaderCellDef mat-sort-header>Condition</mat-header-cell>
+			<mat-cell *matCellDef="let product">
+				<span class="kt-badge kt-badge--{{ getItemCssClassByCondition(product.cCondition) }} kt-badge--dot"></span>&nbsp;
+				<span class="kt-font-bold kt-font-{{ getItemCssClassByCondition(product.cCondition) }}">{{ getItemConditionString(product.cCondition) }}</span>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="actions">
+			<mat-header-cell *matHeaderCellDef width="106px" class="kt-pl-13">
+				Actions
+			</mat-header-cell>
+			<mat-cell *matCellDef="let product">
+				<button mat-icon-button color="primary" matTooltip="Edit item" class="position-static">
+					<mat-icon>create</mat-icon>
+				</button>
+				<button mat-icon-button color="warn" type="button" matTooltip="Delete item" class="position-static">
+					<mat-icon>delete</mat-icon>
+				</button>
+			</mat-cell>
+		</ng-container>
+
+		<mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+		<mat-row [ngClass]="{gray: even}" *matRowDef="let row; let even = even; columns: displayedColumns"></mat-row>
+	</mat-table>
+
+	<div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+</div>
+<!-- start: BOTTOM -->
+<div class="mat-table__bottom mat-table__bottom--padding">
+	<mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+	<mat-paginator [pageSize]="6" [pageSizeOptions]="[3, 6, 15]" [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+</div>
+<!-- end: BOTTOM -->

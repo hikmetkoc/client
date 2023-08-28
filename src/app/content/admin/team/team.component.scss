@@ -1,0 +1,19 @@
+kt-team {
+	@media print {
+		.treeview-item {
+			margin-left: 1cm;
+			font-size: 20px;
+		}
+	}
+
+	.mat-expansion-panel-body {
+		padding: unset;
+	}
+
+	kt-taskwizard {
+		.mat-header-row {
+			border-top-width: 1px;
+			border-top: 1px solid #e0e0e0
+		}
+	}
+}

@@ -1,0 +1,83 @@
+<div class="mat-table__wrapper">
+	<mat-table [dataSource]="dataSource" style="min-width: unset">
+		<ng-container *ngFor="let field of model.fields">
+			<ng-container *ngIf="['text','email','number'].indexOf(field.fieldType) > -1 && field.display" [matColumnDef]="field.name">
+				<mat-header-cell *matHeaderCellDef>{{field.title}}</mat-header-cell>
+				<mat-cell *matCellDef="let element">
+					<mat-form-field floatLabel="never">
+						<input type="{{field.fieldType}}" matInput placeholder="{{field.title}}" [(value)]="element[field.name]" [(ngModel)]="element[field.name]" (ngModelChange)="fieldChange(field, element, $event); element[field.name] = $event" [disabled]="field.readOnly" [required]="field.required" pattern="[0-9]+" />
+						<mat-error *ngIf="field.required">{{field.title}} <strong>zorunludur</strong></mat-error>
+					</mat-form-field>
+				</mat-cell>
+			</ng-container>
+			<ng-container *ngIf="['object'].indexOf(field.fieldType) > -1 && field.display" [matColumnDef]="field.name">
+				<mat-header-cell *matHeaderCellDef>{{field.title}}</mat-header-cell>
+				<mat-cell *matCellDef="let element">
+					<mat-form-field floatLabel="never">
+						<input type="text" autocomplete="disabled" placeholder="{{field.title}}" matInput [(value)]="element[field.name]" [ngModel]="element[field.name] | objectPipe" [matAutocomplete]="auto" [disabled]="field.readOnly" (ngModelChange)="filterOptions(field, element, $event); element[field.name] = $event; fieldChange(field, element, $event)" [required]="field.required" (focus)="filterOptions(field, element, $event)">
+						<mat-autocomplete #auto="matAutocomplete">
+							<mat-option *ngFor="let option of filteredOptionss[field.name]" [value]="option">
+								{{option[field.displayField]}}</mat-option>
+						</mat-autocomplete>
+						<mat-error *ngIf="field.required">{{field.title}} <strong>zorunludur</strong></mat-error>
+					</mat-form-field>
+				</mat-cell>
+			</ng-container>
+			<ng-container *ngIf="['currency'].indexOf(field.fieldType) > -1 && field.display" [matColumnDef]="field.name">
+				<mat-header-cell *matHeaderCellDef>{{field.title}}</mat-header-cell>
+				<mat-cell *matCellDef="let element">
+					<mat-form-field floatLabel="never">
+						<input type="text" [textMask]="{mask: utils.currencyMask, guide: false, modelClean: true}" matInput placeholder="{{field.title}}" [ngModel]="element[field.name]" (ngModelChange)="element[field.name] = $event; fieldChange(field, element, $event)" [disabled]="field.readOnly" [required]="field.required" />
+						<mat-error *ngIf="field.required">{{field.title}} <strong>zorunludur</strong></mat-error>
+					</mat-form-field>
+				</mat-cell>
+			</ng-container>
+			<ng-container *ngIf="['percentage'].indexOf(field.fieldType) > -1 && field.display" [matColumnDef]="field.name">
+				<mat-header-cell *matHeaderCellDef>{{field.title}}</mat-header-cell>
+				<mat-cell *matCellDef="let element">
+					<mat-form-field floatLabel="never">
+						<input type="text" [textMask]="{mask: utils.percentageMask, guide: false, modelClean: true}" matInput placeholder="{{field.title}}" [(ngModel)]="element[field.name]" (ngModelChange)="fieldChange(field, element, $event)" [disabled]="field.readOnly" [required]="field.required" />
+						<mat-error *ngIf="field.required">{{field.title}} <strong>zorunludur</strong></mat-error>
+					</mat-form-field>
+				</mat-cell>
+			</ng-container>
+			<ng-container *ngIf="['integer'].indexOf(field.fieldType) > -1 && field.display" [matColumnDef]="field.name">
+				<mat-header-cell *matHeaderCellDef>{{field.title}}</mat-header-cell>
+				<mat-cell *matCellDef="let element">
+					<mat-form-field floatLabel="never">
+						<input type="text" [textMask]="{mask: utils.integerMask, guide: false, modelClean: true}" matInput placeholder="{{field.title}}" [(ngModel)]="element[field.name]" [disabled]="field.readOnly" [required]="field.required" />
+						<mat-error *ngIf="field.required">{{field.title}} <strong>zorunludur</strong></mat-error>
+					</mat-form-field>
+				</mat-cell>
+			</ng-container>
+			<ng-container *ngIf="['select'].indexOf(field.fieldType) > -1 && field.display" [matColumnDef]="field.name">
+				<mat-header-cell *matHeaderCellDef>{{field.title}}</mat-header-cell>
+				<mat-cell *matCellDef="let element">
+					<mat-form-field class="mat-form-field-fluid">
+						<mat-select [placeholder]="field.title + (field.required ? ' *' : '')" [(ngModel)]="element[field.name]">
+							<mat-option *ngFor="let option of baseService.getAttr(field.attributeName)?.values" value="{{option.id}}">{{option.label}}</mat-option>
+						</mat-select>
+						<mat-error *ngIf="field.required">{{field.title}} is
+							<strong>required</strong>
+						</mat-error>
+					</mat-form-field>
+				</mat-cell>
+			</ng-container>
+		</ng-container>
+		<ng-container matColumnDef="actions">
+			<mat-header-cell *matHeaderCellDef>
+				<button *ngIf="!readOnly" mat-icon-button color="accent" matTooltip="Satır ekle" type="button" (click)="add($event)">
+					<mat-icon>add</mat-icon>
+				</button>
+			</mat-header-cell>
+			<mat-cell *matCellDef="let row">
+				<button *ngIf="!row.isStatic && !readOnly" mat-icon-button color="warn" matTooltip="Satır sil" type="button" (click)="delete(row, $event)">
+					<mat-icon>delete</mat-icon>
+				</button>
+			</mat-cell>
+		</ng-container>
+		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+		<mat-row [ngClass]="{gray: even}" *matRowDef="let row; let even = even; columns: displayedColumns;" [hidden]="row.isDeleted"></mat-row>
+	</mat-table>
+	<div class="mat-table__message" *ngIf="dataSource.entitySubject.value?.length === 0">Gösterilecek sonuç yok</div>
+</div>

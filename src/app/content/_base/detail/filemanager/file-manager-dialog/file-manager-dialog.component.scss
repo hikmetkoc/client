@@ -1,0 +1,22 @@
+kt-file-manager-dialog {
+	.kt-form .kt-form__group {
+		padding-top: unset;
+		padding-bottom: unset;
+	}
+
+	.upload-numbering {
+		margin-top: 9px;
+	}
+
+	.flex-row-between {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+
+	.flex-row-start {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+	}
+}

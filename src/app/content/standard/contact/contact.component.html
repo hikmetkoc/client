@@ -1,0 +1,12 @@
+<kt-portlet [options]="{headLarge: true}" [hidden]="current">
+
+	<kt-pageheader [activeFilter]="mainGrid.activeFilter" [filters]="mainGrid.filters" [buttons]="buttons" (filterChange)="mainGrid.filterChange()"></kt-pageheader>
+
+	<ng-container mPortletBody>
+		<kt-grid #mainGrid [entity]="model.name" (rowClick)="rowClicked($event)" (change)="listChange()"></kt-grid>
+	</ng-container>
+
+</kt-portlet>
+
+<kt-detail [(current)]="current" [model]="model" *ngIf="current" (editClick)="mainGrid.edit($event)" (resetCurrent)="resetCurrent()"></kt-detail>
+

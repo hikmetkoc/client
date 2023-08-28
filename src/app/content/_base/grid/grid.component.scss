@@ -1,0 +1,70 @@
+kt-grid {
+	.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+		background-color: #f4516c !important;
+	}
+
+	.mat-slide-toggle-bar {
+		background-color: #f4516c !important;
+	}
+
+	.kt-nav__link {
+		cursor: pointer;
+	}
+	.priority_muk {
+		background-color: #000000;
+		mat-cell {
+			font-weight: bold;
+			color: #99a6bf;
+		}
+	}
+
+	.priority_error {
+		background-color: #900f13;
+		mat-cell {
+			font-weight: bold;
+			color: seashell;
+		}
+	}
+
+	.priority_cancel {
+		background-color: #36344d;
+		mat-cell {
+			font-weight: bold;
+			color: seashell;
+		}
+	}
+
+	.priority_low {
+		background-color: #7bdcff;
+	}
+
+	.priority_medium {
+		background-color: #ffee00d8;
+	}
+
+	.priority_high {
+		background-color: #00bf00;
+
+		mat-cell {
+			font-weight: bold;
+		}
+	}
+
+	.mat-icon-button {
+		width: 30px !important;
+		height: 30px !important;
+		line-height: unset !important;
+	}
+
+	.grid-header-buttons {
+		display: flex;
+		justify-content: flex-end;
+		flex-direction: row;
+	}
+
+	.page-header-buttons {
+		display: flex;
+		align-items: center;
+		align-content: flex-end;
+	}
+}

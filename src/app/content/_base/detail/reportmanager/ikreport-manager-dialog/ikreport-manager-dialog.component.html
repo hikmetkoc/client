@@ -1,0 +1,114 @@
+<kt-portlet>
+
+		<div class="modal-header">
+			<h4 class="modal-title">Tam Set Özlük Dokümanları Listesi</h4>
+			<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Yazdır" (click)="showFiles()">
+				<mat-icon>print</mat-icon>
+			</button>
+		</div>
+	<div id="print-section">
+		<div class="modal-body">
+			<table class="table table-striped">
+				<thead>
+				<tr>
+					<th style="width: 10%;">No</th>
+					<th style="width: 80%;">Doküman Adı</th>
+					<th style="width: 10%;">Durum</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>01</td>
+					<td>Nüfus Cüzdanı Fotokopisi</td>
+					<td>{{usersHoliday[0].nufus ? '&#10004;' : ' '}}</td>
+				</tr>
+				<tr>
+					<td>02</td>
+					<td>Nüfus Kayıt Örneği</td>
+					<td>{{usersHoliday[0].nufuskayit ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>03</td>
+					<td>İkametgâh Belgesi</td>
+					<td>{{usersHoliday[0].ikametgah ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>04</td>
+					<td>Sağlık Raporu</td>
+					<td>{{usersHoliday[0].saglik ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>05</td>
+					<td>Diploma Fotokopisi</td>
+					<td>{{usersHoliday[0].diploma ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>06</td>
+					<td>Adli Sicil Kaydı</td>
+					<td>{{usersHoliday[0].sicil ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>07</td>
+					<td>2 Adet Vesikalık Fotoğraf</td>
+					<td>{{usersHoliday[0].vesikalik ? '&#10004;' : ''}}</td>
+				</tr>
+				<!--<tr>
+					<td>08</td>
+					<td>Aile Durumunu Bildirir Belge</td>
+					<td>{{usersHoliday[0].ailedurum ? '&#10004;' : ''}}</td>
+				</tr> -->
+				<tr>
+					<td>08</td>
+					<td>Askerlik Durum Belgesi</td>
+					<td>{{usersHoliday[0].askerlik ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>09</td>
+					<td>İş Sözleşmesi / Hizmet Sözleşmesi</td>
+					<td>{{usersHoliday[0].issozlesme ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>10</td>
+					<td>SGK İşe Giriş Bildirgesi</td>
+					<td>{{usersHoliday[0].sgk ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>11</td>
+					<td>Fazla mesai ve fazla çalışma için işçinin onayının alındığı belge</td>
+					<td>{{usersHoliday[0].fazla ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>12</td>
+					<td>Aydınlatma ve Açık Rıza Onay Formu</td>
+					<td>{{usersHoliday[0].kvk ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>13</td>
+					<td>Araç kullanılan işlerde işçi ehliyet fotokopisi</td>
+					<td>{{usersHoliday[0].ehliyet ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>14</td>
+					<td>Zimmetli araç gereç, cihaz zimmet formu</td>
+					<td>{{usersHoliday[0].zimmet ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>15</td>
+					<td>Gizlilik Sözleşmesi</td>
+					<td>{{usersHoliday[0].gizlilik ? '&#10004;' : ''}}</td>
+				</tr>
+				<tr>
+					<td>16</td>
+					<td>Şirket iç tüzüğünde mevcut iş tanımının imzalı hali</td>
+					<td>{{usersHoliday[0].istanimi ? '&#10004;' : ''}}</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<br/>
+
+
+	</div>
+
+</kt-portlet>

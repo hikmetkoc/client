@@ -1,0 +1,19 @@
+<kt-portlet>
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title">
+				Dosyalar
+			</h3>
+		</ng-container>
+		<ng-container ktPortletTools>
+			<div>
+				<button type="button" class="close" mat-dialog-close matTooltip="Kapat">
+					<span>&times;</span>
+				</button>
+			</div>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<kt-filemanagertool #fileManagerTool [(current)]="current" [model]="model"></kt-filemanagertool>
+	</kt-portlet-body>
+</kt-portlet>

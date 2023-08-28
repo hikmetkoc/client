@@ -1,0 +1,53 @@
+<kt-portlet [ngClass]="{ 'kt-portlet--body-progress' : false, 'kt-portlet--body-progress-overlay' : viewLoading }">
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<span class="kt-portlet__head-icon kt-hide" style="color:#1d2129">
+				<i class="la la-gear"></i>
+			</span>
+			<h3 class="kt-portlet__head-title">
+				{{ data.title }}
+			</h3>
+		</ng-container>
+		<ng-container ktPortletTools>
+			<div>
+				<button type="button" class="close" mat-dialog-close matTooltip="Kapat">
+					<span>&times;</span>
+				</button>
+			</div>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<div class="kt-portlet__body-progress">
+			<mat-spinner [diameter]="20"></mat-spinner>
+		</div>
+		<div class="kt-list-timeline kt-list-timeline--skin-light kt-padding-30">
+			<div class="kt-list-timeline__items">
+				<div class="kt-list-timeline__item" *ngFor="let message of data.messages">
+					<span class="kt-list-timeline__badge kt-list-timeline__badge--{{ message.statusCssClass }}"></span>
+					<span class="kt-list-timeline__text">{{message.text}}
+						<span class="kt-badge kt-badge--{{message.statusCssClass}} kt-badge--wide">{{ message.statusTitle }}</span>
+					</span>
+				</div>
+			</div>
+		</div>
+	</kt-portlet-body>
+	<kt-portlet-footer>
+		<div class="kt-form__actions kt-form__actions--solid" style="padding: 18px; padding-bottom: 0px">
+			<div class="row">
+				<div class="col-lg-12">
+					<mat-form-field>
+						<mat-select placeholder="Status" [formControl]="selectedStatusForUpdate">
+							<mat-option *ngFor="let status of data.statuses" value="{{ status.value }}">{{status.title}}</mat-option>
+						</mat-select>
+						<mat-hint align="start">Select
+							<strong>Status</strong> for rows updating</mat-hint>
+					</mat-form-field>
+					&nbsp;
+					<button type="button" mat-raised-button color="primary" [disabled]="selectedStatusForUpdate.value.length == 0">Statü Güncelle</button>&nbsp;
+					<button type="button" mat-raised-button (click)="onNoClick()">İptal</button>
+				</div>
+
+			</div>
+		</div>
+	</kt-portlet-footer>
+</kt-portlet>

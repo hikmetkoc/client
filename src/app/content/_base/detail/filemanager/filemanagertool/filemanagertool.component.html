@@ -1,0 +1,59 @@
+<ng-container *ngIf="current || utils.hasOperation('Genel Form Oluşturma')">
+	<div class="kt-margin-b-20 flex-row-start">
+		<ng-container *ngIf="this.model.name !== 'Document' || this.baseService.getUserId() === 2000">
+			<div class="kt-margin-r-20 flex-row-start">
+				<!-- <h5 class="upload-numbering">1.  </h5> -->
+				<h5 class="upload-numbering"></h5>
+				<button style="margin-right: 10px;" (click)="uploadFile.click()" mat-raised-button matTooltip="Dosya Seç" color="primary" type="button">
+					<span *ngIf="inputFiles.length === 0">Dosya Seç...</span>
+					<span *ngIf="inputFiles.length > 0">{{inputFiles.length}} dosya seçildi</span>
+				</button>
+			</div>
+			<div class="kt-margin-r-20 flex-row-start">
+				<!-- <h5 class="upload-numbering">2.  </h5> -->
+				<h5 class="upload-numbering"></h5>
+				<input style="margin-right: 10px; width: unset;" matInput name="description" placeholder="Dosya Açıklaması Gir" [(ngModel)]="description">
+			</div>
+			<div class="kt-margin-r-20 flex-row-start">
+				<!-- <h5 class="upload-numbering">3.  </h5> -->
+				<h5 class="upload-numbering"></h5>
+				<button style="margin-right: 10px;" (click)="upload()" mat-raised-button matTooltip="Sunucuya Yükle" color="warn" type="button" [disabled]="inputFiles.length === 0 || (loading$ | async)">
+					<mat-icon style="margin-top: 5px;">arrow_upward</mat-icon> Sunucuya Yükle
+				</button>
+			</div>
+		</ng-container>
+		<mat-spinner class="upload-numbering" [diameter]="20" *ngIf="loading$ | async"></mat-spinner>
+		<input class="kt-margin-top-20" type="file" hidden #uploadFile (change)="prepareUpload($event)" placeholder="Upload file" accept=".pdf,.doc,.docx">
+	</div>
+</ng-container>
+
+<mat-table [dataSource]="files">
+	<ng-container matColumnDef="id">
+		<mat-header-cell *matHeaderCellDef>Id</mat-header-cell>
+		<mat-cell *matCellDef="let row"> {{row.id}} </mat-cell>
+	</ng-container>
+	<ng-container matColumnDef="fileName">
+		<mat-header-cell *matHeaderCellDef>Dosya Adı</mat-header-cell>
+		<mat-cell *matCellDef="let row"> {{row.fileName}}&nbsp;&nbsp;&nbsp;
+		</mat-cell>
+	</ng-container>
+	<ng-container matColumnDef="description">
+		<mat-header-cell *matHeaderCellDef>Dosya Açıklaması</mat-header-cell>
+		<mat-cell *matCellDef="let row"> {{row.description}}&nbsp;&nbsp;&nbsp;
+		</mat-cell>
+	</ng-container>
+	<ng-container matColumnDef="actions">
+		<mat-header-cell *matHeaderCellDef>İşlemler</mat-header-cell>
+		<mat-cell *matCellDef="let row">
+			<button mat-icon-button color="primary" matTooltip="İndir" (click)="download(row, $event)">
+				<mat-icon>archive</mat-icon>
+			</button>&nbsp;
+			<button *ngIf="current || utils.hasOperation('Genel Form Oluşturma')" mat-icon-button color="warn" matTooltip="Sil" (click)="delete(row, $event)">
+				<mat-icon>delete</mat-icon>
+			</button>
+		</mat-cell>
+	</ng-container>
+	<mat-header-row *matHeaderRowDef="['fileName', 'description' , 'actions']">
+	</mat-header-row>
+	<mat-row [ngClass]="{gray: even}" *matRowDef="let row; let even = even; columns: ['fileName', 'description' , 'actions'];"></mat-row>
+</mat-table>

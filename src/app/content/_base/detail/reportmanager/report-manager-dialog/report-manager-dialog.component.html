@@ -1,0 +1,112 @@
+<kt-portlet>
+
+		<div class="modal-header">
+			<h4 class="modal-title">İzin Formu</h4>
+			<button type="button" class="close no-print" aria-label="Close" (click)="('Cross click')">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Yazdır" (click)="showFiles()">
+				<mat-icon>print</mat-icon>
+			</button>
+		</div>
+	<div id="print-section">
+		<div class="modal-body">
+			<table class="table table-striped" style="text-align: center">
+				<thead>
+				<tr>
+					<th style="width: 40%;">Bilgi</th>
+					<th style="width: 60%;">Açıklama</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>İzin Kullanan Personel</td>
+					<td>{{this.current.owner.firstName + ' ' + this.current.owner.lastName ? this.current.owner.firstName + ' ' + this.current.owner.lastName : ''}}</td>
+				</tr>
+				<tr>
+					<td>TC Kimlik Nu.</td>
+					<td>{{this.current.owner.tck ? this.current.owner.tck : ''}}</td>
+				</tr>
+				<tr>
+					<td>Şirket</td>
+					<td>{{this.current.owner.sgksirket.label ? this.current.owner.sgksirket.label : ''}}</td>
+				</tr>
+				<!--<tr>
+					<td>Birim</td>
+					<td>{{this.current.birim ? this.current.birim : ''}}</td>
+				</tr> -->
+				<tr>
+					<td>Unvan</td>
+					<td>{{this.current.owner.sgkunvan.label ? this.current.owner.sgkunvan.label : ''}}</td>
+				</tr>
+				<tr>
+					<td>İşe Başlangıç Tarihi</td>
+					<td>{{this.current.owner.startDate ? (this.current.owner.startDate | date:'dd.MM.yyyy') : ' '}}</td>
+				</tr>
+				<tr>
+					<td>İzin Türü</td>
+					<td>{{this.current.type.label ? this.current.type.label : ''}}</td>
+				</tr>
+				<tr>
+					<td>Kullanılan Gün Sayısı</td>
+					<td>{{this.current.izingun ? this.current.izingun + ' GÜN': ''}}</td>
+				</tr>
+				<tr>
+					<td>İzin Başlangıç Tarihi</td>
+					<td>{{this.current.startDate ? (this.current.startDate | date:'dd.MM.yyyy') : ' '}}</td>
+				</tr>
+				<tr>
+					<td>İzin Bitiş Tarihi</td>
+					<td>{{this.current.endDate ? (this.current.endDate | date:'dd.MM.yyyy') : ' '}}</td>
+				</tr>
+				<tr>
+					<td>İşe Dönüş Tarihi</td>
+					<td>{{this.current.comeDate ? (this.current.comeDate | date:'dd.MM.yyyy') : ' '}}</td>
+				</tr>
+				<!--<tr>
+					<td>Açıklama</td>
+					<td>{{this.current.aciklama ? this.current.aciklama : ''}}</td>
+				</tr>
+				<tr>
+					<td>İzni Kullanacağı Adres</td>
+					<td>{{this.current.holidayAddress ? this.current.holidayAddress : ''}}</td>
+				</tr> -->
+				<tr>
+					<td>Onay Durumu</td>
+					<td>{{this.current.approvalStatus.label ? this.current.approvalStatus.label : ''}}</td>
+				</tr>
+			</table>
+			<br/>
+			<span class ="yazi">Yukarıda belirttiğim günler içerisinde belirtilen adreste izin haklarımı kullanacağımı bildirdiğimi beyan ederim.</span>
+			<br/><br/><br/>
+			<table class="table table-striped2" style="text-align: center">
+				<thead>
+				<tr>
+					<th style="width: 20%;"></th>
+					<th style="width: 25%;">Çalışan Onayı</th>
+					<th style="width: 25%;">Müdür Onayı</th>
+					<th style="width: 30%;">İnsan Kaynakları Onayı</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>Adı Soyadı</td>
+					<td>{{this.current.owner.firstName + ' ' + this.current.owner.lastName ? this.current.owner.firstName + ' ' + this.current.owner.lastName : ''}}</td>
+					<td>{{this.current.assigner.firstName + ' ' + this.current.assigner.lastName === 'Cemal Elitaş' ? 'İdari ve Mali İşler Müdürü' : this.current.assigner.firstName + ' ' + this.current.assigner.lastName}}</td>
+					<td>İnsan Kaynakları Uzmanı</td>
+				</tr>
+				<tr>
+					<td>İmza</td>
+					<td><br/><br/><br/></td>
+					<td><br/><br/><br/></td>
+					<td><br/><br/><br/></td>
+				</tr>
+			</table>
+				<br/>
+			<span class ="yazi">Yukarıda bilgileri bulunan çalışan, izin hakkını {{this.current.endDate ? (this.current.endDate | date:'dd.MM.yyyy') : ' '}} tarihinde bitirecek ve {{this.current.comeDate ? (this.current.comeDate | date:'dd.MM.yyyy') : ' '}} tarihinde işe başlayacaktır.</span>
+		</div>
+
+
+	</div>
+
+</kt-portlet>

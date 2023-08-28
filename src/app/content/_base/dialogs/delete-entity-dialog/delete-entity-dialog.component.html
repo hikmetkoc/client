@@ -1,0 +1,34 @@
+<kt-portlet [ngClass]="{ 'kt-portlet--body-progress' : false, 'kt-portlet--body-progress-overlay' : viewLoading }">
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<span class="kt-portlet__head-icon kt-hide" style="color:#1d2129">
+				<i class="la la-gear"></i>
+			</span>
+			<h3 class="kt-portlet__head-title">
+				Silme Onayı
+			</h3>
+		</ng-container>
+		<ng-container ktPortletTools>
+			<div>
+				<button type="button" class="close" mat-dialog-close matTooltip="Kapat">
+					<span>&times;</span>
+				</button>
+			</div>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<div class="col-lg-12">
+			{{ viewLoading ? 'Bekleniyor...' : 'Silmek istediğinizden emin misiniz?'}}
+		</div>
+	</kt-portlet-body>
+	<kt-portlet-footer>
+		<div class="kt-form__actions kt-form__actions--solid" style="padding: 18px; padding-bottom: 0px">
+			<div class="row text-right">
+				<div class="col-lg-12">
+					<button mat-button (click)="onNoClick()">İptal</button>&nbsp;
+					<button mat-button (click)="onYesClick()" color="primary" cdkFocusInitial [disabled]="viewLoading">Sil</button>
+				</div>
+			</div>
+		</div>
+	</kt-portlet-footer>
+</kt-portlet>

@@ -1,0 +1,3 @@
+<kt-grid #mainGrid [entity]="model.name" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current"></kt-grid>
+
+<kt-detail [(current)]="current" [model]="model" *ngIf="current" (editClick)="mainGrid.edit($event)" (resetCurrent)="resetCurrent()"></kt-detail>

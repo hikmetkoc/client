@@ -1,0 +1,155 @@
+<kt-grid #mainGrid [entity]="model.name" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current" title="Ekip" [url]="url"></kt-grid>
+
+<ng-container *ngIf="current">
+	<kt-portlet>
+		<kt-portlet-header [class]="'kt-portlet__head--lg'">
+			<ng-container ktPortletTitle>
+				<button mat-icon-button mat-button matTooltip="Geri dön" (click)="resetCurrent()" class="kt-margin-r-5">
+					<mat-icon>keyboard_arrow_left</mat-icon>
+				</button>
+				<h3 class="kt-portlet__head-title">
+					<span>Kişi Detayı <span style="color: #999999">&nbsp;({{current.instanceName}})</span></span>
+				</h3>
+			</ng-container>
+		</kt-portlet-header>
+	</kt-portlet>
+
+	<div class="row">
+		<div class="col-xl-6">
+			<div class="row row-full-height">
+				<div class="col-sm-12 col-md-12 col-lg-6">
+					<kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand'">
+						<kt-portlet-body [class]="'kt-portlet__body--fluid'">
+							<kt-activity-widget *ngIf="activityWidget1Data" [title]="activityWidget1Data.total" [desc]="'Ziyaretler'" [data]="activityWidget1Data"></kt-activity-widget>
+						</kt-portlet-body>
+					</kt-portlet>
+
+					<div class="kt-space-20"></div>
+
+					<kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand'">
+						<kt-portlet-body [class]="'kt-portlet__body--fluid'">
+							<kt-activity-widget *ngIf="activityWidget3Data" [title]="activityWidget3Data.total" [desc]="'Sözleşmeler'" [data]="activityWidget3Data"></kt-activity-widget>
+						</kt-portlet-body>
+					</kt-portlet>
+				</div>
+
+				<div class="col-sm-12 col-md-12 col-lg-6">
+					<kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand'">
+						<kt-portlet-body [class]="'kt-portlet__body--fluid'">
+							<kt-activity-widget *ngIf="activityWidget2Data" [title]="activityWidget2Data.total" [desc]="'Teklifler'" [data]="activityWidget2Data"></kt-activity-widget>
+						</kt-portlet-body>
+					</kt-portlet>
+
+					<div class="kt-space-20"></div>
+
+					<kt-portlet [class]="'kt-portlet--height-fluid-half kt-portlet--border-bottom-brand'">
+						<kt-portlet-body [class]="'kt-portlet__body--fluid'">
+							<kt-activity-widget *ngIf="activityWidget4Data" [title]="activityWidget4Data.total" [desc]="'Aktif Müşteriler'" [data]="activityWidget4Data"></kt-activity-widget>
+						</kt-portlet-body>
+					</kt-portlet>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-6">
+			<kt-portlet [class]="'kt-portlet--height-fluid'">
+				<kt-portlet-header>
+					<ng-container ktPortletTitle>
+						<h3 class="kt-portlet__head-title">
+							Güncel İletişim Bilgileri
+						</h3>
+					</ng-container>
+					<ng-container ktPortletTools>
+						<div>
+							<!--<mat-select style="width: 50px;" placeholder="Yıl" [(ngModel)]="chartYear" (ngModelChange)="getCharts()">
+								<mat-option [value]="2022">2022</mat-option>
+								<mat-option [value]="2021">2021</mat-option>
+								<mat-option [value]="2020">2020</mat-option>
+								<mat-option [value]="2019">2019</mat-option>
+								<mat-option [value]="2018">2018</mat-option>
+								<mat-option [value]="2017">2017</mat-option>
+							</mat-select>-->
+						</div>
+					</ng-container>
+				</kt-portlet-header>
+				<kt-portlet-body>
+					<kt-sales-widget [data]="" #salesWidget></kt-sales-widget>
+				</kt-portlet-body>
+			</kt-portlet>
+		</div>
+	</div>
+
+	<!--<div class="row">
+		<div class="col-xl-4">
+			<kt-portlet [class]="'kt-portlet--height-fluid'">
+				<kt-portlet-header title="{{date | date:'LLLL yyyy'}} Hedefi">
+				</kt-portlet-header>
+				<kt-portlet-body [class]="'kt-portlet__body--fit'">
+					<kt-target-widget [data]="targets"></kt-target-widget>
+				</kt-portlet-body>
+			</kt-portlet>
+		</div>
+		<div class="col-xl-8">
+			<kt-portlet [class]="'kt-portlet--height-fluid'">
+				<kt-portlet-header title="Aylık Hedefler (1000 Litre)">
+				</kt-portlet-header>
+				<kt-portlet-body [class]="'kt-portlet__body--fit'">
+					<kt-target-graph-widget #targetGraphWidget></kt-target-graph-widget>
+				</kt-portlet-body>
+			</kt-portlet>
+		</div>
+	</div>-->
+
+	<mat-accordion>
+		<mat-expansion-panel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>
+					Aktiviteler
+				</mat-panel-title>
+				<mat-panel-description>
+				</mat-panel-description>
+			</mat-expansion-panel-header>
+			<kt-grid #activityGrid entity="Activity" mode="Compact" [defaultFilter]="defaultActivityFilter" [defaultValues]="defaultValues" (rowClick)="activityRowClicked($event, true)"></kt-grid>
+		</mat-expansion-panel>
+		<mat-expansion-panel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>
+					Teklifler
+				</mat-panel-title>
+				<mat-panel-description>
+				</mat-panel-description>
+			</mat-expansion-panel-header>
+			<kt-grid #quoteGrid entity="Quote" mode="Compact" [defaultFilter]="defaultQuoteFilter" [defaultValues]="defaultValues" (rowClick)="quoteRowClicked($event, true)"></kt-grid>
+		</mat-expansion-panel>
+		<mat-expansion-panel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>
+					Sözleşmeler
+				</mat-panel-title>
+				<mat-panel-description>
+				</mat-panel-description>
+			</mat-expansion-panel-header>
+			<!--<kt-grid #contractGrid entity="Contract" mode="Compact" [defaultFilter]="defaultContractFilter" [defaultValues]="defaultValues" (rowClick)="contractRowClicked($event, true)"></kt-grid> -->
+		</mat-expansion-panel>
+		<mat-expansion-panel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>
+					Müşteriler
+				</mat-panel-title>
+				<mat-panel-description>
+				</mat-panel-description>
+			</mat-expansion-panel-header>
+			<!-- <kt-grid #customerGrid entity="Customer" mode="Compact" [defaultFilter]="defaultCustomerFilter" [defaultValues]="defaultValues" (rowClick)="customerRowClicked($event, true)"></kt-grid> -->
+		</mat-expansion-panel>
+		<mat-expansion-panel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>
+					Kolay Ajanda
+				</mat-panel-title>
+				<mat-panel-description>
+				</mat-panel-description>
+			</mat-expansion-panel-header>
+			<kt-taskwizard [user]="current"></kt-taskwizard>
+		</mat-expansion-panel>
+	</mat-accordion>
+
+</ng-container>

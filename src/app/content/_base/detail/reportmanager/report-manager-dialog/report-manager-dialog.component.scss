@@ -1,0 +1,109 @@
+kt-report-manager-dialog {
+	.kt-form .kt-form__group {
+		padding-top: unset;
+		padding-bottom: unset;
+	}
+
+	.upload-numbering {
+		margin-top: 9px;
+	}
+
+	.flex-row-between {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+
+	.flex-row-start {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+	}
+}
+.contacts-table{
+	width: 70%;
+	border-collapse: collapse;
+	text-align: center;
+	&,
+	& tr,
+	& td,
+	& th{
+		border: 2px solid #333;
+	}
+	tr,td{
+		padding: 5px;
+	}
+}
+table.table-striped {
+	border-collapse: collapse;
+	width: 90%;
+
+	td {
+		border: 2px solid #ddd;
+		padding: 8px;
+		text-align: left;
+		vertical-align: middle;
+	}
+
+	tr:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+
+	th {
+		padding-top: 12px;
+		padding-bottom: 12px;
+		background-color: #4CAF50;
+		color: white;
+	}
+
+	td:nth-of-type(1) {
+		width: 40%;
+	}
+
+	td:nth-of-type(2) {
+		width: 60%;
+	}
+}
+table.table-striped2 {
+	border-collapse: collapse;
+	width: 90%;
+
+	td {
+		border: 2px solid #ddd;
+		padding: 8px;
+		text-align: left;
+		vertical-align: middle;
+	}
+
+	tr:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+
+	th {
+		padding-top: 12px;
+		padding-bottom: 12px;
+		background-color: #4CAF50;
+		color: white;
+	}
+
+	td:nth-of-type(1) {
+		width: 20%;
+	}
+
+	td:nth-of-type(2) {
+		width: 25%;
+	}
+
+	td:nth-of-type(3) {
+		width: 25%;
+	}
+
+	td:nth-of-type(4) {
+		width: 30%;
+	}
+}
+.yazi {
+	font-size: 14px;
+	color: #333;
+	font-weight: bold;
+}

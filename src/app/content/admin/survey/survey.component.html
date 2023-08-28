@@ -1,0 +1,25 @@
+<kt-grid #mainGrid [entity]="model.name" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current"></kt-grid>
+
+<ng-container *ngIf="current">
+
+	<kt-detail [(current)]="current" [model]="model" (editClick)="mainGrid.edit($event)" (resetCurrent)="resetCurrent()"></kt-detail>
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Cevaplar
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="surveyAnswerGrid.add()" mat-raised-button matTooltip="Yeni cevap oluştur" type="button">
+					Yeni Cevap
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #surveyAnswerGrid entity="SurveyAnswer" mode="Compact" [showButtons]="true" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+
+</ng-container>

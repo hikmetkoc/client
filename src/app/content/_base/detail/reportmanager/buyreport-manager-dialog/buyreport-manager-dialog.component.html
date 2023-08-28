@@ -1,0 +1,220 @@
+<kt-portlet>
+
+		<div class="modal-header">
+			<h4 class="modal-title">Satın Alma Detayı</h4>
+			<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Yazdır" (click)="showFiles()">
+				<mat-icon>print</mat-icon>
+			</button>
+		</div>
+	<div id="print-section">
+		<div class="modal-body">
+			<h4 style="text-align: center;">TALEP DETAYI</h4>
+			<table class="table table-striped" style="text-align: center; table-layout: fixed;">
+				<thead>
+					<tr>
+						<th>Talep Numarası</th>
+						<th>Talep Eden</th>
+						<th>Talep Onaycısı</th>
+						<th>Ödeme Yapan Şirket</th>
+						<th>Maliyet Yeri</th>
+						<th>Son Talep Tarihi</th>
+						<th>Talep Edilen Ürün</th>
+						<th>Talep Gerekçesi</th>
+						<th>Talep Onay Durumu</th>
+						<th>Satın Alma Onay Durumu</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>{{stores[0].nu ? stores[0].nu : ' '}}</td>
+						<td>{{stores[0].talepeden ? stores[0].talepeden : ' '}}</td>
+						<td>{{stores[0].onaykisisi ? stores[0].onaykisisi : ' '}}</td>
+						<td>{{stores[0].sirket ? stores[0].sirket : ' '}}</td>
+						<td>{{stores[0].maliyet ? stores[0].maliyet : ' '}}</td>
+						<td>{{formatDate(stores[0].sontarih) || ' '}}</td>
+						<td>{{stores[0].urun ? stores[0].urun : ' '}}</td>
+						<td style="white-space: normal; word-wrap: break-word; overflow-wrap: break-word;">{{stores[0].gerekce ? stores[0].gerekce : ' '}}</td>
+						<td>{{stores[0].status ? stores[0].status : ' '}}</td>
+						<td>{{stores[0].buystatus ? stores[0].buystatus : ' '}}</td>
+					</tr>
+				</tbody>
+			</table>
+			<br/>
+			<h4 style="text-align: center;">REDDEDİLEN TEKLİFLER</h4>
+			<table class="table table-striped" style="text-align: center; table-layout: auto; width: 100%;">
+				<thead>
+				<tr>
+					<th>Teklif Onay Durumu</th>
+					<th>Satın Alma Sorumlusu</th>
+					<th>Onaycı</th>
+					<th>Onay Tarihi</th>
+					<th>Öneri</th>
+					<th>Öneri Tarihi</th>
+					<th>Tedarikçi</th>
+					<th>Teklif Başlangıç Tarihi</th>
+					<th>Teklif Bitiş Tarihi</th>
+					<th>Vade Tarihi</th>
+					<th>Tutar</th>
+					<th>Para Birimi</th>
+					<th>Ödeme Yöntemi</th>
+				</tr>
+				</thead>
+				<tbody>
+				<ng-container *ngFor="let item of buys2">
+					<ng-container [ngTemplateOutlet]="itemTemplate2" [ngTemplateOutletContext]="{item: item}"></ng-container>
+				</ng-container>
+				</tbody>
+			</table>
+			<ng-template #itemTemplate2 let-item="item">
+				<tr>
+					<td>{{item.onay ? item.onay : ''}}</td>
+					<td>{{item.talepeden ? item.talepeden : ''}}</td>
+					<td>{{item.onay2 ? item.onay2 : ''}}</td>
+					<td>{{formatDate(item.onay2tarih) ? formatDate(item.onay2tarih) : ''}}</td>
+					<td>{{item.oneri ? '&#10004;' : ' '}}</td>
+					<td>{{formatDate(item.onermetarih) ? formatDate(item.onermetarih) : ''}}</td>
+					<td>{{item.tedarikci ? item.tedarikci : ''}}</td>
+					<td>{{formatDate(item.baslangic) ? formatDate(item.baslangic) : ''}}</td>
+					<td>{{formatDate(item.bitis) ? formatDate(item.bitis) : ''}}</td>
+					<td>{{formatDate(item.vade) ? formatDate(item.vade) : ''}}</td>
+					<td>{{item.tutar ? item.tutar.toLocaleString('tr-TR', {style: 'currency', currency: 'TRY'} ) : ''}}</td>
+					<td>{{item.para ? item.para : ''}}</td>
+					<td>{{item.odeme ? item.odeme : ''}}</td>
+				</tr>
+			</ng-template>
+			<br/><br/>
+			<h4 style="text-align: center;">ONAYLANAN TEKLİF DETAYI</h4>
+			<table class="table table-striped" style="text-align: center">
+				<thead>
+				<tr>
+					<th style="width: 9%;">Satın Alma Sorumlusu</th>
+					<th style="width: 9%;">Onaycı</th>
+					<th style="width: 9%;">Onay Tarihi</th>
+					<th style="width: 9%;">Öneri</th>
+					<th style="width: 9%;">Öneri Tarihi</th>
+					<th style="width: 9%;">Tedarikçi</th>
+					<th style="width: 10%;">Teklif Başlangıç Tarihi</th>
+					<th style="width: 9%;">Teklif Bitiş Tarihi</th>
+					<th style="width: 9%;">Vade Tarihi</th>
+					<th style="width: 9%;">Tutar</th>
+					<th style="width: 9%;">Para Birimi</th>
+					<th style="width: 9%;">Ödeme Yöntemi</th>
+					<th style="width: 9%;">Satın Alma Gerekçesi</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>{{buys[0].talepeden ? buys[0].talepeden : ' '}}</td>
+					<td>{{buys[0].onay2 ? buys[0].onay2 : ' '}}</td>
+					<td>{{formatDate(buys[0].onay2tarih) || ' '}}</td>
+					<td>{{buys[0].oneri ? '&#10004;' : ' '}}</td>
+					<td>{{formatDate(buys[0].onermetarih) || ' '}}</td>
+					<td>{{buys[0].tedarikci ? buys[0].tedarikci : ' '}}</td>
+					<td>{{formatDate(buys[0].baslangic) || ' '}}</td>
+					<td>{{formatDate(buys[0].bitis) || ' '}}</td>
+					<td>{{formatDate(buys[0].vade) || ' '}}</td>
+					<td>{{buys[0].tutar ? buys[0].tutar.toLocaleString('tr-TR', {style: 'currency', currency: 'TRY'}) : ' '}}</td>
+					<td>{{buys[0].para ? buys[0].para : ' '}}</td>
+					<td>{{buys[0].odeme ? buys[0].odeme : ' '}}</td>
+					<td>{{buys[0].gerekce ? buys[0].gerekce : ' '}}</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<!--<h4 style="text-align: center;">ÜRÜN DETAYI</h4>
+		<table class="table table-striped" style="text-align: center">
+			<thead>
+			<tr>
+				<th>Ürün Türü</th>
+				<th>Tanımı</th>
+				<th>Miktar</th>
+				<th>Özellik</th>
+				<th>Gerekçe</th>
+				<th>Tutar</th>
+				<th>Önem Derecesi</th>
+				<th>Onay Durumu</th>
+			</tr>
+			</thead>
+			<tbody>
+			<ng-container *ngFor="let item of products">
+				<ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{item: item}"></ng-container>
+			</ng-container>
+			</tbody>
+		</table>
+		<br/><br/>
+		<ng-template #itemTemplate let-item="item">
+			<tr>
+				<td>{{item.tur ? item.tur : ''}}</td>
+				<td>{{item.tanim ? item.tanim : ''}}</td>
+				<td>{{item.miktar ? item.miktar : ''}}</td>
+				<td>{{item.ozellik ? item.ozellik : ''}}</td>
+				<td>{{item.gerekce ? item.gerekce : ''}}</td>
+				<td>{{item.tutar ? item.tutar.toLocaleString('tr-TR', {style: 'currency', currency: 'TRY'}) : ''}}</td>
+				<td>{{item.onem ? item.onem : ''}}</td>
+				<td>{{item.onay ? '&#10004;' : ''}}</td>
+			</tr>
+		</ng-template> -->
+		<h4 style="text-align: center;">SATIN ALMA DETAYI</h4>
+		<table class="table table-striped" style="text-align: center">
+			<thead>
+			<tr>
+				<th style="width: 30%; text-align: center;">Talep Tarihi</th>
+				<th style="width: 30%; text-align: center;">Teklif Onaylanma Tarihi</th>
+				<th style="width: 30%; text-align: center;">Toplam Teklif Tutarı</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td style="text-align: center;">{{formatDate(stores[0].tarih) || ' '}}</td>
+				<td style="text-align: center;">{{formatDate(buys[0].onay2tarih) || ' '}}</td>
+				<td style="text-align: center;">{{buys[0].tutar ? buys[0].tutar.toLocaleString('tr-TR', {style: 'currency', currency: 'TRY'}) : ' '}}</td>
+				<!--<td style="text-align: center;">{{buys[0].onaytutar ? buys[0].onaytutar.toLocaleString('tr-TR', {style: 'currency', currency: 'TRY'}) : ' '}}</td> -->
+				<!--<td style="text-align: center;">{{onayurun ? onayurun : '0'}} / {{toplamurun ? toplamurun : ' '}}</td> -->
+			</tr>
+			</tbody>
+		</table>
+		<br/>
+		<table style="border-collapse: collapse; margin: 0 auto; border: none;">
+			<tr>
+				<th style="width: 10%; border: none; text-align: center;">Talep Eden</th>
+				<th style="width: 10%; border: none; text-align: center;"></th>
+				<th style="width: 10%; border: none; text-align: center;">Talep Onaycısı</th>
+				<th style="width: 10%; border: none; text-align: center;"></th>
+				<th style="width: 10%; border: none; text-align: center;">Satın Alma Sorumlusu</th>
+				<th style="width: 10%; border: none; text-align: center;"></th>
+				<th style="width: 10%; border: none; text-align: center;">Onaycı</th>
+			</tr>
+			<tr>
+				<td style="border: none; text-align: center;">{{stores[0].talepeden ? stores[0].talepeden : ' '}}</td>
+				<td></td>
+				<td style="border: none; text-align: center;">{{stores[0].onaykisisi ? stores[0].onaykisisi : ' '}}</td>
+				<td></td>
+				<td style="border: none; text-align: center;">{{buys[0].talepeden ? buys[0].talepeden : ' '}}</td>
+				<td></td>
+				<td style="border: none; text-align: center;">{{buys[0].onay2 ? buys[0].onay2 : ' '}}</td>
+			</tr>
+			<tr>
+				<td style="border: none; text-align: center;"></td>
+				<td></td>
+				<td style="border: none; text-align: center;"></td>
+				<td></td>
+				<td style="border: none; text-align: center;"></td>
+				<td></td>
+				<td style="border: none; text-align: center;"></td>
+			</tr>
+			<tr>
+				<td style="border: none; text-align: center;">....................</td>
+				<td></td>
+				<td style="border: none; text-align: center;">....................</td>
+				<td></td>
+				<td style="border: none; text-align: center;">....................</td>
+				<td></td>
+				<td style="border: none; text-align: center;">....................</td>
+			</tr>
+		</table>
+
+		<br/>
+		<br/>
+	</div>
+
+</kt-portlet>

@@ -1,0 +1,173 @@
+<kt-portlet [ngClass]="{ 'kt-portlet--body-progress' : false, 'kt-portlet--body-progress-overlay' : viewLoading }">
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<span class="kt-portlet__head-icon kt-hide" style="color:#1d2129">
+				<i class="la la-gear"></i>
+			</span>
+			<h3 class="kt-portlet__head-title">
+				Filtre Düzenle
+			</h3>
+		</ng-container>
+		<ng-container ktPortletTools>
+			<div>
+				<button type="button" class="close" mat-dialog-close matTooltip="Kapat">
+					<span>&times;</span>
+				</button>
+			</div>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<div class="row">
+			<div class="col-md-5">
+				<div class="row">
+					<mat-form-field class="col-md-12">
+						<mat-select [(value)]="filterField" placeholder="Filtre Seçimi">
+							<mat-option *ngFor="let field of fields" [value]="field">{{field.title}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<mat-form-field class="col-md-12">
+						<mat-select [(value)]="filterOperator" placeholder="Operatör">
+							<mat-option value="EqualTo">
+								{{getOperatorTitle('EqualTo')}}
+							</mat-option>
+							<mat-option value="GreaterThan" *ngIf="filterField && ['object','date','time','number','currency','integer'].indexOf(filterField.fieldType) >-1">
+								({{getOperatorTitle('GreaterThan')}})
+							</mat-option>
+							<mat-option value="GreaterThanOrEqualTo" *ngIf="filterField && ['object','date','time','number','currency','integer'].indexOf(filterField.fieldType) >-1">
+								{{getOperatorTitle('GreaterThanOrEqualTo')}}
+							</mat-option>
+							<mat-option value="LessThan" *ngIf="filterField && ['object','date','time','number','currency','integer'].indexOf(filterField.fieldType) >-1">
+								{{getOperatorTitle('LessThan')}}
+							</mat-option>
+							<mat-option value="LessThanOrEqualTo" *ngIf="filterField && ['object','date','time','number','currency','integer'].indexOf(filterField.fieldType) >-1">
+								{{getOperatorTitle('LessThanOrEqualTo')}}
+							</mat-option>
+							<mat-option value="Contains" *ngIf="filterField && ['text'].indexOf(filterField.fieldType) >-1">
+								{{getOperatorTitle('Contains')}}
+							</mat-option>
+							<mat-option value="DoesNotContain" *ngIf="filterField && ['text'].indexOf(filterField.fieldType) >-1">
+								{{getOperatorTitle('DoesNotContain')}}
+							</mat-option>
+							<mat-option value="StartsWith" *ngIf="filterField && ['text'].indexOf(filterField.fieldType) >-1">
+								{{getOperatorTitle('StartsWith')}}
+							</mat-option>
+							<mat-option value="EndsWith" *ngIf="filterField && ['text'].indexOf(filterField.fieldType) >-1">
+								{{getOperatorTitle('EndsWith')}}
+							</mat-option>
+							<mat-option value="IsNullOrWhiteSpace" *ngIf="filterField && ['text'].indexOf(filterField.fieldType) >-1">
+								{{getOperatorTitle('IsNullOrWhiteSpace')}}
+							</mat-option>
+							<mat-option value="IsNotNullNorWhiteSpace" *ngIf="filterField && ['text'].indexOf(filterField.fieldType) >-1">
+								{{getOperatorTitle('IsNotNullNorWhiteSpace')}}
+							</mat-option>
+							<mat-option value="IsNull" *ngIf="filterField && ['object','date','time','number','currency','integer', 'select'].indexOf(filterField.fieldType) >-1">
+								{{getOperatorTitle('IsNull')}}
+							</mat-option>
+							<mat-option value="IsNotNull" *ngIf="filterField && ['object','date','time','number','currency','integer', 'select'].indexOf(filterField.fieldType) >-1">
+								{{getOperatorTitle('IsNotNull')}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<div *ngIf="!filterField && ['IsNullOrWhiteSpace','IsNotNullNorWhiteSpace','IsNull','IsNotNull'].indexOf(filterOperator) == -1">
+						<mat-form-field class="col-md-12">
+							<input matTextareaAutosize [(ngModel)]="filterInput" placeholder="Metin" (keyup.enter)="addFilter()" matInput>
+						</mat-form-field>
+					</div>
+					<div *ngIf="filterField && ['IsNullOrWhiteSpace','IsNotNullNorWhiteSpace','IsNull','IsNotNull'].indexOf(filterOperator) == -1" [ngSwitch]="filterField.fieldType">
+						<div *ngSwitchCase="'phone'">
+							<mat-form-field class="col-md-12">
+								<input [textMask]="{mask: phoneMask}" matTextareaAutosize [(ngModel)]="filterInput" placeholder="Metin" (keyup.enter)="addFilter()" matInput>
+							</mat-form-field>
+						</div>
+						<div *ngSwitchCase="'url'">
+							<mat-form-field class="col-md-12">
+								<input matInput placeholder="{{filterField.title}}" [(ngModel)]="filterInput" (keyup.enter)="addFilter()" pattern="^(https?://)?([a-zA-Z0-9]([a-zA-ZäöüÄÖÜ0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$" />
+							</mat-form-field>
+						</div>
+						<div *ngSwitchCase="'email'">
+							<mat-form-field class="col-md-12">
+								<input type="email" matTextareaAutosize [(ngModel)]="filterInput" placeholder="Metin" (keyup.enter)="addFilter()" matInput>
+							</mat-form-field>
+						</div>
+						<div *ngSwitchCase="'select'">
+							<mat-form-field class="col-md-12">
+								<mat-select [(value)]="filterInput" placeholder="Seçiniz">
+									<mat-option *ngFor="let option of baseService.getAttr(filterField.attributeName)?.values" [value]="option.id">{{option.label}}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+						<div *ngSwitchCase="'time'" style="margin-left:15px">
+							<mat-form-field style="width: 100px;">
+								<input matInput [matDatepicker]="picker" placeholder="{{filterField.title}}" [(ngModel)]="filterInput" (focus)="picker.open()">
+								<mat-datepicker-toggle matSuffix [for]="picker" tabIndex="-1">
+								</mat-datepicker-toggle>
+								<mat-datepicker touchUi="false" #picker>
+								</mat-datepicker>
+							</mat-form-field>
+						</div>
+						<div *ngSwitchCase="'date'" style="margin-left:15px">
+							<mat-form-field style="width: 100px;">
+								<input matInput [matDatepicker]="picker" placeholder="{{filterField.title}}" [(ngModel)]="filterInput" (focus)="picker.open()">
+								<mat-datepicker-toggle matSuffix [for]="picker" tabIndex="-1">
+								</mat-datepicker-toggle>
+								<mat-datepicker touchUi="false" #picker>
+								</mat-datepicker>
+							</mat-form-field>
+						</div>
+						<div *ngSwitchCase="'currency'" style="margin-left:15px">
+							<mat-form-field style="width: 100px;">
+								<input type="text" [textMask]="{mask: utils.currencyMask}" matInput placeholder="{{filterField.title}}" [(ngModel)]="filterInput" />
+								<mat-icon matSuffix>money</mat-icon>
+							</mat-form-field>
+						</div>
+						<div *ngSwitchCase="'object'" style="margin-left:15px">
+							<mat-form-field class="mat-form-field-fluid">
+								<input type="text" autocomplete="disabled" placeholder="{{filterField.title}}" matInput [(value)]="filterInput" [ngModel]="filterInput | objectPipe" [matAutocomplete]="auto" [disabled]="filterField.readOnly" (ngModelChange)="filterOptions(filterField, $event); filterInput = $event; fieldChange(filterField, element, $event)" (focus)="filterOptions(filterField, $event)">
+								<mat-autocomplete #auto="matAutocomplete">
+									<mat-option *ngFor="let option of filteredOptionss[filterField.name]" [value]="option">
+										{{option[filterField.displayField]}}</mat-option>
+								</mat-autocomplete>
+							</mat-form-field>
+						</div>
+						<div *ngSwitchCase="'boolean'" style="margin-left:15px">
+							<mat-checkbox [(ngModel)]="filterInput">
+							</mat-checkbox>
+						</div>
+						<div *ngSwitchDefault>
+							<mat-form-field class="col-md-12">
+								<input matTextareaAutosize [(ngModel)]="filterInput" placeholder="Metin" (keyup.enter)="addFilter()" matInput>
+							</mat-form-field>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2" style="display:flex; align-items: center; justify-content: center;margin-bottom: 10px;margin-top: 10px;">
+				<button type="button" mat-raised-button color="primary" (click)="addFilter()">Ekle >></button>
+			</div>
+			<div class="col-md-5">
+				<mat-card style="height: 100%">
+					<mat-chip-list #chipList>
+						<mat-chip *ngFor="let item of filterItems" removable (removed)="removeFilter(item)">
+							{{item.Title}}&nbsp;{{item.OperationTitle}}
+							&nbsp;{{item.ValueTitle ? item.ValueTitle : item.Value}}
+							<mat-icon matChipRemove>cancel</mat-icon>
+						</mat-chip>
+						<input [matChipInputFor]="chipList">
+					</mat-chip-list>
+					<div *ngIf="filterItems.length === 0" style="text-align:center; width: 100%;">Henüz filtre seçimi
+						yapmadınız</div>
+				</mat-card>
+			</div>
+		</div>
+	</kt-portlet-body>
+	<kt-portlet-footer>
+		<div class="kt-form__actions kt-form__actions--solid" style="padding: 18px; padding-bottom: 0px">
+			<div class="row text-right">
+				<div class="col-lg-12">
+					<button type="button" mat-raised-button (click)="onSubmit()">Tamam</button>
+				</div>
+			</div>
+		</div>
+	</kt-portlet-footer>
+</kt-portlet>

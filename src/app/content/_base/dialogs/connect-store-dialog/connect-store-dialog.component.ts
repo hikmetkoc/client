@@ -1,0 +1,124 @@
+import {ChangeDetectorRef, Component, Inject, Input, OnInit} from '@angular/core';
+import { MatBottomSheetRef, MatDialogRef, MAT_DIALOG_DATA, DateAdapter } from '@angular/material';
+import {QueryParamsModel} from "../../models/query-params.model";
+import {Utils} from "../../utils";
+import {BaseService} from "../../base.service";
+import {catchError, tap} from "rxjs/operators";
+import {HttpClient} from "@angular/common/http";
+import {HttpUtilsService} from "../../http-utils.service";
+
+@Component({
+	selector: 'kt-connect-store-dialog',
+	templateUrl: 'connect-store-dialog.component.html',
+})
+export class ConnectStoreDialogComponent implements OnInit {
+
+	@Input() current: any;
+	@Input() model: any;
+	storeList = [];
+	selectedStoreId: any;
+	paymentOrderId: any;
+	onayla: boolean;
+
+	constructor(
+		private cdr: ChangeDetectorRef,
+		public baseService: BaseService,
+		public dialogRef: MatDialogRef<any>,
+		private http: HttpClient,
+		private httpUtils: HttpUtilsService,
+		@Inject(MAT_DIALOG_DATA) public data: any,
+		private dateAdapter: DateAdapter<Date>
+	) {
+		if (data && data.model) {
+			this.model = data.model;
+		}
+		if (data && data.current) {
+			this.current = data.current;
+		}
+	}
+
+	onNoClick() {
+		this.dialogRef.close();
+	}
+
+	onYesClick() {
+		this.onayla = true;
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		console.log(this.paymentOrderId + '  -  ' + this.selectedStoreId);
+		const url = `api/payment_orders/changeStore?id=${this.paymentOrderId}&storeid=${this.selectedStoreId}`;
+		console.log(url);
+		this.http.put(url, null, { headers: httpHeaders, responseType: 'text' })
+			.subscribe(
+				(res => {
+					this.dialogRef.close();
+				}),
+				catchError(err => {
+					return err;
+				}));
+
+
+		// posta güvercini
+		/*const url2 = `http://www.postaguvercini.com/api_http/sendsms.asp?user=meteorpetrol&password=meteorpetrol1&gsm=5442458391&text=DENEME`;
+		this.http.get(url2, {headers: httpHeaders})
+			.subscribe(
+				(res => {
+					console.log(res);
+					this.dialogRef.close();
+				}),
+				catchError(err => {
+					return err;
+				}));*/
+	}
+
+	ngOnInit() {
+		this.model = this.data.model;
+		this.current = this.data.current;
+		this.getStoreValues();
+		this.lookPaymentOrderId();
+		this.onayla = false;
+	}
+
+	lookPaymentOrderId() {
+		const filters = new Set();
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
+			0,
+			500
+		);
+		filters.add({
+			name: 'invoiceNum',
+			operator: 'EQUALS',
+			value: this.current.invoiceNum
+		});
+		this.baseService.find(queryParams, 'payment_orders').subscribe(
+			res => {
+
+				for (const hld of res.body) {
+					if (hld.invoiceNum !== this.current.invoiceNum) {continue; }
+					this.paymentOrderId = hld.id;
+				}
+				this.cdr.markForCheck();
+
+			},
+			error => {
+			}
+		);
+	}
+
+
+	getStoreValues() {
+		const filters = new Set();
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{ sortBy: 'stcode', sortOrder: 'ASC' }],
+			0,
+			100
+		);
+		this.baseService.find(queryParams, 'stores').subscribe(res => {
+			this.storeList = res.body.filter(hld => hld.stcode !== 'PRIM');
+			this.cdr.markForCheck();
+		});
+	}
+
+}

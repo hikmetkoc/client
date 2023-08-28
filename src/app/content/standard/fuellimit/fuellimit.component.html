@@ -1,0 +1,26 @@
+<kt-grid #mainGrid [entity]="model.name" owner="HIERARCHY_D" showButtons="true" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current || isCalendar || !utils.hasOperation('YakitLimit_Goruntuleme')"></kt-grid>
+<ng-container *ngIf="current">
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<button mat-icon-button mat-button matTooltip="Geri dön" (click)="resetCurrent()" class="kt-margin-r-5">
+					<mat-icon>keyboard_arrow_left</mat-icon>
+				</button>
+				<h3 class="kt-portlet__head-title">
+					<span>Ek Limit Detayı</span>
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<div class="page-header-buttons">
+					<kt-filemanager [(current)]="current" [model]="model"></kt-filemanager>
+					<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Yeni Ek Limit Talebi Oluştur" (click)="mainGrid.add(current)">
+						<mat-icon>add_box</mat-icon>
+					</button>
+				</div>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-detail [(current)]="current" [model]="model" naked="true"></kt-detail>
+		</kt-portlet-body>
+	</kt-portlet>
+</ng-container>

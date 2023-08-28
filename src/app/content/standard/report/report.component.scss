@@ -1,0 +1,43 @@
+kt-report {
+	.mat-drawer-content {
+		overflow: unset !important;
+	}
+
+	.second-sidenav-container {
+		min-height: 800px;
+	}
+
+	.nav-tabs {
+		padding: 0px 10px 0px 10px;
+		margin: unset;
+	}
+
+	.drawer-container {
+		min-height: 600px;
+	}
+
+	.mat-chip {
+		justify-content: space-between;
+		cursor: pointer !important;
+		font-size: 13px !important;
+		font-weight: 500 !important;
+	}
+
+	.mat-standard-chip {
+		min-height: 30px !important;
+	}
+
+	.popover-body {
+		padding-bottom: 0px !important;
+	}
+
+	.mat-icon-button {
+		width: 30px !important;
+		height: 30px !important;
+		line-height: unset !important;
+	}
+}
+
+.cdk-overlay-container {
+	z-index: 99999 !important;
+}

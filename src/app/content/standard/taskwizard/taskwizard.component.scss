@@ -1,0 +1,47 @@
+kt-taskwizard {
+	.mat-column-hour {
+		flex: 0 0 80px;
+	}
+
+	textarea.mat-input-element {
+		padding: unset;
+	}
+
+	mat-table {
+		min-width: 1000px;
+	}
+
+	.calendar-table-container {
+		width: 100%;
+		height: unset;
+		overflow: auto;
+	}
+
+	.mat-form-field-infix {
+		width: unset;
+		padding: unset;
+	}
+
+	.mat-form-field-wrapper {
+		padding-bottom: unset;
+	}
+
+	.mat-form-field-appearance-legacy .mat-form-field-infix {
+		padding: unset;
+	}
+
+	.mat-icon-button {
+		width: 30px !important;
+		height: 30px !important;
+		line-height: unset !important;
+	}
+
+	.mat-table-sticky:first-child, .mat-column-d1, .mat-column-d2, .mat-column-d3, .mat-column-d4, .mat-column-d5, .mat-column-d6, .mat-column-d7 {
+		border-right: 1px solid #e0e0e0;
+	}
+
+	.mat-cell, .mat-header-cell {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+}

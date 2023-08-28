@@ -1,0 +1,180 @@
+<!--begin: Quick actions -->
+<div ngbDropdown placement="bottom-right" class="kt-header__topbar-item">
+	<div ngbDropdownToggle class="kt-header__topbar-wrapper" matTooltip="Yönetimsel Araçlar">
+		<span class="kt-header__topbar-icon" [ngClass]="{ 'kt-header__topbar-icon--warning': iconType === 'warning' }">
+			<i *ngIf="!useSVG" [ngClass]="icon"></i>
+			<span *ngIf="useSVG" class="kt-svg-icon" [inlineSVG]="icon" [ngClass]="{ 'kt-svg-icon--warning': iconType === 'warning' }"></span>
+		</span>
+	</div>
+	<div ngbDropdownMenu class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl">
+		<form>
+
+			<div class="kt-head kt-head--skin-{{skin}}" [ngStyle]="{'background-image': 'url('+bgImage+')'}">
+				<h3 class="kt-head__title">
+					Yönetimsel Araçlar
+				</h3>
+			</div>
+
+			<div style="padding-top:10px;" class="kt-notification">
+				<a ngbDropdownItem routerLink="/admin/team" href="javascript:;" class="kt-notification__item">
+					<div class="kt-notification__item-icon">
+						<i class="fa fa-users kt-font-success"></i>
+					</div>
+					<div class="kt-notification__item-details">
+						<div class="kt-notification__item-title kt-font-bold">
+							Ekip
+						</div>
+						<div class="kt-notification__item-time">
+							Kişi bazında inceleme
+						</div>
+					</div>
+				</a>
+				<a ngbDropdownItem routerLink="/admin/limit" href="javascript:;" class="kt-notification__item">
+					<div class="kt-notification__item-icon">
+						<i class="fa fa-shopping-cart kt-font-success"></i> <!-- Burada shopping-cart iconu eklenmiştir -->
+					</div>
+					<div class="kt-notification__item-details">
+						<div class="kt-notification__item-title kt-font-bold">
+							Satın Alma Onay ve Limitleri
+						</div>
+						<div class="kt-notification__item-time">
+							Ekleme, düzenleme, silme
+						</div>
+					</div>
+				</a>
+				<!--<a ngbDropdownItem routerLink="/admin/target" href="javascript:;" class="kt-notification__item">
+					<div class="kt-notification__item-icon">
+						<i class="fa fa-crosshairs kt-font-success"></i>
+					</div>
+					<div class="kt-notification__item-details">
+						<div class="kt-notification__item-title kt-font-bold">
+							Hedefler
+						</div>
+						<div class="kt-notification__item-time">
+							Ekleme, düzenleme, silme
+						</div>
+					</div>
+				</a>-->
+				<a ngbDropdownItem routerLink="/admin/holmanager" href="javascript:;" class="kt-notification__item">
+					<div class="kt-notification__item-icon">
+						<i class="fa fa-lock kt-font-success"></i> <!-- Burada lock iconu eklenmiştir -->
+					</div>
+					<div class="kt-notification__item-details">
+						<div class="kt-notification__item-title kt-font-bold">
+							İzin Yetkileri
+						</div>
+						<div class="kt-notification__item-time">
+							Ekleme, düzenleme, aktif-pasif
+						</div>
+					</div>
+				</a>
+				<a ngbDropdownItem routerLink="/admin/userpermission" href="javascript:;" class="kt-notification__item">
+					<div class="kt-notification__item-icon">
+						<i class="fa fa-key kt-font-success"></i>
+					</div>
+					<div class="kt-notification__item-details">
+						<div class="kt-notification__item-title kt-font-bold">
+							Personel Yetkileri
+						</div>
+						<div class="kt-notification__item-time">
+							Ekleme, düzenleme, aktif-pasif
+						</div>
+					</div>
+				</a>
+				<a ngbDropdownItem routerLink="/admin/vocationday" href="javascript:;" class="kt-notification__item">
+					<div class="kt-notification__item-icon">
+						<i class="fa fa-swimming-pool kt-font-success"></i>
+					</div>
+					<div class="kt-notification__item-details">
+						<div class="kt-notification__item-title kt-font-bold">
+							Tatil Günleri
+						</div>
+						<div class="kt-notification__item-time">
+							Ekleme, düzenleme, aktif-pasif
+						</div>
+					</div>
+				</a>
+				<a ngbDropdownItem routerLink="/admin/announcement" href="javascript:;" class="kt-notification__item">
+					<div class="kt-notification__item-icon">
+						<i class="fa fa-bullhorn kt-font-success"></i>
+					</div>
+					<div class="kt-notification__item-details">
+						<div class="kt-notification__item-title kt-font-bold">
+							Duyurular
+						</div>
+						<div class="kt-notification__item-time">
+							Ekleme, düzenleme, aktif-pasif
+						</div>
+					</div>
+				</a>
+				<a ngbDropdownItem routerLink="/admin/user" href="javascript:;" class="kt-notification__item">
+					<div class="kt-notification__item-icon">
+						<i class="fa fa-user-friends kt-font-warning"></i>
+					</div>
+					<div class="kt-notification__item-details">
+						<div class="kt-notification__item-title kt-font-bold">
+							Kullanıcılar
+						</div>
+						<div class="kt-notification__item-time">
+							Ekleme, düzenleme, hiyerarşi
+						</div>
+					</div>
+				</a>
+				<!-- <a ngbDropdownItem routerLink="/admin/role" href="javascript:;" class="kt-notification__item">
+					<div class="kt-notification__item-icon">
+						<i class="fa fa-theater-masks kt-font-warning"></i>
+					</div>
+					<div class="kt-notification__item-details">
+						<div class="kt-notification__item-title kt-font-bold">
+							Roller
+						</div>
+						<div class="kt-notification__item-time">
+							Ekleme, düzenleme, yetkilendirme
+						</div>
+					</div>
+				</a> -->
+				<!-- <a ngbDropdownItem routerLink="/admin/attribute" href="javascript:;" class="kt-notification__item">
+					<div class="kt-notification__item-icon">
+						<i class="fa fa-diagnoses kt-font-warning"></i>
+					</div>
+					<div class="kt-notification__item-details">
+						<div class="kt-notification__item-title kt-font-bold">
+							Değişkenler
+						</div>
+						<div class="kt-notification__item-time">
+							Ekleme, düzenleme, silme
+						</div>
+					</div>
+				</a> -->
+				<a ngbDropdownItem routerLink="/admin/parameter" href="javascript:;" class="kt-notification__item">
+					<div class="kt-notification__item-icon">
+						<i class="fa fa-key kt-font-warning"></i>
+					</div>
+					<div class="kt-notification__item-details">
+						<div class="kt-notification__item-title kt-font-bold">
+							Parametreler
+						</div>
+						<div class="kt-notification__item-time">
+							Görüntüleme
+						</div>
+					</div>
+				</a>
+				<!-- <a ngbDropdownItem routerLink="/admin/queryscheduler" href="javascript:;" class="kt-notification__item">
+					<div class="kt-notification__item-icon">
+						<i class="fa fa-bomb kt-font-danger"></i>
+					</div>
+					<div class="kt-notification__item-details">
+						<div class="kt-notification__item-title kt-font-bold">
+							Sorgu Zamanlayıcı
+						</div>
+						<div class="kt-notification__item-time">
+							Ekleme, düzenleme, silme
+						</div>
+					</div>
+				</a> -->
+			</div>
+
+		</form>
+	</div>
+</div>
+<!--end: Quick actions -->

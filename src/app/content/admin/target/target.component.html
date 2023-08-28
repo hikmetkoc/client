@@ -1,0 +1,46 @@
+<kt-portlet [options]="{headLarge: true}">
+	<kt-portlet-header [class]="'kt-portlet__head--lg'">
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title">
+				Hedefler
+			</h3>
+		</ng-container>
+
+		<ng-container ktPortletTools>
+			<button type="button" class="btn btn-label-brand kt-margin-l-10" mat-icon-button matTooltip="Hedef Raporu" (click)="getReport()">
+				<mat-icon>cloud_download</mat-icon>
+			</button>
+			<button type="button" class="btn btn-label-brand kt-margin-l-10" mat-icon-button matTooltip="Hedefleri Kaydet" (click)="saveTargets()">
+				<mat-icon>save</mat-icon>
+			</button>
+		</ng-container>
+	</kt-portlet-header>
+
+	<kt-portlet-body>
+		<mat-table [dataSource]="users" *ngIf="users.length > 0">
+			<ng-container matColumnDef="user" sticky>
+				<mat-header-cell *matHeaderCellDef>
+					<mat-select style="width: 50px" [(value)]="year" placeholder="Dönem" (selectionChange)="getTargets()">
+						<mat-option *ngFor="let yea of years" [value]="yea">{{yea}}</mat-option>
+					</mat-select>
+				</mat-header-cell>
+				<mat-cell *matCellDef="let row"> {{row.instanceName}} </mat-cell>
+			</ng-container>
+			<ng-container *ngFor="let m of months">
+				<ng-container matColumnDef="{{m.name}}">
+					<mat-header-cell *matHeaderCellDef>{{m.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">
+						<mat-form-field floatLabel="never">
+							<input type="text" [textMask]="{mask: utils.integerMask, guide: false, modelClean: true}" matInput placeholder="{{m.title}}" [(ngModel)]="data[row.id][m.name]['amount']" />
+						</mat-form-field>
+					</mat-cell>
+				</ng-container>
+			</ng-container>
+			<mat-header-row *matHeaderRowDef="['user', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8', 'm9', 'm10', 'm11', 'm12']">
+			</mat-header-row>
+			<mat-row [ngClass]="{gray: even}" *matRowDef="let row; let even = even; columns: ['user', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8', 'm9', 'm10', 'm11', 'm12'];">
+			</mat-row>
+		</mat-table>
+	</kt-portlet-body>
+
+</kt-portlet>

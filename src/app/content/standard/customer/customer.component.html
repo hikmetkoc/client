@@ -1,0 +1,470 @@
+<kt-grid #mainGrid [entity]="model.name" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current || isMap || !utils.hasOperation('Tedarikci_Goruntuleme')"></kt-grid>
+
+<input hidden #uploadBulkExcelInput class="kt-margin-top-20" type="file" (change)="uploadBulkExcel($event)" placeholder="Upload file" accept=".xls,.xlsx">
+
+<kt-portlet [hidden]="!isMap">
+	<kt-portlet-header [class]="'kt-portlet__head--lg'">
+		<ng-container ktPortletTitle>
+			<button mat-icon-button mat-button matTooltip="Geri dön" (click)="launchMap()" class="kt-margin-r-5">
+				<mat-icon>keyboard_arrow_left</mat-icon>
+			</button>
+			<h3 class="kt-portlet__head-title">
+				<span>Harita</span>
+			</h3>
+		</ng-container>
+
+		<ng-container ktPortletTools>
+		</ng-container>
+	</kt-portlet-header>
+
+	<kt-portlet-body>
+		<div class="map" id="nearestCustomersMap">
+		</div>
+	</kt-portlet-body>
+</kt-portlet>
+
+<ng-container *ngIf="current">
+	<kt-portlet>
+		<kt-portlet-header [class]="'kt-portlet__head--lg'">
+			<ng-container ktPortletTitle>
+				<button *ngIf="utils.hasOperation('Tedarikci_Goruntuleme')" mat-icon-button mat-button matTooltip="Geri dön" (click)="resetCurrent()" class="kt-margin-r-5">
+					<mat-icon>keyboard_arrow_left</mat-icon>
+				</button>
+				<h3 class="kt-portlet__head-title">
+					<span>Tedarikçi Detayı <span style="color: #999999">&nbsp;({{current.instanceName}})</span></span>
+				</h3>
+			</ng-container>
+
+			<ng-container ktPortletTools>
+
+				<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Düzenle" (click)="mainGrid.edit(current)">
+					<mat-icon>create</mat-icon>
+				</button>
+
+				<button *ngIf="baseService.getPermissionRule(model.name,'delete')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="warn" matTooltip="Sil" (click)="delete(current)">
+					<mat-icon>delete</mat-icon>
+				</button>
+
+				<!-- <button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Müşteri 360 Özeti" (click)="showSummary(summaryModal)">
+					<mat-icon>print</mat-icon>
+				</button> -->
+
+				<kt-filemanager [(current)]="current" [model]="model"></kt-filemanager>
+
+				<!--<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Değerlendirme Anketi" (click)="showSurvey(surveyModal)">
+					<mat-icon>thumbs_up_down</mat-icon>
+				</button> -->
+
+				<!-- <kt-history [(current)]="current" [model]="model"></kt-history> -->
+
+				<!-- <kt-viewhistory [(current)]="current" [model]="model"></kt-viewhistory> -->
+			</ng-container>
+		</kt-portlet-header>
+
+		<kt-portlet-body>
+			<kt-detail [(current)]="current" [model]="model" naked="true"></kt-detail>
+		</kt-portlet-body>
+	</kt-portlet>
+
+	<kt-portlet [class]="'kt-portlet--height-fluid'">
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Güncel İletişim Bilgileri
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<div>
+					<!--<mat-select style="width: 50px;" placeholder="Yıl" [(ngModel)]="chartYear" (ngModelChange)="getSalesData()">
+						<mat-option [value]="2022">2022</mat-option>
+						<mat-option [value]="2021">2021</mat-option>
+						<mat-option [value]="2020">2020</mat-option>
+						<mat-option [value]="2019">2019</mat-option>
+						<mat-option [value]="2018">2018</mat-option>
+						<mat-option [value]="2017">2017</mat-option>
+					</mat-select>-->
+				</div>
+			</ng-container>
+		</kt-portlet-header>
+		<!--<kt-portlet-body>
+			<kt-sales-widget [data]="" #salesWidget></kt-sales-widget>
+		</kt-portlet-body> -->
+	</kt-portlet>
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Adresler
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="addressGrid.add()" mat-raised-button matTooltip="Yeni adres oluştur" type="button">
+					Yeni Adres
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #addressGrid entity="Address" [showButtons]="true" mode="Compact" [extraButtons]="addressExtraButtons" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="addressRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Kişiler
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="contactGrid.add()" mat-raised-button matTooltip="Yeni kişi oluştur" type="button">
+					Yeni Kişi
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #contactGrid entity="Contact" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="contactRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Ibanlar
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="ibanGrid.add()" mat-raised-button matTooltip="Yeni iban oluştur" type="button">
+					Yeni Iban
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #ibanGrid entity="Iban" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="ibanRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+
+	<!--<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Sorumlular
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="responsibleGrid.add()" mat-raised-button matTooltip="Yeni sorumlu oluştur" type="button">
+					Yeni Tedarikçi Sorumlusu
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #responsibleGrid entity="Responsible" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="responsibleRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet> -->
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Görevler
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="customtaskGrid.add()" mat-raised-button matTooltip="Yeni görev oluştur" type="button">
+					Yeni Görev
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #customtaskGrid entity="CustomTask" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="taskRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Tedarikçi Teklifleri
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="offerGrid.add()" mat-raised-button matTooltip="Yeni teklif oluştur" type="button">
+					Yeni Tedarikçi Teklifi
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #offerGrid entity="Offer" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="offerRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Teklifler
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="buyGrid.add()" mat-raised-button matTooltip="Yeni Teklif Oluştur" type="button" [disabled]="true">
+					Yeni Teklif
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #buyGrid entity="Buy" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="buyRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Faturalar
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="invoiceListGrid.add()" mat-raised-button matTooltip="" type="button" [disabled]="true">
+
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #invoiceListGrid entity="InvoiceList" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+</ng-container>
+
+<ng-template #surveyModal let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h4 class="modal-title">Müşteri Değerlendirme Anketi</h4>
+		<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<!-- <ng-container *ngIf="customerSurvey">
+		<div class="kt-portlet">
+			<div class="m-portlet__body">
+				Oluşturan: {{customerSurvey?.owner?.fullName}} <br />
+				Oluşturma Tarihi: {{customerSurvey?.creationTime | date:'medium'}} <br />
+				Düzenleyen: {{customerSurvey?.lastModificationUser.fullName}} <br />
+				Düzenleme Tarihi: {{customerSurvey?.lastModificationTime | date:'medium'}}
+			</div>
+		</div>
+	</ng-container> -->
+		<ng-container *ngFor="let question of surveyQuestions">
+			<kt-portlet>
+				<kt-portlet-header class="kt-padding-l-15 kt-padding-t-15 kt-padding-b-5" style="min-height: unset;">
+					<ng-container ktPortletTitle>
+						<h3 class="kt-portlet__head-title">
+							<span class="m-portlet__head-icon kt-hide">
+								<i class="la la-gear"></i>
+							</span>
+							<h5 class="m-portlet__head-text">
+								{{question.surveyQuestion.name}} {{question.isRequisite ? ' *' : ''}}
+							</h5>
+							<span *ngIf="question.isRequisite && surveySaveIsDirty" class="kt-text-pttred">&nbsp;&nbsp;Cevap seçimi zorunludur</span>
+						</h3>
+					</ng-container>
+					<ng-container ktPortletTools>
+					</ng-container>
+				</kt-portlet-header>
+				<kt-portlet-body class="kt-padding-10">
+					<mat-radio-group class="example-radio-group" [(ngModel)]="question.customerSurveyAnswer">
+						<mat-radio-button class="example-radio-button" *ngFor="let answer of question.surveyAnswers" [value]="answer">
+							{{answer.name}}
+						</mat-radio-button>
+					</mat-radio-group>
+				</kt-portlet-body>
+			</kt-portlet>
+		</ng-container>
+	</div>
+	<div class="modal-footer">
+		<!-- <button (click)="resetSurvey()" mat-raised-button matTooltip="Anketi Sıfırla" type="button">
+			Anketi Sıfırla
+		</button> -->
+		<button (click)="saveSurvey()" mat-raised-button matTooltip="Müşteri değerlendirme anketini kaydet" color="primary" type="button">
+			<i class="la la-save" style="margin-top:-2px;"></i>&nbsp;Kaydet
+		</button>
+	</div>
+</ng-template>
+
+<ng-template #summaryModal let-c="close" let-d="dismiss">
+	<div id="print-section">
+		<div class="modal-header">
+			<h4 class="modal-title">Müşteri 360 Özeti</h4>
+			<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<table *ngIf="summary" width="100%" cellpadding="5">
+				<tr>
+					<th colspan="4" style="text-align: center; background: #DDD">Tedarikçi Bilgileri</th>
+				</tr>
+				<tr>
+					<td>Tedarikçi Adı</td>
+					<th>{{ summary.customer.name }}</th>
+					<td>Tedarikçi No</td>
+					<th>{{ summary.customer.pttCustomerId }}</th>
+				</tr>
+				<tr>
+					<td>Durum</td>
+					<th>{{ baseService.getAttrVal(summary.customer.statusId)?.label }}</th>
+					<td>İl</td>
+					<th>{{ summary.customer.city?.name }}</th>
+				</tr>
+				<tr>
+					<td>İlçe</td>
+					<th>{{ summary.customer.county?.name }}</th>
+					<td>Tip</td>
+					<th>{{ baseService.getAttrVal(summary.customer.typeId)?.label }}</th>
+				</tr>
+				<tr>
+					<td>Segment</td>
+					<th>{{ baseService.getAttrVal(summary.customer.segmentId)?.label }}</th>
+					<td>Açılış Zamanı</td>
+					<th>{{ summary.customer.openDate | date:'medium' }}</th>
+				</tr>
+				<tr>
+					<td>E-posta</td>
+					<th>{{ summary.customer.email }}</th>
+					<td>Telefon</td>
+					<th>{{ summary.customer.phone }}</th>
+				</tr>
+				<tr>
+					<td>Vergi No</td>
+					<th>{{ summary.customer.taxNumber }}</th>
+					<td>TC No</td>
+					<th>{{ summary.customer.tcNo }}</th>
+				</tr>
+				<tr>
+					<td>Faks</td>
+					<th>{{ summary.customer.fax }}</th>
+					<td>Web Sitesi</td>
+					<th>{{ summary.customer.webSite }}</th>
+				</tr>
+				<tr>
+					<td>Çalışan Sayısı</td>
+					<th>{{ summary.customer.numberOfEmployees }}</th>
+					<td>Sektör</td>
+					<th>{{ baseService.getAttrVal(summary.customer.industryId)?.label }}</th>
+				</tr>
+				<tr>
+					<td>Adres</td>
+					<th>{{ summary.customer.address }}</th>
+					<td>Anket Sonucu</td>
+					<th>{{ baseService.getAttrVal(summary.customer.scoringResultId)?.label }}</th>
+				</tr>
+				<tr>
+					<th colspan="4" style="text-align: center; background: #DDD">Birincil Kişi</th>
+				</tr>
+				<tr>
+					<td>Ad</td>
+					<th>{{ summary.contact?.firstName }}</th>
+					<td>Soyad</td>
+					<th>{{ summary.contact?.lastName }}</th>
+				</tr>
+				<tr>
+					<td>Telefon</td>
+					<th>{{ summary.contact?.phone }}</th>
+					<td>E-posta</td>
+					<th>{{ summary.contact?.email }}</th>
+				</tr>
+				<tr>
+					<th colspan="4" style="text-align: center; background: #DDD">Sözleşme Bilgileri</th>
+				</tr>
+				<tr>
+					<td>Tarife Tipi</td>
+					<th>{{ summary.contract?.contractType }}</th>
+					<td>Tarife Adı</td>
+					<th>{{ summary.customer?.contractName }}</th>
+				</tr>
+				<tr>
+					<td>Tarife No</td>
+					<th>{{ summary.contract?.contractNo }}</th>
+					<td>Ödeme Şekli</td>
+					<th>{{ summary.customer?.paymentType }}</th>
+				</tr>
+				<tr>
+					<td>Tarife Başlangıç Tarihi</td>
+					<th>{{ summary.contract?.contractStartDate }}</th>
+					<td>Tarife Bitiş Tarihi</td>
+					<th>{{ summary.customer?.contractEndDate }}</th>
+				</tr>
+				<tr>
+					<td>Taahhüt Adedi</td>
+					<th>{{ summary.contract?.undertakingCount }}</th>
+					<td>Taahhüt Periyodu</td>
+					<th>{{ summary.customer?.undertakingPeriod }}</th>
+				</tr>
+				<tr>
+					<td>Taahhüt Ciro Tutarı</td>
+					<th>{{ summary.contract?.undertakingTurnoverAmount }}</th>
+					<td>Taahhüt Ciro Periyodu</td>
+					<th>{{ summary.customer?.undertakingTurnoverPeriod }}</th>
+				</tr>
+				<tr>
+					<th colspan="4" style="text-align: center; background: #DDD">Gönderiler</th>
+				</tr>
+				<tr>
+					<td>Gönderi Adedi</td>
+					<th>{{ summary.shipmentCount }}</th>
+					<td>Gönderi Tutarı</td>
+					<th>{{ summary.shipmentTotalPrice }}</th>
+				</tr>
+				<tr>
+					<td colspan="4" style="padding: unset">
+						<table *ngIf="summary" width="100%">
+							<tr>
+								<td style="padding: unset">
+									<table *ngIf="summary" width="100%" cellpadding="5">
+										<tr>
+											<th colspan="2" style="text-align: center; background: #DDD">Aktiviteler
+											</th>
+										</tr>
+										<tr *ngFor="let activity of summary.activity">
+											<td>{{ activity.status }}</td>
+											<th>{{ activity.count }}</th>
+										</tr>
+									</table>
+								</td>
+								<td style="padding: unset">
+									<table *ngIf="summary" width="100%" cellpadding="5">
+										<tr>
+											<th colspan="2" style="text-align: center; background: #DDD">Fırsatlar
+											</th>
+										</tr>
+										<tr *ngFor="let opportunity of summary.opportunities">
+											<td>{{ opportunity.stage }}</td>
+											<th>{{ opportunity.count }}</th>
+										</tr>
+									</table>
+								</td>
+								<td style="padding: unset">
+									<table *ngIf="summary" width="100%" cellpadding="5">
+										<tr>
+											<th colspan="2" style="text-align: center; background: #DDD">Teklifler
+											</th>
+										</tr>
+										<tr *ngFor="let quote of summary.quote">
+											<td>{{ quote.status }}</td>
+											<th>{{ quote.count }}</th>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button (click)="print360()" mat-raised-button matTooltip="Yazdır" color="primary" type="button">
+			Yazdır
+		</button>
+	</div>
+</ng-template>

@@ -1,0 +1,28 @@
+<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Görüntüleme Geçmişi" (click)="showFiles(filesModal)">
+	<mat-icon>visibility</mat-icon>
+</button>
+
+<ng-template #filesModal let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h4 class="modal-title">Görüntüleme Geçmişi</h4>
+		<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<mat-table [dataSource]="logs">
+			<ng-container matColumnDef="loggingDate">
+				<mat-header-cell *matHeaderCellDef>Görüntüleme Zamanı</mat-header-cell>
+				<mat-cell *matCellDef="let row"> {{row.loggingDate | date:'medium'}} </mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="user">
+				<mat-header-cell *matHeaderCellDef>Görüntüleyen</mat-header-cell>
+				<mat-cell *matCellDef="let row"> {{row.user.fullName}} </mat-cell>
+			</ng-container>
+			<mat-header-row *matHeaderRowDef="['loggingDate', 'user']">
+			</mat-header-row>
+			<mat-row [ngClass]="{gray: even}" *matRowDef="let row; let even = even; columns: ['loggingDate', 'user'];">
+			</mat-row>
+		</mat-table>
+	</div>
+</ng-template>

@@ -1,0 +1,43 @@
+<kt-grid #mainGrid [entity]="model.name" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current"></kt-grid>
+
+<kt-portlet *ngIf="current">
+	<kt-detail [(current)]="current" [model]="model" (editClick)="mainGrid.edit($event)" (resetCurrent)="resetCurrent()" [buttons]="detailButtons"></kt-detail>
+
+	<div class="m-separator kt-space-10"></div>
+	<div class="row">
+		<div class="col-lg-12">
+			<kt-lineitems [parentModel]="model" [parentId]="current.id" objectName="AttributeValue">
+			</kt-lineitems>
+		</div>
+	</div>
+<!--
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title">
+				<button style="margin-right: 10px" mat-icon-button mat-button matTooltip="Geri dön" (click)="resetCurrent()">
+					<mat-icon>keyboard_arrow_left</mat-icon>
+				</button>
+				<span>Değişken Detayı</span>
+			</h3>
+		</ng-container>
+		<ng-container ktPortletTools>
+			<div>
+				<kt-filemanager [(current)]="current" [model]="model"></kt-filemanager>
+				<button style="margin-right: 5px;" (click)="save()" mat-raised-button matTooltip="Kaydet" color="primary" type="button">
+					<mat-icon>save</mat-icon> Kaydet
+				</button>
+			</div>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<kt-detail [(current)]="current" [model]="model" naked="true"></kt-detail>
+
+		<div class="m-separator kt-space-10"></div>
+		<div class="row">
+			<div class="col-lg-12">
+				<kt-lineitems [parentModel]="model" [parentId]="current.id" objectName="AttributeValue">
+				</kt-lineitems>
+			</div>
+		</div>
+	</kt-portlet-body> -->
+</kt-portlet>

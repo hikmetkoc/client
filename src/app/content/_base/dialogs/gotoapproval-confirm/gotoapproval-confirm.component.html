@@ -1,0 +1,12 @@
+<div style="margin: 15px" class="kt-font-danger">Onayınızı bekleyen aktiviteler var</div>
+<mat-nav-list>
+  <a mat-list-item (click)="doAction($event, true)">
+    <span mat-line>Git</span>
+    <span mat-line>Onay sayfasına git</span>
+  </a>
+
+  <a mat-list-item (click)="doAction($event, false)">
+    <span mat-line>Vazgeç</span>
+    <span mat-line>Daha sonra bakacağım</span>
+  </a>
+</mat-nav-list>

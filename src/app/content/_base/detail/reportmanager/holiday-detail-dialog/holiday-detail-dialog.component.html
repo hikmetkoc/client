@@ -1,0 +1,98 @@
+<kt-portlet>
+
+		<div class="modal-header">
+			<h4 class="modal-title">İzin Bilgileri Detayı</h4>
+			<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Yazdır" (click)="showFiles()">
+				<mat-icon>print</mat-icon>
+			</button>
+		</div>
+	<div id="print-section">
+		<div class="modal-body">
+			<table class="table table-striped" style="text-align: center; width: 100%; table-layout: fixed;">
+				<style>
+					table tr td,
+					table tr th {
+						vertical-align: middle;
+					}
+				</style>
+				<tr>
+					<th>Personel Adı Soyadı</th>
+					<th>İşe Başlangıç Tarihi</th>
+					<th>Doğum Tarihi</th>
+					<th>Yıllık İzin Hakediş Tarihi</th>
+				</tr>
+				<tr>
+					<td>{{this.usersHoliday[0].adsoyad ? this.usersHoliday[0].adsoyad : ' '}}</td>
+					<td>{{formatDate(this.usersHoliday[0].baslangic) || ' '}}</td>
+					<td>{{formatDate(this.usersHoliday[0].dogtar) || ' '}}</td>
+					<td>{{formatDate(this.usersHoliday[0].yilhak) || ' '}}</td>
+				</tr>
+				<tr>
+					<th colspan="4">Geçmiş Dönemlerde İzin Bilgileri</th>
+				</tr>
+				<tr>
+					<td>Geçmiş Dönemlerde Hakedilmiş Yıllık İzin</td>
+					<td>Geçmiş Dönemlerde Kullanılan Yıllık İzin</td>
+					<td colspan="2">Geçmiş Dönemden Devreden Yıllık İzin</td>
+				</tr>
+				<tr>
+					<td>{{this.usersHoliday[0].tophak ? this.usersHoliday[0].tophak : '0'}}</td>
+					<td>{{this.usersHoliday[0].topkul ? this.usersHoliday[0].topkul : '0'}}</td>
+					<td colspan="2">{{this.usersHoliday[0].yildevir ? this.usersHoliday[0].yildevir : '0'}}</td>
+				</tr>
+				<tr>
+					<th colspan="4">Bu Dönem İzin Bilgileri</th>
+				</tr>
+				<tr>
+					<td>Bu Dönem Hakedilmiş Yıllık İzin</td>
+					<td>Toplam Kullanılabilir Yıllık İzin</td>
+					<td>Dönem içi Kullanılan Yıllık İzin</td>
+					<td>Kalan Yıllık İzin</td>
+				</tr>
+				<tr>
+					<td>{{this.usersHoliday[0].yilgun ? this.usersHoliday[0].yilgun : '0'}}</td>
+					<td>{{this.usersHoliday[0].topyil ? this.usersHoliday[0].topyil : '0'}}</td>
+					<td>{{this.usersHoliday[0].kulyil ? this.usersHoliday[0].kulyil : '0'}}</td>
+					<td>{{this.usersHoliday[0].kalyil ? this.usersHoliday[0].kalyil : '0'}}</td>
+				</tr>
+				<!--<tr>
+					<th colspan="4">Mazeret İzin Bilgileri</th>
+				</tr>
+				<tr>
+					<td>Toplam Kullanılan Mazeret İzni</td>
+					<td>Kullanılan Mazeret İzni</td>
+					<td colspan="2">Kalan Mazeret İzni</td>
+				</tr>
+				<tr>
+					<td>{{usersHoliday[0].topkulmaz ? usersHoliday[0].topkulmaz : '0'}}</td>
+					<td>{{usersHoliday[0].kulmaz ? usersHoliday[0].kulmaz : '0'}}</td>
+					<td colspan="2">{{usersHoliday[0].kalmaz ? usersHoliday[0].kalmaz : '0'}}</td>
+				</tr> -->
+			</table>
+			<br/>
+			<h4>Yukarıda belirtilen kalan izin günümün doğru olduğunu ve listede yer alan tüm izinleri kullandığımı kabul vetaahhüt ediyorum.
+			<br/>
+				<br/>
+				<br/>
+			<table>
+				<tr>
+					<td>Ad Soyad:</td>
+					<td>{{this.usersHoliday[0].adsoyad ? this.usersHoliday[0].adsoyad : ' '}}</td>
+				</tr>
+				<tr>
+					<td>Adres:</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>İmza:</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Tarih:</td>
+					<td></td>
+				</tr>
+			</table></h4>
+		</div>
+	</div>
+
+</kt-portlet>

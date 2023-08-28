@@ -1,0 +1,39 @@
+kt-objecttree {
+	.main-tree-invisible {
+		display: none;
+	}
+
+	.main-tree ul,
+	.main-tree li {
+		margin-top: 0;
+		margin-bottom: 0;
+		list-style-type: none;
+	}
+
+	ul {
+		padding-inline-start: 15px;
+	}
+
+	.mat-tree-node,
+	.mat-nested-tree-node {
+		font-weight: 400;
+		font-size: 1rem;
+		font-family: Poppins;
+		min-height: unset !important;
+		cursor: pointer;
+	}
+
+	.mat-nested-tree-node .mat-icon-button {
+		width: 25px !important;
+		height: 25px !important;
+		margin-left: -5px;
+		margin-right: 0px;
+	}
+
+	.mat-tree-node .mat-icon-button {
+		width: 25px !important;
+		height: 25px !important;
+		margin-left: -5px;
+		margin-right: 0px;
+	}
+}

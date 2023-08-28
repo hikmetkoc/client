@@ -1,0 +1,14 @@
+.birthday-table{
+	width: 100%;
+	border-collapse: collapse;
+	text-align: center;
+	&,
+	& tr,
+	& td,
+	& th{
+		border: 1px solid #ccc;
+	}
+	td,th{
+		padding: 4px;
+	}
+}

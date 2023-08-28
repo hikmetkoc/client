@@ -1,0 +1,32 @@
+<kt-portlet>
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title">
+				<br/>
+					SMS GÖNDERİLECEK KİŞİYİ SEÇİNİZ...
+				<div class="form-container" [hidden]="onayla === true">
+					<mat-form-field class="form-field">
+						<mat-label>Personel Adı</mat-label>
+						<mat-select [(value)]="selectedStoreId">
+							<mat-option *ngFor="let user of userList" [value]="user.phone">{{ user.firstName + ' ' + user.lastName }}</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+			</h3>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<div class="button-container" style="display: flex; justify-content: center; gap: 10px;">
+			<button [hidden]="onayla === true" type="button" mat-raised-button color="primary" (click)="onYesClick()" matTooltip="Tamam">
+				Onayla
+			</button>
+			<div [hidden]="onayla === false" class="loading-container" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+				<mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+				<span style="font-size: 20px; color: #333; margin-top: 10px;">SMS GÖNDERİLİYOR</span>
+			</div>
+			<button [hidden]="onayla === true" type="button" mat-raised-button color="warn" (click)="onNoClick()" matTooltip="Vazgeç">
+				Vazgeç
+			</button>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

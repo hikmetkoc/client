@@ -1,0 +1,44 @@
+<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Değişiklik Geçmişi" (click)="showFiles(filesModal)">
+	<mat-icon>history</mat-icon>
+</button>
+
+<ng-template #filesModal let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h4 class="modal-title">İşlem Geçmişi</h4>
+		<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<mat-table [dataSource]="logs">
+			<ng-container matColumnDef="changeTime">
+				<mat-header-cell *matHeaderCellDef>Değişiklik Zamanı</mat-header-cell>
+				<mat-cell *matCellDef="let row"> {{row.changeTime | date:'medium'}} </mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="changeType">
+				<mat-header-cell *matHeaderCellDef>İşlem Tipi</mat-header-cell>
+				<mat-cell *matCellDef="let row"> {{row.changeType}} </mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="propertyName">
+				<mat-header-cell *matHeaderCellDef>Değişen Alan</mat-header-cell>
+				<mat-cell *matCellDef="let row"> {{row.propertyName}} </mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="originalValue">
+				<mat-header-cell *matHeaderCellDef>Önceki Değer</mat-header-cell>
+				<mat-cell *matCellDef="let row"> {{row.originalValue}} </mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="newValue">
+				<mat-header-cell *matHeaderCellDef>Sonraki Değer</mat-header-cell>
+				<mat-cell *matCellDef="let row"> {{row.newValue}} </mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="user">
+				<mat-header-cell *matHeaderCellDef>Değiştiren</mat-header-cell>
+				<mat-cell *matCellDef="let row"> {{row.user.fullName}} </mat-cell>
+			</ng-container>
+			<mat-header-row *matHeaderRowDef="['changeTime', 'changeType', 'propertyName', 'originalValue', 'newValue', 'user']">
+			</mat-header-row>
+			<mat-row [ngClass]="{gray: even}" *matRowDef="let row; let even = even; columns: ['changeTime', 'changeType', 'propertyName', 'originalValue', 'newValue', 'user'];">
+			</mat-row>
+		</mat-table>
+	</div>
+</ng-template>

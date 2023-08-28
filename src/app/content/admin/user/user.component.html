@@ -1,0 +1,88 @@
+<kt-grid #mainGrid [entity]="model.name" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current"></kt-grid>
+
+<ng-container *ngIf="current">
+
+	<kt-detail [(current)]="current" [model]="model" (editClick)="mainGrid.edit($event)" (resetCurrent)="resetCurrent()"></kt-detail>
+
+	<mat-expansion-panel style="margin-bottom: 20px" (opened)="getRolesList()">
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				Rolleri düzenlemek için tıklayın
+			</mat-panel-title>
+			<mat-panel-description>
+			</mat-panel-description>
+		</mat-expansion-panel-header>
+		<mat-selection-list [(ngModel)]="userRoles">
+			<mat-list-option *ngFor="let role of rolesList" [value]="role">
+				{{role.id}}
+			</mat-list-option>
+		</mat-selection-list>
+		<mat-action-row>
+			<button (click)="setUserRoles()" mat-raised-button matTooltip="Rolleri kaydet" color="primary" type="button">
+				<i class="la la-save" style="margin-top:-2px;"></i>&nbsp;Kaydet
+			</button>
+		</mat-action-row>
+	</mat-expansion-panel>
+
+	<mat-expansion-panel style="margin-bottom: 20px" (opened)="getGroupsList()">
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				Bağlı olduğu üst grupları düzenlemek için tıklayın
+			</mat-panel-title>
+			<mat-panel-description>
+			</mat-panel-description>
+		</mat-expansion-panel-header>
+		<mat-selection-list [(ngModel)]="userGroups">
+			<mat-list-option *ngFor="let group of groupsList" [value]="group">
+				{{group.fullName}}
+			</mat-list-option>
+		</mat-selection-list>
+		<mat-action-row>
+			<button (click)="setUserGroups()" mat-raised-button matTooltip="Kaydet" color="primary" type="button">
+				<i class="la la-save" style="margin-top:-2px;"></i>&nbsp;Kaydet
+			</button>
+		</mat-action-row>
+	</mat-expansion-panel>
+
+	<mat-expansion-panel style="margin-bottom: 20px">
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				Bağlı olan kullanıcı ve grupları listelemek için tıklayın
+			</mat-panel-title>
+			<mat-panel-description>
+			</mat-panel-description>
+		</mat-expansion-panel-header>
+		<mat-list>
+			<mat-list-item *ngFor="let child of current.members">
+				{{child.instanceName}}
+			</mat-list-item>
+		</mat-list>
+	</mat-expansion-panel>
+</ng-container>
+
+<ng-template #hierarchyModal let-c="close" let-d="dismiss">
+	<div id="print-section">
+		<div class="modal-header">
+			<h4 class="modal-title">Hiyerarşi</h4>
+			<button type="button" class="close no-print" aria-label="Close" (click)="d('Cross click')">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<ngx-treeview [config]="hierarchyTreeConfig" [items]="hierarchyTreeItems" [itemTemplate]="itemTemplate">
+			</ngx-treeview>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button (click)="printHierarchy()" mat-raised-button matTooltip="Yazdır" color="primary" type="button">
+			Yazdır
+		</button>
+	</div>
+</ng-template>
+
+<ng-template #itemTemplate let-item="item" let-onCollapseExpand="onCollapseExpand" let-onCheckedChange="onCheckedChange">
+	<div class="form-inline row-item">
+		<i *ngIf="item.children" (click)="onCollapseExpand()" aria-hidden="true" class="fa" [class.fa-caret-right]="item.collapsed" [class.fa-caret-down]="!item.collapsed"></i>
+		<label class="form-check-label">{{ item.text }}</label>
+	</div>
+</ng-template>

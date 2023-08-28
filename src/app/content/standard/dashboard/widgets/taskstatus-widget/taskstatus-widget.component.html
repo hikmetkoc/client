@@ -1,0 +1,13 @@
+<div perfectScrollbar [ngStyle]="{'max-height': '50vh'}" class="kt-timeline-v2">
+	<div class="kt-timeline-v2__items kt-padding-top-25 kt-padding-bottom-30">
+		<ng-container *ngFor="let item of data">
+			<ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{item: item}"></ng-container>
+		</ng-container>
+	</div>
+</div>
+
+<ng-template #itemTemplate let-item="item">
+		<div class="kt-timeline-v2__item-cricle">
+		</div>
+		<div class="kt-timeline-v2__item-text kt-padding-top-5">{{item.text ? item.text : ''}}</div>
+</ng-template>

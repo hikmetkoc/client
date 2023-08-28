@@ -1,0 +1,29 @@
+kt-customer {
+	.m-widget4__item {
+		padding-top: 0.7rem;
+		padding-bottom: 0.7rem;
+		display: block;
+	}
+
+	.map {
+		height: 500px;
+		padding: 0;
+		display: block;
+	}
+
+	.m-nav__link {
+		cursor: pointer;
+	}
+
+	table,
+	th,
+	td {
+		border: 1px solid #BBB;
+	}
+
+	.mat-icon-button {
+		width: 30px !important;
+		height: 30px !important;
+		line-height: unset !important;
+	}
+}

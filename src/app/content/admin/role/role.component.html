@@ -1,0 +1,82 @@
+<kt-grid #mainGrid [entity]="model.name" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current"></kt-grid>
+
+<ng-container *ngIf="current">
+
+	<kt-detail [(current)]="current" [model]="model" (editClick)="mainGrid.edit($event)" (resetCurrent)="resetCurrent()"></kt-detail>
+
+	<mat-expansion-panel style="margin-bottom: 20px" (opened)="getRolePermissions()">
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				Obje yetkilerini düzenlemek için tıklayın
+			</mat-panel-title>
+			<mat-panel-description>
+			</mat-panel-description>
+		</mat-expansion-panel-header>
+
+		<mat-table [dataSource]="rolePermissions">
+			<ng-container matColumnDef="apiName">
+				<mat-header-cell *matHeaderCellDef>Obje Adı</mat-header-cell>
+				<mat-cell *matCellDef="let row">
+					{{row.translate}}
+				</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="read">
+				<mat-header-cell *matHeaderCellDef>Okuma</mat-header-cell>
+				<mat-cell *matCellDef="let row">
+					<mat-checkbox [(ngModel)]="row.read"></mat-checkbox>
+				</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="write">
+				<mat-header-cell *matHeaderCellDef>Yazma</mat-header-cell>
+				<mat-cell *matCellDef="let row">
+					<mat-checkbox [(ngModel)]="row.update"></mat-checkbox>
+				</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="delete">
+				<mat-header-cell *matHeaderCellDef>Silme</mat-header-cell>
+				<mat-cell *matCellDef="let row">
+					<mat-checkbox [(ngModel)]="row.delete"></mat-checkbox>
+				</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="isHierarchical">
+				<mat-header-cell *matHeaderCellDef>Hiyerarşi</mat-header-cell>
+				<mat-cell *matCellDef="let row">
+					<mat-checkbox [(ngModel)]="row.isHierarchical"></mat-checkbox>
+				</mat-cell>
+			</ng-container>
+			<mat-header-row *matHeaderRowDef="['apiName', 'read', 'write', 'delete', 'isHierarchical']">
+			</mat-header-row>
+			<mat-row [ngClass]="{gray: even}" *matRowDef="let row; let even = even; columns: ['apiName', 'read', 'write', 'delete', 'isHierarchical'];">
+			</mat-row>
+		</mat-table>
+
+		<mat-action-row>
+			<button (click)="setRolePermissions()" mat-raised-button matTooltip="Kaydet" color="primary" type="button">
+				<i class="la la-save" style="margin-top:-2px;"></i>&nbsp;Kaydet
+			</button>
+		</mat-action-row>
+	</mat-expansion-panel>
+
+	<mat-expansion-panel style="margin-bottom: 20px" (opened)="getOperationsList()">
+		<mat-expansion-panel-header>
+			<mat-panel-title>
+				Operasyon yetkilerini düzenlemek için tıklayın
+			</mat-panel-title>
+			<mat-panel-description>
+			</mat-panel-description>
+		</mat-expansion-panel-header>
+
+		<mat-selection-list [(ngModel)]="roleOperations">
+			<mat-list-option *ngFor="let operation of operationsList" [value]="operation">
+				{{operation.name}}
+			</mat-list-option>
+		</mat-selection-list>
+
+		<mat-action-row>
+			<button (click)="setRoleOperations()" mat-raised-button matTooltip="Kaydet" color="primary" type="button">
+				<i class="la la-save" style="margin-top:-2px;"></i>&nbsp;Kaydet
+			</button>
+		</mat-action-row>
+	</mat-expansion-panel>
+
+</ng-container>

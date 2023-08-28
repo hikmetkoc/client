@@ -1,0 +1,59 @@
+<kt-portlet *ngIf="!user">
+	<kt-portlet-header [class]="'kt-portlet__head--lg'">
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title">
+				<span>Kolay Ajanda</span>
+			</h3>
+		</ng-container>
+		<ng-container ktPortletTools>
+			<div class="page-header-buttons">
+				<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Önceki Hafta" (click)="prevWeek()">
+					<mat-icon>chevron_left</mat-icon>
+				</button>
+				<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Sonraki Hafta" (click)="nextWeek()">
+					<mat-icon>chevron_right</mat-icon>
+				</button>
+				<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Kaydet" (click)="save()">
+					<mat-icon>save</mat-icon>
+				</button>
+			</div>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body style="padding: unset;">
+		<ng-container [ngTemplateOutlet]="easyCalendarTable"></ng-container>
+	</kt-portlet-body>
+</kt-portlet>
+
+<ng-container *ngIf="user">
+	<div class="kt-padding-10 text-center">
+		<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Önceki Hafta" (click)="prevWeek()">
+			<mat-icon>chevron_left</mat-icon>
+		</button>
+		<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Sonraki Hafta" (click)="nextWeek()">
+			<mat-icon>chevron_right</mat-icon>
+		</button>
+	</div>
+	<ng-container [ngTemplateOutlet]="easyCalendarTable"></ng-container>
+</ng-container>
+
+<ng-template #easyCalendarTable>
+	<div class="calendar-table-container">
+		<mat-table [dataSource]="data">
+			<ng-container matColumnDef="hour" sticky>
+				<mat-header-cell *matHeaderCellDef>Saat</mat-header-cell>
+				<mat-cell *matCellDef="let row"> {{row.hourF}} </mat-cell>
+			</ng-container>
+			<ng-container *ngFor="let d of weekDays; trackBy: trackByIndex" matColumnDef="{{d.name}}">
+				<mat-header-cell *matHeaderCellDef [style.background-color]="d.wday > 5 ? 'rgba(245, 245, 245, 0.5)' : 'rgba(255, 255, 255, 0.5)'">{{d.date | date:'fullDate'}}</mat-header-cell>
+				<mat-cell *matCellDef="let row" [style.background-color]="d.wday > 5 ? 'rgba(240, 240, 240, 0.5)' : 'rgba(255, 255, 255, 0.5)'">
+					<mat-form-field floatLabel="never">
+						<textarea matInput matTextareaAutosize matAutosizeMinRows="1" [disabled]="user" [(ngModel)]="row[d.name].description"></textarea>
+					</mat-form-field>
+				</mat-cell>
+			</ng-container>
+			<mat-header-row *matHeaderRowDef="displayedColumns">
+			</mat-header-row>
+			<mat-row [ngClass]="{gray: even}" *matRowDef="let row; let even = even; columns: displayedColumns;"></mat-row>
+		</mat-table>
+	</div>
+</ng-template>

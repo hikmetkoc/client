@@ -1,0 +1,20 @@
+<kt-portlet>
+	<kt-portlet-header [class]="'kt-portlet__head--lg'">
+		<ng-container ktPortletTitle>
+			<!-- <button mat-icon-button mat-button matTooltip="Geri dön" (click)="launchMap()" class="kt-margin-r-5">
+				<mat-icon>keyboard_arrow_left</mat-icon>
+			</button> -->
+			<h3 class="kt-portlet__head-title">
+				<span>Yakındaki Müşteriler</span>
+			</h3>
+		</ng-container>
+
+		<ng-container ktPortletTools>
+		</ng-container>
+	</kt-portlet-header>
+
+	<kt-portlet-body>
+		<div class="map" id="nearestCustomersMap">
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

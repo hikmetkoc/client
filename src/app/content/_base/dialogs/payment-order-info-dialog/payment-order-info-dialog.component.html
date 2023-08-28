@@ -1,0 +1,132 @@
+<kt-portlet>
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title">
+				Ödeme Talimatı Bilgi Formu
+			</h3>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body style="font-size: 15px">
+		<br/>
+		<div style="text-align: center; background-color: #222; padding: 10px;">
+			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">GENEL BİLGİLER</h4>
+		</div>
+		<table class="table table-striped" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000;">
+			<thead>
+			<tr style ="background-color: #333; color: #fff; font-weight: bold;">
+				<th>Satın Alma Kodu</th>
+				<th>Fatura Numarası</th>
+				<th>Fatura Tarihi</th>
+				<th>Ödeme Konusu</th>
+				<th>Açıklama</th>
+				<th>Fatura Kaynağı</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr style="background-color: #f2f2f2; font-weight: bold">
+				<td>{{current.store ? current.store.stcode : ' '}}</td>
+				<td>{{current.invoiceNum}}</td>
+				<td>{{current.invoiceDate ? (current.invoiceDate | date:'dd.MM.yyyy') : ' '}}</td>
+				<td>{{current.paymentSubject ? current.paymentSubject.label : ' '}}</td>
+				<td>{{current.description ? current.description : ' '}}</td>
+				<td>{{current.kaynak ? current.kaynak : ' '}}</td>
+			</tr>
+			</tbody>
+		</table>
+		<br/>
+		<div style="text-align: center; background-color: #222; padding: 10px;">
+			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">İŞLEM TARİHLERİ</h4>
+		</div>
+		<table class="table table-striped" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000;">
+			<thead>
+			<tr style ="background-color: #333; color: #fff; font-weight: bold;">
+				<th>1.Onay Tarihi</th>
+				<th>Muhasebe Onay Tarihi</th>
+				<th>2.Onay Tarihi</th>
+				<th>Reddeden</th>
+				<th>Reddetme Tarihi</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr style="background-color: #f2f2f2; font-weight: bold">
+				<td>{{current.okeyFirst ? (current.okeyFirst | date:'dd.MM.yyyy') : ' '}}</td>
+				<td>{{current.okeyMuh ? (current.okeyMuh | date:'dd.MM.yyyy') : ' '}}</td>
+				<td>{{current.okeySecond ? (current.okeySecond | date:'dd.MM.yyyy') : ' '}}</td>
+				<td>{{current.cancelUser ? (current.cancelUser.firstName + ' ' + current.cancelUser.lastName) : ' '}}</td>
+				<td>{{current.cancelDate ? (current.cancelDate | date:'dd.MM.yyyy') : ' '}}</td>
+			</tr>
+			</tbody>
+		</table>
+		<br/>
+		<div style="text-align: center; background-color: #222; padding: 10px;">
+			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">TUTARLAR</h4>
+		</div>
+		<table class="table table-striped" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000;">
+			<thead>
+			<tr style ="background-color: #333; color: #fff; font-weight: bold;">
+				<th>Toplam Tutar</th>
+				<th>Ödenen Tutar</th>
+				<th>Kalan Tutar</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr style="background-color: #f2f2f2; font-weight: bold">
+				<td>{{current.amount ? formatAmount(current.amount) : ' '}}</td>
+				<td>{{current.payamount ? formatAmount(current.payamount) : '0'}}</td>
+				<td>{{current.nextamount ? formatAmount(current.nextamount) : '0'}}</td>
+			</tr>
+			</tbody>
+		</table>
+		<br/>
+		<div style="text-align: center; background-color: #222; padding: 10px;">
+			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">ÖDEME DETAYLARI</h4>
+		</div>
+		<table class="table table-striped" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000;">
+			<thead>
+			<tr style ="background-color: #333; color: #fff; font-weight: bold;">
+				<th>Ödeme Şekli</th>
+				<th>Ödeme Yapılacak Para Birimi</th>
+				<th>Kur Tarihi</th>
+				<th>IBAN</th>
+				<th>Ödeme Durumu</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr style="background-color: #f2f2f2; font-weight: bold">
+				<td>{{current.paymentType ? current.paymentType.label : ' '}}</td>
+				<td>{{current.paymentStyle ? current.paymentStyle.label : ' '}}</td>
+				<td>{{current.exchange ? current.exchange.label : ' '}}</td>
+				<td>{{current.strIban ? current.strIban : ' '}}</td>
+				<td>{{current.success === true ? 'Ödendi olarak işaretlendi' : current.autopay === true ? 'Otomatik Ödemede' : current.kismi === true ? 'Kısmi Ödeme' : 'Tek Ödeme'}}</td>
+			</tr>
+			</tbody>
+		</table>
+	</kt-portlet-body>
+</kt-portlet>
+
+<!--
+<tr>
+				<td>{{current.store.stcode ? current.store.stcode : ''}}</td>
+				<td>{{current.invoiceNum ? current.invoiceNum : ''}}</td>
+				<td>{{(current.invoiceDate | date:'dd.MM.yyyy') ? (current.invoiceDate | date:'dd.MM.yyyy'): ''}}</td>
+				<td>{{current.paymentSubject.label ? current.paymentSubject.label : ''}}</td>
+				<td>{{current.paymentType.label ? current.paymentType.label : ''}}</td>
+				<td>{{current.paymentStyle.label ? current.paymentStyle.label : ''}}</td>
+				<td>{{current.exchange.label ? current.exchange.label : ''}}</td>
+				<td>{{current.iban.name ? current.iban.name : ''}}</td>
+				<td>{{current.description ? current.description : ''}}</td>
+				<td>{{current.kaynak ? current.kaynak : ''}}</td>
+			</tr>
+			<tr>
+				<td>{{(current.okeyFirst | date:'dd.MM.yyyy') ? (current.okeyFirst | date:'dd.MM.yyyy') : ''}}</td>
+				<td>{{(current.okeyMuh | date:'dd.MM.yyyy') ? (current.okeyMuh | date:'dd.MM.yyyy') : ''}}</td>
+				<td>{{(current.okeySecond | date:'dd.MM.yyyy') ? (current.okeySecond | date:'dd.MM.yyyy') : ''}}</td>
+				<td>{{current.cancelUser.firstName ? current.cancelUser.firstName + ' ' + current.cancelUser.lastName: ''}}</td>
+				<td>{{(current.cancelDate | date:'dd.MM.yyyy') ? (current.cancelDate | date:'dd.MM.yyyy') : ''}}</td>
+			</tr>
+			<tr>
+				<td>{{current.amount ? current.amount : ''}}</td>
+				<td>{{current.payamount? current.payamount : ''}}</td>
+				<td>{{current.nextamount ? current.nextamount : ''}}</td>
+			</tr>
+-->

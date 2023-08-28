@@ -1,0 +1,30 @@
+<table class="contacts-table">
+	<thead>
+	<tr>
+		<th>Şirket</th>
+		<th>Birim</th>
+		<th>Unvan</th>
+		<th>Ad Soyad</th>
+		<th>Email</th>
+		<th>Telefon Numarası</th>
+		<th>Kısa Kod</th>
+	</tr>
+	</thead>
+	<tbody>
+		<ng-container *ngFor="let item of data">
+			<ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="{item: item}"></ng-container>
+		</ng-container>
+	</tbody>
+</table>
+
+<ng-template #itemTemplate let-item="item">
+	<tr class="kt-timeline-v2__item-text kt-padding-top-5">
+		<td>{{item.sirket ? item.sirket : ''}}</td>
+		<td>{{item.birim ? item.birim : ''}}</td>
+		<td>{{item.unvan ? item.unvan : ''}}</td>
+		<td>{{item.name ? item.name : ''}}</td>
+		<td>{{item.email ? item.email : ''}}</td>
+		<td>{{item.phone ? item.phone : ''}}</td>
+		<td>{{item.short_code ? item.short_code : ''}}</td>
+	</tr>
+</ng-template>

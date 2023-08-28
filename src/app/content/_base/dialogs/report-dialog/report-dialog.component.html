@@ -1,0 +1,50 @@
+<kt-portlet>
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title">
+				{{ data.title }}
+			</h3>
+		</ng-container>
+		<ng-container ktPortletTools>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<ng-container *ngIf="data.filter === 'date'">
+			<mat-form-field class="mat-form-field-fluid">
+				<input matInput [matDatepicker]="picker" placeholder="Başlangıç Tarihi" [(ngModel)]="startDate" (focus)="picker.open()">
+				<mat-datepicker-toggle matSuffix [for]="picker" tabIndex="-1">
+				</mat-datepicker-toggle>
+				<mat-datepicker touchUi="false" #picker>
+				</mat-datepicker>
+			</mat-form-field>
+			<mat-form-field class="mat-form-field-fluid">
+				<input matInput [matDatepicker]="picker2" placeholder="Bitiş Tarihi" [(ngModel)]="endDate" (focus)="picker2.open()">
+				<mat-datepicker-toggle matSuffix [for]="picker2" tabIndex="-1">
+				</mat-datepicker-toggle>
+				<mat-datepicker touchUi="false" #picker2>
+				</mat-datepicker>
+			</mat-form-field>
+		</ng-container>
+		<ng-container *ngIf="data.filter === 'year'">
+			<mat-form-field class="mat-form-field-fluid">
+				<mat-select placeholder="Rapor Yılı" [(ngModel)]="year">
+					<mat-option *ngFor="let option of years" [value]="option">{{option}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</ng-container>
+	</kt-portlet-body>
+	<kt-portlet-footer>
+		<div class="kt-form__actions kt-form__actions--solid" style="padding: 18px; padding-bottom: 0px">
+			<div class="row text-right">
+				<div class="col-lg-12">
+					<button type="button" mat-raised-button mat-dialog-close cdkFocusInitial matTooltip="Raporu İndirmekten Vazgeç">
+						İptal
+					</button>&nbsp;
+					<button type="button" mat-raised-button color="primary" (click)="onSubmit()" matTooltip="Raporu İndir">
+						Raporu İndir
+					</button>
+				</div>
+			</div>
+		</div>
+	</kt-portlet-footer>
+</kt-portlet>

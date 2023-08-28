@@ -1,0 +1,127 @@
+<kt-grid #mainGrid [entity]="model.name" owner="HIERARCHY_D" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current || isCalendar"></kt-grid>
+
+<!--<ng-container *ngIf="isCalendar">
+	<kt-portlet>
+		<kt-portlet-header [class]="'kt-portlet__head--lg'">
+			<ng-container ktPortletTitle>
+				<button mat-icon-button mat-button matTooltip="Geri dön" (click)="calendarView(false)" class="kt-margin-r-5">
+					<mat-icon>keyboard_arrow_left</mat-icon>
+				</button>
+				<h3 class="kt-portlet__head-title">
+					<span>Ajanda Görünümü</span>
+				</h3>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<div class="kt-portlet">
+				<div class="m-portlet__body m-portlet__body--no-padding">
+					<full-calendar #calendar defaultView="dayGridMonth" [plugins]="calendarPlugins" (dateClick)="dateClick($event)" (eventClick)="eventClick($event)" locale="tr" [buttonText]="{
+									today: 'Bugün',
+									month: 'Ay',
+									week: 'Hafta',
+									day: 'Gün',
+									list: 'Liste'}">
+					</full-calendar>
+				</div>
+			</div>
+		</kt-portlet-body>
+	</kt-portlet>
+</ng-container> -->
+
+<ng-container *ngIf="current">
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<button mat-icon-button mat-button matTooltip="Geri dön" (click)="resetCurrent()" class="kt-margin-r-5">
+					<mat-icon>keyboard_arrow_left</mat-icon>
+				</button>
+				<h3 class="kt-portlet__head-title">
+					<span>Dosya Detayı <span style="color: #999999">&nbsp;({{current.instanceName}})</span></span>
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<div class="page-header-buttons">
+					<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="IK Dosyasını İndir" (click)="showFiles()">
+						<mat-icon>file_download</mat-icon>
+					</button>
+					<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Düzenle" (click)="mainGrid.edit(current)">
+						<mat-icon>create</mat-icon>
+					</button>
+
+					<button *ngIf="baseService.getPermissionRule(model.name,'delete')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="warn" matTooltip="Sil" (click)="delete(current)" [disabled]="loading$ | async">
+						<mat-icon>delete</mat-icon>
+					</button>
+
+					<kt-filemanager *ngIf="baseService.getUserId() === 2000" [(current)]="current" [model]="model"></kt-filemanager>
+					<!-- <kt-history [(current)]="current" [model]="model"></kt-history> -->
+				</div>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-detail [(current)]="current" [model]="model" naked="true"></kt-detail>
+		</kt-portlet-body>
+	</kt-portlet>
+	<kt-portlet *ngIf="baseService.getUserId() === 2000">
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Dosyalar
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<div>
+					<button type="button" class="close" mat-dialog-close matTooltip="Kapat">
+						<span>&times;</span>
+					</button>
+				</div>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-filemanagertool #fileManagerTool [(current)]="current" [model]="model"></kt-filemanagertool>
+		</kt-portlet-body>
+	</kt-portlet>
+
+	<!-- <kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Teklifler
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="quoteGrid.add()" mat-raised-button matTooltip="Yeni teklif oluştur" type="button">
+					Yeni Teklif
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #quoteGrid entity="Quote" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="quoteRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet> -->
+
+</ng-container>
+<!--
+<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Döküman Gönderimi" (click)="showDocumentModal(sendDocumentModal)">
+						<mat-icon>mail</mat-icon>
+					</button>
+
+
+<ng-template #sendDocumentModal let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h4 class="modal-title">Döküman Gönderimi</h4>
+		<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<ng-container *ngFor="let doc of documents">
+			<mat-checkbox class="example-margin" [(ngModel)]="doc.checked">{{doc.title}}</mat-checkbox><br/>
+		</ng-container>
+	</div>
+	<div class="modal-footer">
+		<button (click)="sendDocuments()" [disabled]="loading$ | async" mat-raised-button matTooltip="Yöneticiye Gönder" color="primary" type="button">
+			<i class="la la-check" style="margin-top:-2px;"></i>&nbsp;Üst Yöneticiye Gönder
+		</button>
+	</div>
+</ng-template> -->

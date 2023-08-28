@@ -1,0 +1,49 @@
+<kt-portlet>
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title">
+				<br/>
+				<!--{{formatDate(invoices[0].faturatarihi)}} fatura tarihli ve  {{formatDate(invoices[0].gonderimtarihi)}} gönderim tarihli faturaya bir sorumlu atamak üzeresiniz!<br/>
+				{{invoices[0].sirket}} şirketine kesilen fatura carisi; {{invoices[0].tedarikci}} dir. -->
+				<!--<mat-form-field>
+					<mat-label>Kullanıcı Seç</mat-label>
+					<mat-select [(value)]="selectedUserId">>
+						<mat-option *ngFor="let user of userList" [value]="user">{{user.firstName + ' ' + user.lastName}}</mat-option>
+					</mat-select>
+				</mat-form-field> -->
+
+				<div class="form-container">
+					<mat-form-field class="form-field">
+						<mat-label>Ödeme Tipi</mat-label>
+						<mat-select [(value)]="selectedTypeId">
+							<mat-option *ngFor="let type of typeList" [value]="type.label">{{ type.label }}</mat-option>
+						</mat-select>
+					</mat-form-field>
+
+					<mat-form-field class="form-field">
+						<mat-label>Ödeme Niteliği</mat-label>
+						<mat-select [(value)]="selectedQuafId">
+							<mat-option *ngFor="let quaf of quafList" [value]="quaf.label">{{ quaf.label }}</mat-option>
+						</mat-select>
+					</mat-form-field>
+
+					<mat-form-field class="form-field">
+						<mat-label>Açıklama</mat-label>
+						<input matInput [(ngModel)]="selectedDescId" placeholder="Açıklama">
+					</mat-form-field>
+				</div>
+
+			</h3>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<div class="button-container" style="display: flex; justify-content: center; gap: 10px;">
+			<button type="button" mat-raised-button color="primary" (click)="onYesClick()" matTooltip="Tamam">
+				Onayla
+			</button>
+			<button type="button" mat-raised-button color="warn" (click)="onNoClick()" matTooltip="Vazgeç">
+				Vazgeç
+			</button>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

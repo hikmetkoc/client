@@ -1,0 +1,18 @@
+<div *ngIf="!data" class="kt-padding-10 text-middle">
+	Veri Yok
+</div>
+<div *ngIf="data && data.length == 0" class="kt-padding-10 text-middle">
+	Satır Yok
+</div>
+<div *ngIf="data && data.length > 0">
+	<mat-table [dataSource]="data">
+
+		<ng-container *ngFor="let column of displayedColumns" matColumnDef="{{column}}">
+			<mat-header-cell *matHeaderCellDef>{{column}}</mat-header-cell>
+			<mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
+		</ng-container>
+
+		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+		<mat-row [ngClass]="{gray: even}" *matRowDef="let row; let even = even; columns: displayedColumns;"></mat-row>
+	</mat-table>
+</div>

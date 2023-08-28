@@ -1,0 +1,484 @@
+<kt-portlet *ngIf="mode === 'Standard'" [options]="{headLarge: true}">
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title kt-margin-t-5">
+				<ng-container *ngIf="filters && filters.length > 0">
+					<mat-form-field>
+						<mat-select (selectionChange)="filterChange()" [(value)]="activeFilter">
+							<mat-option selected value="All">
+								Tümü
+							</mat-option>
+							<mat-option *ngFor="let filter of filters" [value]="filter">{{filter.name}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</ng-container>
+				<ng-container *ngIf="!filters || filters.length == 0">
+				  <span *ngIf="this.tablo === 'holidays'"
+						style="display: inline-block; color: darkred; border: 1px solid darkred; padding: 5px; margin-bottom: 10px; white-space: nowrap;">
+					Kullanılan Yıllık İzniniz: {{ this.kullanilanizin }} <span style="font-size: 16px;">GÜN</span>
+				  </span>
+					<span *ngIf="this.tablo === 'holidays'"
+						  style="display: inline-block; color: darkgreen; border: 1px solid darkgreen; padding: 5px; margin-left: 10px;">
+					Kalan Yıllık İzniniz: {{ this.kalanizin }} <span style="font-size: 16px;">GÜN</span>
+				  </span>
+					<span *ngIf="this.tablo !== 'holidays'">
+					{{ title ? title : model ? model.pluralTitle : '' }}
+				  </span>
+				</ng-container>
+			</h3>
+		</ng-container>
+		<ng-container ktPortletTools>
+			<div class="page-header-buttons">
+				<!-- <button type="button" class="btn btn-label-brand kt-margin-l-10" mat-icon-button matTooltip="Filtreyi Düzenle" (click)="showFilterDialog()">
+					<mat-icon>filter_list</mat-icon>
+				</button> -->
+				<div ngbDropdown [placement]="'bottom-left'" class="dropdown">
+					<button *ngIf="utils.hasOperation('Dosya_Export')" type="button" ngbDropdownToggle class="btn btn-label-brand kt-margin-l-10" mat-icon-button matTooltip="Dosya İndir">
+						<mat-icon>arrow_downward</mat-icon>
+					</button>
+					<div ngbDropdownMenu class="dropdown-menu dropdown-menu-fit" style="z-index: 10111;">
+						<ul class="kt-nav">
+							<!-- <li class="kt-nav__section kt-nav__section--first">
+										<span class="kt-nav__section-text kt-margin-b-10">Dosya İndir</span>
+									</li> -->
+							<li class="kt-nav__item">
+								<a class="kt-nav__link" (click)="exportFile('Excel')">
+									<i class="kt-nav__link-icon la la-file-excel-o"></i>
+									<span class="kt-nav__link-text">Excel</span>
+								</a>
+							</li>
+							<li class="kt-nav__item">
+								<a class="kt-nav__link" (click)="exportFile('Csv')">
+									<i class="kt-nav__link-icon la la-file-text-o"></i>
+									<span class="kt-nav__link-text">CSV</span>
+								</a>
+							</li>
+							<!-- <li class="kt-nav__item">
+								<a class="kt-nav__link" (click)="exportFile('Text')">
+									<i class="kt-nav__link-icon la la-file-text-o"></i>
+									<span class="kt-nav__link-text">TXT</span>
+								</a>
+							</li> -->
+						</ul>
+					</div>
+				</div>
+				<ng-container *ngFor="let button of buttons">
+					<div *ngIf="button.subs && button.subs.length > 0" ngbDropdown [placement]="'bottom-left'" class="dropdown">
+						<button type="button" ngbDropdownToggle class="btn btn-label-brand kt-margin-l-10" mat-icon-button [matTooltip]="button.title">
+							<mat-icon>{{button.icon}}</mat-icon>
+						</button>
+						<div ngbDropdownMenu class="dropdown-menu dropdown-menu-fit" style="z-index: 10111;">
+							<ul class="kt-nav">
+								<li class="kt-nav__item" *ngFor="let sub of button.subs">
+									<a href="javascript:;" class="kt-nav__link" (click)="sub.click()">
+										<span class="kt-nav__link-text">{{sub.title}}</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<button *ngIf="button.display && (!button.subs || button.subs.length == 0)" type="button" class="btn btn-label-brand kt-margin-l-10" mat-icon-button [matTooltip]="button.title" (click)="button.click()">
+						<mat-icon>{{button.icon}}</mat-icon>
+					</button>
+				</ng-container>
+				<!-- <mat-form-field style="width: 12rem" class="mat-form-field-fluid kt-margin-t-10 kt-margin-l-15">
+					<input matInput #searchInput placeholder="Arama" (keyup.enter)="searchChange(searchStr)" [(ngModel)]="searchStr">
+					<button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="searchChange(searchStr)">
+						<mat-icon>search</mat-icon>
+					</button>
+				</mat-form-field> -->
+			</div>
+		</ng-container>
+	</kt-portlet-header>
+
+
+	<kt-portlet-body>
+		<ng-container [ngTemplateOutlet]="mGrid"></ng-container>
+	</kt-portlet-body>
+</kt-portlet>
+
+<ng-container *ngIf="mode === 'Compact'">
+	<ng-container [ngTemplateOutlet]="mGrid"></ng-container>
+</ng-container>
+
+<ng-template #mGrid>
+	<div *ngIf="filterColumns.length > 0" class="kt-form" [hidden]="mode === 'Compact'">
+		<div style="margin: -10px 0 10px 0" class="kt-form__filtration row">
+			<ng-container *ngFor="let filterColumn of filterColumns">
+				<!-- <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2" *ngIf="this.model.name === 'Spend' && filterColumn.name === 'paymentorder'">
+					<mat-form-field class="mat-form-field-fluid">
+						<input type="text" autocomplete="disabled" #objectSelectInput matInput placeholder="{{filterColumn.title}}" [(ngModel)]="filterColumn.value"  [matAutocomplete]="auto" (focus)="filterOptions(filterColumn, $event)" (ngModelChange)="filterOptions(filterColumn, $event);"/>
+						<button mat-button *ngIf="filterColumn.value && filterColumn.value.id; else searchIcon" matSuffix mat-icon-button aria-label="Clear" (click)="filterColumn.value = undefined; loadList();">
+							<mat-icon>close</mat-icon>
+						</button>
+						<ng-template #searchIcon>
+							<button mat-button matSuffix mat-icon-button aria-label="Search">
+								<mat-icon>search</mat-icon>
+							</button>
+						</ng-template>
+						<mat-autocomplete #auto="matAutocomplete" [displayWith]="objectDisplay.bind(this, filterColumn)" (optionSelected)="loadList()">
+							<mat-option *ngFor="let option of filteredOptionss['paymentorder.customer']" [value]="option">
+								{{option['name']}}</mat-option>
+						</mat-autocomplete>
+					</mat-form-field>
+				</div> -->
+				<ng-container [ngSwitch]="filterColumn.fieldType">
+					<ng-container *ngSwitchCase="'time'">
+						<div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+							<mat-form-field class="mat-form-field-fluid">
+								<input matInput [matDatepicker]="picker" placeholder="{{filterColumn.title}} >=" [(ngModel)]="filterColumn.value" (ngModelChange)="loadList()" (focus)="picker.open()">
+								<mat-datepicker-toggle matSuffix [for]="picker" tabIndex="-1">
+								</mat-datepicker-toggle>
+								<mat-datepicker touchUi="false" #picker>
+								</mat-datepicker>
+							</mat-form-field>
+						</div>
+						<div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+							<mat-form-field class="mat-form-field-fluid">
+								<input matInput [matDatepicker]="picker2" placeholder="{{filterColumn.title}} <" [(ngModel)]="filterColumn.value2" (ngModelChange)="loadList()" (focus)="picker2.open()">
+								<mat-datepicker-toggle matSuffix [for]="picker2" tabIndex="-1">
+								</mat-datepicker-toggle>
+								<mat-datepicker touchUi="false" #picker2>
+								</mat-datepicker>
+							</mat-form-field>
+						</div>
+					</ng-container>
+					<div *ngSwitchCase="'select'" class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+						<mat-form-field class="mat-form-field-fluid">
+							<mat-select placeholder="{{filterColumn.title}}" [(ngModel)]="filterColumn.value" (ngModelChange)="loadList()">
+								<mat-option *ngFor="let option of baseService.getAttr(filterColumn.attributeName)?.values" [value]="option.id">{{option.label}}</mat-option>
+							</mat-select>
+							<button mat-button *ngIf="filterColumn.value !== undefined" matSuffix mat-icon-button aria-label="Clear" (click)="filterColumn.value = undefined; loadList()">
+								<mat-icon>close</mat-icon>
+							</button>
+						</mat-form-field>
+					</div>
+					<div *ngSwitchCase="'object'" class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+						<mat-form-field class="mat-form-field-fluid">
+							<input type="text" autocomplete="disabled" #objectSelectInput matInput placeholder="{{filterColumn.title}}" [(ngModel)]="filterColumn.value"  [matAutocomplete]="auto" (focus)="filterOptions(filterColumn, $event)" (ngModelChange)="filterOptions(filterColumn, $event);"/>
+							<button mat-button *ngIf="filterColumn.value && filterColumn.value.id; else searchIcon" matSuffix mat-icon-button aria-label="Clear" (click)="filterColumn.value = undefined; loadList();">
+								<mat-icon>close</mat-icon>
+							</button>
+							<ng-template #searchIcon>
+								<button mat-button matSuffix mat-icon-button aria-label="Search">
+									<mat-icon>search</mat-icon>
+								</button>
+							</ng-template>
+							<mat-autocomplete #auto="matAutocomplete" [displayWith]="objectDisplay.bind(this, filterColumn)" (optionSelected)="loadList()">
+								<mat-option *ngFor="let option of filteredOptionss[filterColumn.name]" [value]="option">
+									{{option['instanceName']}}</mat-option>
+							</mat-autocomplete>
+						</mat-form-field>
+					</div>
+					<div *ngSwitchDefault class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+						<mat-form-field class="mat-form-field-fluid">
+							<input type="text" matInput placeholder="{{filterColumn.title}}" [(ngModel)]="filterColumn.value" (ngModelChange)="loadList()" />
+						</mat-form-field>
+					</div>
+				</ng-container>
+			</ng-container>
+		</div>
+	</div>
+	<div *ngIf="layout.filterItems.length > 0" class="kt-form" [hidden]="mode === 'Compact'">
+		<div style="margin: -10px 0 10px 0" class="kt-form__filtration">
+			<mat-chip-list class="kt-pull-left kt-margin-top-5" #chipList placeholder="Filtre ekle">
+				<mat-chip *ngFor="let item of layout.filterItems" removable (removed)="removeFilter(item)">
+					{{item.Title}}&nbsp;{{item.OperationTitle}}
+					&nbsp;{{item.ValueTitle ? item.ValueTitle : item.Value}}
+					<mat-icon matChipRemove>cancel</mat-icon>
+				</mat-chip>
+				<input matInput [matChipInputFor]="chipList">
+			</mat-chip-list>
+			<!-- <div class="grid-header-buttons">
+				<button type="button" class="btn btn-label-success kt-margin-l-10" mat-icon-button matTooltip="Filtreyi Kaydet" (click)="saveLayoutDialog()">
+					<mat-icon>save</mat-icon>
+				</button>
+				<button type="button" class="btn btn-label-warning kt-margin-l-10" mat-icon-button matTooltip="Filtreyi Temizle" (click)="cleanFilter()">
+					<mat-icon>cancel</mat-icon>
+				</button>
+				<button *ngIf="activeFilter.id" type="button" class="btn btn-label-success kt-margin-l-10" mat-icon-button matTooltip="Filtreyi Paylaş" (click)="shareLayoutDialog()">
+					<mat-icon>share</mat-icon>
+				</button>
+				<button *ngIf="activeFilter.id" type="button" class="btn btn-label-danger kt-margin-l-10" mat-icon-button matTooltip="Filtreyi Sil" (click)="deleteFilterDialog()">
+					<mat-icon>delete</mat-icon>
+				</button>
+			</div> -->
+
+			<!-- <mat-form-field style="float: right; margin-right: 20px;" class="mat-form-field-fluid kt-margin-top-10-mobile">
+					<input matInput #searchInput placeholder="Arama" (keyup.enter)="generalSearch()">
+					<button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="generalSearch()">
+						<mat-icon>search</mat-icon>
+					</button>
+				</mat-form-field> -->
+			<!-- <mat-form-field style="float:right; width:100px; margin-right: 20px;">
+					<mat-select [(value)]="layout.owner" (selectionChange)="loadList()">
+						<mat-option value="ALL" selected>Tümü</mat-option>
+						<mat-option value="ME">Bana Ait</mat-option>
+						<mat-option value="HIERARCHY">Bana ve Gruplarıma Ait</mat-option>
+					</mat-select>
+				</mat-form-field> -->
+		</div>
+		<div class="row align-items-center collapse kt-form__group-actions kt-margin-top-20 kt-margin-bottom-20" [ngClass]="{'show' : selection.selected.length > 0}">
+				<div class="col-xl-12">
+					<div class="kt-form__group kt-form__group--inline">
+						<div class="kt-form__label kt-form__label-no-wrap">
+							<label class="kt-font-bold kt-font-danger-">
+								Seçili {{ selection.selected.length}} kayıt
+							</label>
+						</div>
+						<div class="kt-form__control kt-form__group--inline">
+							<button mat-raised-button matTooltip="Statü güncelle">
+								<mat-icon>update</mat-icon> Statü güncelle
+							</button>
+							<button *ngIf="entity == 'Customer' && selection.selected.length === 1 && !baseService.getAttr(baseService.entityToMerge)" mat-raised-button matTooltip="Seçilenleri birleştir" (click)="mergeSelected()">
+								<mat-icon>dns</mat-icon> Birleştirme için beklet
+							</button>
+							<button *ngIf="entity == 'Customer' && selection.selected.length === 1 && baseService.getAttr(baseService.entityToMerge)" mat-raised-button matTooltip="Seçilenleri birleştir" (click)="mergeSelected()">
+								<mat-icon>dns</mat-icon> Bekletilenle birleştir
+							</button>
+							<button *ngIf="entity == 'Customer' && selection.selected.length === 2 && !baseService.getAttr(baseService.entityToMerge)" mat-raised-button matTooltip="Seçilenleri birleştir" (click)="mergeSelected()">
+								<mat-icon>dns</mat-icon> Seçilenleri birleştir
+							</button>
+							<button *ngIf="entity !== 'Quote' && model && !model.readOnly" mat-raised-button matTooltip="Toplu Sil" (click)="bulkDelete()">
+								<mat-icon>delete</mat-icon> Seçilenleri sil
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+
+	<div class="mat-table__wrapper" [hidden]="result.length === 0">
+		<mat-table [dataSource]="dataSource" matSort matSortDisableClear>
+			<ng-container matColumnDef="select">
+				<mat-header-cell *matHeaderCellDef class="mat-column-checkbox" [hidden]="mode === 'Compact' || (model.name !== 'Spend')">
+					<mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()">
+					</mat-checkbox>
+				</mat-header-cell>
+				<mat-cell *matCellDef="let row" class="mat-column-checkbox" [hidden]="mode === 'Compact' || (model.name !== 'Spend')">
+					<mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
+					</mat-checkbox>
+					<!--<button *ngIf="this.model.name === 'PaymentOrder' && row.status" [class]="'mat-icon-button ' + (row.status.label === 'Onaylandı' ? 'kt-text-pttgreenyellow' : row.status.label === 'Ödendi' ? 'kt-text-pttyellow' : 'kt-text-pttred')" [matTooltip]="row.status.label">
+						<mat-icon>fiber_manual_record</mat-icon>
+					</button> -->
+				</mat-cell>
+			</ng-container>
+			<!--<ng-container matColumnDef="paymentorder1">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Ödeme Yapılacak Şirket</mat-header-cell>
+				<mat-cell *matCellDef="let row">{{row.paymentorder.customer.name ? row.paymentorder.customer.name : ''}}</mat-cell>
+			</ng-container> -->
+			<ng-container matColumnDef="paymentorder2">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Faturadaki Para Birimi</mat-header-cell>
+				<mat-cell *matCellDef="let row">{{row.paymentorder.moneyType.label ? row.paymentorder.moneyType.label : ''}}</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="paymentorder3">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Faturadaki Toplam Tutar</mat-header-cell>
+				<mat-cell *matCellDef="let row">{{formatCurrency(row.paymentorder.amount) ? formatCurrency(row.paymentorder.amount) : ''}}</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="paymentorder4">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Ödenenen Tutar</mat-header-cell>
+				<mat-cell *matCellDef="let row">{{formatCurrency(row.paymentorder.payamount) ? formatCurrency(row.paymentorder.payamount) : ''}}</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="paymentorder5">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Kalan Tutar</mat-header-cell>
+				<mat-cell *matCellDef="let row">{{formatCurrency(row.paymentorder.nextamount) ? formatCurrency(row.paymentorder.nextamount) : ''}}</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="paymentorder6">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Ödenen Para Birimi</mat-header-cell>
+				<mat-cell *matCellDef="let row">{{row.paymentorder.paymentStyle.label.toString() ? row.paymentorder.paymentStyle.label.toString() : ''}}</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="paymentorder7">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Kur Tarihi</mat-header-cell>
+				<mat-cell *matCellDef="let row">{{row.paymentorder.exchange ? row.paymentorder.exchange.label : ' '}}</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="paymentorder8">
+				<mat-header-cell *matHeaderCellDef mat-sort-header>Ödeme Tipi</mat-header-cell>
+				<mat-cell *matCellDef="let row">{{row.paymentorder.paymentType.label.toString()? row.paymentorder.paymentType.label.toString() : ' '}}</mat-cell>
+			</ng-container>
+			<ng-container *ngFor="let field of model?.fields">
+				<ng-container *ngIf="['integer','text','url','textarea'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">{{row[field.name]}}</mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['number'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">{{ row[field.name] }}</mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['phone'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row"><a href="{{'tel:' + utils.phoneZeroPad(row[field.name])}}">{{utils.phoneFormat(row[field.name])}}</a></mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['iban'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">{{utils.ibanFormat(row[field.name])}}</mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['currency'].indexOf(field.fieldType) > -1 && field.display && model.apiName === 'stores'" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">{{row[field.name] ? formatCurrency(row[field.name]) + ' &#8378;': ''}}</mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['currency'].indexOf(field.fieldType) > -1 && field.display && model.apiName !== 'stores'" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">{{row[field.name] ? formatCurrency(row[field.name]) + '': ''}}</mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['percentage'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">{{row[field.name] ? '%' + row[field.name] : ''}}</mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['email'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header class="email-cell">{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row" class="email-cell">
+						<a [href]="'mailto:' + row[field.name]" class="kt-link">{{row[field.name]}}</a>
+					</mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['select'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">{{row[field.name] ? baseService.getAttrVal(row[field.name].id)?.label : ''}}</mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['object'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">{{row[field.name] ? row[field.name][model.displayField.toString()] : ''}}
+					</mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['time'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">{{ row[field.name] | date:'shortDate' }}</mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['date'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">{{ row[field.name] | date:'shortDate' }}</mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['boolean'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">
+						<mat-checkbox [checked]="row[field.name]" disabled="true"></mat-checkbox>
+					</mat-cell>
+				</ng-container>
+			</ng-container>
+
+			<ng-container *ngIf="showButtons && !readOnly && model && !model.readOnly" matColumnDef="actions">
+				<mat-header-cell *matHeaderCellDef>İşlemler</mat-header-cell>
+				<mat-cell *matCellDef="let row">
+					<ng-container *ngFor="let extraButton of extraButtons">
+						<button *ngIf="extraButton.evaluate(row, extraButton)" mat-icon-button [color]="extraButton.color" [matTooltip]="extraButton.description" [name]="extraButton.name" type="button" (click)="extraButton.click($event, row, extraButton)">
+							<mat-icon>{{extraButton.icon}}</mat-icon>
+						</button>
+					</ng-container>
+					<div *ngIf="model.apiName == 'holidays'">
+						<button *ngIf="row.assigner.id === this.baseService.getUserId() && row.approvalStatus.label === 'Onay Bekliyor'" mat-icon-button color="primary" matTooltip="Onayla" (click)="okey(row, $event)">
+							<mat-icon>check</mat-icon>
+						</button>
+						<button *ngIf="row.assigner.id === this.baseService.getUserId() && row.approvalStatus.label === 'Onay Bekliyor'" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
+							<mat-icon>cancel</mat-icon>
+						</button>
+					</div>
+					<div *ngIf="model.apiName == 'buys'">
+						<button *ngIf="onayci === true" mat-icon-button color="success" matTooltip="Teklifi Tamamla" type="button" (click)="okeyQuote(row, $event)">
+							<mat-icon>check_circle</mat-icon>
+						</button>
+						<button *ngIf="onayci === true" mat-icon-button color="primary" matTooltip="Öner" (click)="okey2(row, $event)">
+							<mat-icon>thumb_up</mat-icon>
+						</button>
+						<button *ngIf="onayci === true" mat-icon-button color="warn" matTooltip="Önerme" type="button" (click)="cancel2(row, $event)">
+							<mat-icon>thumb_down</mat-icon>
+						</button>
+						<button *ngIf="onayci2 === true" mat-icon-button color="primary" matTooltip="Onayla" (click)="okey(row, $event)">
+							<mat-icon>check</mat-icon>
+						</button>
+						<button *ngIf="onayci2 === true" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
+							<mat-icon>cancel</mat-icon>
+						</button>
+						<button mat-icon-button color="primary" matTooltip="Proforma Fatura" type="button" (click)="showFiles(row, $event)">
+							<mat-icon>folder</mat-icon>
+						</button>
+					</div>
+					<div *ngIf="model.apiName == 'payment_orders'">
+						<button mat-icon-button color="secondary" matTooltip="Bilgi" type="button" (click)="infoPaymentOrder(row, $event)">
+							<mat-icon>information</mat-icon>
+						</button>
+						<button *ngIf="row.kaynak === 'MANUEL TALİMAT' && (row.status.label !== 'Reddedildi' && row.status.label !== 'Onaylandı' && row.status.label !== 'Ödendi' && row.status.label !== 'Kısmi Ödendi')" mat-icon-button color="secondary" matTooltip="Fatura Ekle" type="button" [disabled]="loading" (click)="uploadFile(row, $event)">
+							<ng-container *ngIf="!loading; else loadingBlock">
+								<mat-icon>file_upload</mat-icon>
+							</ng-container>
+							<ng-template #loadingBlock>
+								<mat-spinner diameter="20"></mat-spinner>
+							</ng-template>
+						</button>
+						<button mat-icon-button color="secondary" matTooltip="Fatura Görüntüle" type="button" (click)="showPaymentOrderListFiles(row, $event)">
+							<mat-icon>visibility</mat-icon>
+						</button>
+						<button *ngIf="(row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor') || (row.secondAssigner.id === this.baseService.getUserId() && row.status.label === '2.Onay Bekleniyor') || (this.baseService.getUser().birim.label === 'Muhasebe' && row.status.label === 'Muhasebe Onayı')" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
+							<mat-icon>check</mat-icon>
+						</button>
+						<button *ngIf="(row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor') || (row.secondAssigner.id === this.baseService.getUserId() && row.status.label === '2.Onay Bekleniyor') || (this.baseService.getUser().birim.label === 'Muhasebe' && row.status.label === 'Muhasebe Onayı') || (this.baseService.getUser().birim.label === 'Finans' && row.status.label === 'Onaylandı')" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
+							<mat-icon>cancel</mat-icon>
+						</button>
+						<button *ngIf="row.owner.login === this.baseService.getUser().login && row.store === null" mat-icon-button color="basic" matTooltip="Satın Alma Kodu" type="button" (click)="connectStore(row, $event)">
+							<mat-icon>link</mat-icon>
+						</button>
+					</div>
+					<div *ngIf="model.apiName == 'spends'">
+						<button *ngIf="finans === true && row.status.label === 'Ödenmedi'" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
+							<mat-icon>check</mat-icon>
+						</button>
+						<button *ngIf="finans === true && row.status.label === 'Ödenmedi'" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
+							<mat-icon>cancel</mat-icon>
+						</button>
+						<button *ngIf="finans === true && row.status.label === 'Ödenmedi' && row.paymentorder.moneyType.label === 'Dolar' && row.paymentorder.paymentStyle.label === 'Türk Lirası'" mat-icon-button color="success" matTooltip="Ödeme Yap" type="button" (click)="toPay(row, $event)">
+							<mat-icon>payment</mat-icon>
+						</button>
+					</div>
+					<div *ngIf="model.apiName === 'fuellimits'">
+						<button *ngIf="eklimitonayi === true" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
+							<mat-icon>check</mat-icon>
+						</button>
+						<button *ngIf="eklimitonayi === true" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
+							<mat-icon>cancel</mat-icon>
+						</button>
+					</div>
+					<div *ngIf="model.apiName === 'stores'">
+						<button *ngIf="row.buyStatus.label === 'Onaylandı' && row.buyowner.id === this.baseService.getUserId() && row.status.label === 'Onay Bekliyor'" mat-icon-button color="success" matTooltip="Merkezden Tedarik Edildi" type="button" (click)="changecenter(row, $event)">
+							<mat-icon>shop</mat-icon>
+						</button>
+					</div>
+					<div *ngIf="model.apiName != 'buys' && model.apiName != 'invoice_lists' && model.apiName != 'payment_orders' && model.apiName != 'spends'">
+						<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
+							<mat-icon>create</mat-icon>
+						</button>
+						<div *ngIf="model.apiName != 'stores' && model.apiName != 'activities' && model.apiName != 'holidays' && model.apiName != 'users' && model.apiName != 'tasks' && model.apiName != 'payment_orders' && model.apiName != 'invoice_lists' && model.apiName != 'spends' && model.apiName != 'fuellimits'">
+							<button *ngIf="baseService.getPermissionRule(model.name,'delete') && model.delete !== false && !row.isKPAPG && model.name !== 'ContProduct'" mat-icon-button color="warn" matTooltip="Sil" type="button" (click)="delete(row, $event)">
+								<mat-icon>delete</mat-icon>
+							</button>
+						</div>
+					</div>
+					<div *ngIf="model.apiName == 'invoice_lists'">
+						<button *ngIf="baseService.getUserId() === 26800 && (row.invoiceStatus.label === 'Sahipsiz' || row.invoiceStatus.label === 'Atandı' || row.invoiceStatus.label === 'Hatalı Atama')" mat-icon-button color="success" matTooltip="Sorumlu Ata" type="button" (click)="sendOwner(row, $event)">
+							<mat-icon>supervisor_account</mat-icon>
+						</button>
+						<button mat-icon-button color="success" matTooltip="Fatura Görüntüle" type="button" (click)="showInvoiceListFiles(row, $event)">
+							<mat-icon>visibility</mat-icon>
+						</button>
+						<button *ngIf="row.owner !== null && row.invoiceStatus.label === 'Atandı' && row.owner.login === this.baseService.getUser().login" mat-icon-button color="basic" matTooltip="Fatura Onayı" type="button" (click)="correct(row, $event)">
+							<mat-icon>check_circle</mat-icon>
+						</button>
+					</div>
+
+				</mat-cell>
+			</ng-container>
+
+			<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+			<!--<mat-row *ngIf="model.name !== 'InvoiceList'" [ngClass]="{red: even}" [class]="row['priorityId'] ? (baseService.getAttrVal(row['priorityId']).label === 'Orta' ? 'priority_medium' : (baseService.getAttrVal(row['priorityId']).label === 'Yüksek' ? 'priority_high' : '' ) ) : ''" *matRowDef="let row; let even = even; columns: displayedColumns" (click)="rowClick.emit(row)"></mat-row>
+		-->
+				<!-- Bu kısım model.name !== 'PaymentOrder' şartı sağlandığında görüntülenecek içerik -->
+			<mat-row [ngClass]="getRowClasses(row, even)" *matRowDef="let row; let even = even; columns: displayedColumns" (click)="rowClick.emit(row)"></mat-row>
+
+		</mat-table>
+		<!-- <div class="mat-table__message" *ngIf="!dataSource?.hasItems && !(dataSource?.loading$ | async)">Gösterilecek sonuç
+			yok</div> -->
+	</div>
+
+	<div class="mat-table__bottom" [hidden]="(dataSource?.paginatorTotal$ | async) <= 10">
+		<mat-spinner [diameter]="20" *ngIf="dataSource?.loading$ | async"></mat-spinner>
+		<mat-paginator [pageSize]="mode === 'Compact' ? 5 : 10" [pageSizeOptions]="[5, 10, 20, 50, 500]" [length]="dataSource?.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+	</div>
+</ng-template>

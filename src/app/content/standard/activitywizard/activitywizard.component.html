@@ -1,0 +1,569 @@
+<kt-portlet>
+	<kt-portlet-body>
+		<div class="checkInOut" *ngIf="!data.activity.checkInTime">
+			<button *ngIf="!utils.hasOperation('Back_Office')" (click)="checkInOrOut(true, true)" [disabled]="data.activity.checkInTime" class="btn btn-success">
+				<i class="fa fa-map-marked"></i> Check-In (Müşteri Lokasyonu)
+			</button>
+			<button (click)="checkInOrOut(true, false)" [disabled]="data.activity.checkInTime" class="btn btn-success kt-margin-l-20">
+				<i class="fa fa-map-marked"></i> Check-In (Tarafsız Saha)
+			</button>
+		</div>
+		<div #wizard [class]="'kt-grid kt-wizard-v1 kt-wizard-v1--white' + (!data.activity.checkInTime ? ' disabledContent' : '')" id="kt_wizard_v1" data-ktwizard-state="step-first">
+			<div class="kt-grid__item">
+				<div class="kt-wizard-v1__nav">
+					<div class="kt-wizard-v1__nav-items">
+						<a class="kt-wizard-v1__nav-item" href="javascript:;" data-ktwizard-type="step" data-ktwizard-state="current">
+							<div class="kt-wizard-v1__nav-body">
+								<div class="kt-wizard-v1__nav-icon">
+									<i class="flaticon-suitcase"></i>
+								</div>
+								<div class="kt-wizard-v1__nav-label">
+									Müşteri
+								</div>
+							</div>
+						</a>
+						<a class="kt-wizard-v1__nav-item" href="javascript:;" data-ktwizard-type="step">
+							<div class="kt-wizard-v1__nav-body">
+								<div class="kt-wizard-v1__nav-icon">
+									<i class="flaticon-map-location"></i>
+								</div>
+								<div class="kt-wizard-v1__nav-label">
+									Adres
+								</div>
+							</div>
+						</a>
+						<a class="kt-wizard-v1__nav-item" href="javascript:;" data-ktwizard-type="step">
+							<div class="kt-wizard-v1__nav-body">
+								<div class="kt-wizard-v1__nav-icon">
+									<i class="flaticon-user"></i>
+								</div>
+								<div class="kt-wizard-v1__nav-label">
+									Yetkili Kişi
+								</div>
+							</div>
+						</a>
+						<a class="kt-wizard-v1__nav-item" href="javascript:;" data-ktwizard-type="step">
+							<div class="kt-wizard-v1__nav-body">
+								<div class="kt-wizard-v1__nav-icon">
+									<i class="flaticon-list"></i>
+								</div>
+								<div class="kt-wizard-v1__nav-label">
+									Aktivite
+								</div>
+							</div>
+						</a>
+						<a *ngIf="!utils.hasOperation('Back_Office')" class="kt-wizard-v1__nav-item" href="javascript:;" data-ktwizard-type="step">
+							<div class="kt-wizard-v1__nav-body">
+								<div class="kt-wizard-v1__nav-icon">
+									<i class="flaticon-paper-plane"></i>
+								</div>
+								<div class="kt-wizard-v1__nav-label">
+									Teklif & Sözleşme
+								</div>
+							</div>
+						</a>
+						<a class="kt-wizard-v1__nav-item" href="javascript:;" data-ktwizard-type="step">
+							<div class="kt-wizard-v1__nav-body">
+								<div class="kt-wizard-v1__nav-icon">
+									<i class="flaticon2-paper-plane"></i>
+								</div>
+								<div class="kt-wizard-v1__nav-label">
+									Görev
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="kt-grid__item kt-grid__item--fluid kt-wizard-v1__wrapper">
+
+				<form class="kt-form" id="kt_form" #wizardForm="ngForm" (keydown.enter)="$event.preventDefault()">
+
+					<div class="kt-wizard-v1__content" data-ktwizard-type="step-content" data-ktwizard-state="current">
+						<div class="kt-heading kt-heading--md">Müşteri Bilgileri</div>
+						<mat-tab-group (selectedTabChange)="customerTabChange($event)">
+							<mat-tab label="Yeni Müşteri">
+								<div class="form-group kt-form__group row">
+									<div class="col-xs-12 col-md-12 col-lg-12 col-xl-12 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" matInput placeholder="Müşteri Adı" (ngModelChange)="dataChanged()" [(ngModel)]="data.customer.name" name="customer.name" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" [textMask]="{mask: utils.phoneMask}" matInput placeholder="Telefon" (ngModelChange)="dataChanged()" [(ngModel)]="data.customer.phone" name="customer.phone" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="email" email matInput placeholder="E-mail" (ngModelChange)="dataChanged()" [(ngModel)]="data.customer.email" name="customer.email" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<mat-select [compareWith]="utils.compareObjects" placeholder="Sektör" (ngModelChange)="dataChanged()" [(ngModel)]="data.customer.sector" name="customer.sector">
+												<mat-option *ngFor="let option of baseService.getAttr('Müş_Sek')?.values" [value]="option">{{option.label}}</mat-option>
+											</mat-select>
+										</mat-form-field>
+									</div>
+									<!--<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="number" matInput placeholder="Araç Sayısı" (ngModelChange)="dataChanged()" [(ngModel)]="data.customer.vehicleCount" name="customer.vehicleCount" />
+										</mat-form-field>
+									</div>-->
+								</div>
+							</mat-tab>
+							<mat-tab label="Mevcut Müşteri">
+								<mat-form-field class="mat-form-field-fluid kt-margin-t-10">
+									<input type="text" autocomplete="disabled" name="data.oldCustomer" placeholder="Müşteri Seçimi" matInput [(value)]="data.oldCustomer" [ngModel]="data.oldCustomer | objectPipe" [matAutocomplete]="auto" (ngModelChange)="filterOptions(utils.getModel('customer'), $event); data.oldCustomer = $event;" (focus)="filterOptions(utils.getModel('customer'), $event)">
+									<mat-autocomplete #auto="matAutocomplete" [displayWith]="objectDisplay.bind(this)" (optionSelected)="dataChanged(); customerSelected();">
+										<mat-option *ngFor="let option of filteredOptionss['Customer']" [value]="option">{{option['instanceName']}}</mat-option>
+									</mat-autocomplete>
+								</mat-form-field>
+								<div class="form-group kt-form__group row" *ngIf="data.oldCustomer && data.oldCustomer.id">
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" [textMask]="{mask: utils.phoneMask}" matInput placeholder="Telefon" (ngModelChange)="dataChanged()" [(ngModel)]="data.oldCustomer.phone" name="oldCustomer.phone" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="email" email matInput placeholder="E-mail" (ngModelChange)="dataChanged()" [(ngModel)]="data.oldCustomer.email" name="oldCustomer.email" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<mat-select [compareWith]="utils.compareObjects" placeholder="Sektör" (ngModelChange)="dataChanged()" [(ngModel)]="data.oldCustomer.sector" name="oldCustomer.sector">
+												<mat-option *ngFor="let option of baseService.getAttr('Müş_Sek')?.values" [value]="option">{{option.label}}</mat-option>
+											</mat-select>
+										</mat-form-field>
+									</div>
+									<!--<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="number" matInput placeholder="Araç Sayısı" (ngModelChange)="dataChanged()" [(ngModel)]="data.oldCustomer.vehicleCount" name="oldCustomer.vehicleCount" />
+										</mat-form-field>
+									</div>-->
+								</div>
+							</mat-tab>
+						</mat-tab-group>
+					</div>
+
+					<div class="kt-wizard-v1__content" data-ktwizard-type="step-content">
+						<div class="kt-heading kt-heading--md">Adres Bilgileri</div>
+
+						<mat-tab-group [selectedIndex]="data.oldCustomer && data.oldCustomer.id ? 1 : 0" *ngIf="data.currentStep === 2" (selectedTabChange)="addressTabChange($event)">
+							<mat-tab label="Yeni Adres">
+								<div class="form-group kt-form__group row">
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" matInput placeholder="Adres Başlığı" (ngModelChange)="dataChanged()" [(ngModel)]="data.address.name" name="address.name" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" matInput placeholder="Adres Satırı" (ngModelChange)="dataChanged()" [(ngModel)]="data.address.detail" name="address.detail" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid kt-margin-t-10">
+											<input type="text" autocomplete="disabled" name="data.address.city" placeholder="İl" matInput [(value)]="data.address.city" [ngModel]="data.address.city | objectPipe" [matAutocomplete]="auto3" (ngModelChange)="filterOptions(utils.getModel('city'), $event); data.address.city = $event;" (focus)="filterOptions(utils.getModel('city'), $event)">
+											<mat-autocomplete #auto3="matAutocomplete" [displayWith]="objectDisplay.bind(this)" (optionSelected)="dataChanged()">
+												<mat-option *ngFor="let option of filteredOptionss['City']" [value]="option">{{option['instanceName']}}</mat-option>
+											</mat-autocomplete>
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid kt-margin-t-10">
+											<input type="text" autocomplete="disabled" name="data.address.district" placeholder="İlçe" matInput [(value)]="data.address.district" [ngModel]="data.address.district | objectPipe" [matAutocomplete]="auto4" (ngModelChange)="filterOptions(utils.getModel('district'), $event); data.address.district = $event;" (focus)="filterOptions(utils.getModel('district'), $event)">
+											<mat-autocomplete #auto4="matAutocomplete" [displayWith]="objectDisplay.bind(this)" (optionSelected)="dataChanged()">
+												<mat-option *ngFor="let option of filteredOptionss['District']" [value]="option">{{option['instanceName']}}</mat-option>
+											</mat-autocomplete>
+										</mat-form-field>
+									</div>
+								</div>
+							</mat-tab>
+							<mat-tab label="Mevcut Adres" *ngIf="data.oldCustomer && data.oldCustomer.id">
+								<mat-form-field class="mat-form-field-fluid kt-margin-t-10">
+									<input type="text" autocomplete="disabled" name="data.oldAddress" placeholder="Adres Seçimi" matInput [(value)]="data.oldAddress" [ngModel]="data.oldAddress | objectPipe" [matAutocomplete]="auto5" (ngModelChange)="filterOptions(utils.getModel('address'), $event); data.oldAddress = $event;" (focus)="filterOptions(utils.getModel('address'), $event)">
+									<mat-autocomplete #auto5="matAutocomplete" [displayWith]="objectDisplay.bind(this)" (optionSelected)="dataChanged()">
+										<mat-option *ngFor="let option of filteredOptionss['Address']" [value]="option">{{option['instanceName']}}</mat-option>
+									</mat-autocomplete>
+								</mat-form-field>
+								<div class="form-group kt-form__group row" *ngIf="data.oldAddress && data.oldAddress.id">
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" matInput placeholder="Adres Başlığı" (ngModelChange)="dataChanged()" [(ngModel)]="data.oldAddress.name" name="oldAddress.name" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" matInput placeholder="Adres Satırı" (ngModelChange)="dataChanged()" [(ngModel)]="data.oldAddress.detail" name="oldAddress.detail" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid kt-margin-t-10">
+											<input type="text" autocomplete="disabled" name="data.oldAddress.city" placeholder="İl" matInput [(value)]="data.oldAddress.city" [ngModel]="data.oldAddress.city | objectPipe" [matAutocomplete]="auto3" (ngModelChange)="filterOptions(utils.getModel('city'), $event); data.oldAddress.city = $event;" (focus)="filterOptions(utils.getModel('city'), $event)">
+											<mat-autocomplete #auto3="matAutocomplete" [displayWith]="objectDisplay.bind(this)" (optionSelected)="dataChanged()">
+												<mat-option *ngFor="let option of filteredOptionss['City']" [value]="option">{{option['instanceName']}}</mat-option>
+											</mat-autocomplete>
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid kt-margin-t-10">
+											<input type="text" autocomplete="disabled" name="data.oldAddress.district" placeholder="İlçe" matInput [(value)]="data.oldAddress.district" [ngModel]="data.oldAddress.district | objectPipe" [matAutocomplete]="auto4" (ngModelChange)="filterOptions(utils.getModel('district'), $event); data.oldAddress.district = $event;" (focus)="filterOptions(utils.getModel('district'), $event)">
+											<mat-autocomplete #auto4="matAutocomplete" [displayWith]="objectDisplay.bind(this)" (optionSelected)="dataChanged()">
+												<mat-option *ngFor="let option of filteredOptionss['District']" [value]="option">{{option['instanceName']}}</mat-option>
+											</mat-autocomplete>
+										</mat-form-field>
+									</div>
+								</div>
+							</mat-tab>
+						</mat-tab-group>
+					</div>
+
+					<div class="kt-wizard-v1__content" data-ktwizard-type="step-content">
+						<div class="kt-heading kt-heading--md">Yetkili Kişi Bilgileri</div>
+
+						<mat-tab-group [selectedIndex]="data.oldCustomer && data.oldCustomer.id ? 1 : 0" *ngIf="data.currentStep === 3" (selectedTabChange)="contactTabChange($event)">
+							<mat-tab label="Yeni Kişi">
+								<div class="form-group kt-form__group row">
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" matInput placeholder="Kişi Adı" (ngModelChange)="dataChanged()" [(ngModel)]="data.contact.firstName" name="contact.firstName" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" matInput placeholder="Kişi Soyadı" (ngModelChange)="dataChanged()" [(ngModel)]="data.contact.lastName" name="contact.lastName" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" [textMask]="{mask: utils.phoneMask}" matInput placeholder="Telefon" (ngModelChange)="dataChanged()" [(ngModel)]="data.contact.phone" name="contact.phone" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="email" email matInput placeholder="E-mail" (ngModelChange)="dataChanged()" [(ngModel)]="data.contact.email" name="contact.email" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<mat-select [compareWith]="utils.compareObjects" placeholder="Tip" (ngModelChange)="dataChanged()" [(ngModel)]="data.contact.type" name="contact.type">
+												<mat-option *ngFor="let option of baseService.getAttr('Kiş_Tip')?.values" [value]="option">{{option.label}}</mat-option>
+											</mat-select>
+										</mat-form-field>
+									</div>
+								</div>
+							</mat-tab>
+							<mat-tab label="Mevcut Kişi" *ngIf="data.oldCustomer && data.oldCustomer.id">
+								<mat-form-field class="mat-form-field-fluid kt-margin-t-10">
+									<input type="text" autocomplete="disabled" name="data.oldContact" placeholder="Kişi Seçimi" matInput [(value)]="data.oldContact" [ngModel]="data.oldContact | objectPipe" [matAutocomplete]="auto2" (ngModelChange)="filterOptions(utils.getModel('contact'), $event); data.oldContact = $event;" (focus)="filterOptions(utils.getModel('contact'), $event)">
+									<mat-autocomplete #auto2="matAutocomplete" [displayWith]="objectDisplay.bind(this)" (optionSelected)="dataChanged()">
+										<mat-option *ngFor="let option of filteredOptionss['Contact']" [value]="option">{{option['instanceName']}}</mat-option>
+									</mat-autocomplete>
+								</mat-form-field>
+								<div class="form-group kt-form__group row" *ngIf="data.oldContact && data.oldContact.id">
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" matInput placeholder="Kişi Adı" (ngModelChange)="dataChanged()" [(ngModel)]="data.oldContact.firstName" name="oldContact.firstName" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" matInput placeholder="Kişi Soyadı" (ngModelChange)="dataChanged()" [(ngModel)]="data.oldContact.lastName" name="oldContact.lastName" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="text" [textMask]="{mask: utils.phoneMask}" matInput placeholder="Telefon" (ngModelChange)="dataChanged()" [(ngModel)]="data.oldContact.phone" name="oldContact.phone" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<input type="email" email matInput placeholder="E-mail" (ngModelChange)="dataChanged()" [(ngModel)]="data.oldContact.email" name="oldContact.email" />
+										</mat-form-field>
+									</div>
+									<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+										<mat-form-field class="mat-form-field-fluid">
+											<mat-select [compareWith]="utils.compareObjects" placeholder="Tip" (ngModelChange)="dataChanged()" [(ngModel)]="data.oldContact.type" name="oldContact.type">
+												<mat-option *ngFor="let option of baseService.getAttr('Kiş_Tip')?.values" [value]="option">{{option.label}}</mat-option>
+											</mat-select>
+										</mat-form-field>
+									</div>
+								</div>
+							</mat-tab>
+						</mat-tab-group>
+					</div>
+
+					<div class="kt-wizard-v1__content" data-ktwizard-type="step-content">
+						<div class="kt-heading kt-heading--md">Aktivite Bilgileri</div>
+						<div class="form-group kt-form__group row">
+							<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<mat-select [compareWith]="utils.compareObjects" placeholder="Konu" (ngModelChange)="dataChanged()" [(ngModel)]="data.activity.type" name="activity.type">
+										<mat-option *ngFor="let option of baseService.getAttr('Akt_Tip')?.values" [value]="option">{{option.label}}</mat-option>
+									</mat-select>
+								</mat-form-field>
+							</div>
+							<div class="col-xs-12 col-md-12 col-lg-12 col-xl-12 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<textarea matInput placeholder="Açıklama" matTextareaAutosize matAutosizeMinRows="3" (ngModelChange)="dataChanged()" [(ngModel)]="data.activity.description" name="activity.description"></textarea>
+								</mat-form-field>
+							</div>
+						</div>
+					</div>
+
+					<div *ngIf="!utils.hasOperation('Back_Office')" class="kt-wizard-v1__content" data-ktwizard-type="step-content">
+						<div class="kt-heading kt-heading--md">Teklif Bilgileri</div>
+						<div class="form-group kt-form__group row">
+							<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<input type="text" [textMask]="{mask: utils.currencyMask}" matInput placeholder="Teklif Tutarı" (ngModelChange)="dataChanged()" [(ngModel)]="data.quote.fuelLt" name="quote.fuelLt" />
+								</mat-form-field>
+							</div>
+							<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<input type="text" [textMask]="{mask: utils.currencyMask}" matInput placeholder="İndirim Tutarı" (ngModelChange)="dataChanged()" [(ngModel)]="data.quote.fuelTl" name="quote.fuelTl" />
+								</mat-form-field>
+							</div>
+							<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<input type="text" [textMask]="{mask: utils.percentageMask}" matInput placeholder="KDV Oranı" (ngModelChange)="dataChanged()" [(ngModel)]="data.quote.discountDiesel" name="quote.discountDiesel" />
+								</mat-form-field>
+								<!--<span *ngIf="data.quote.discountDiesel !== undefined && utils.getConfiguration('Motorin Maksimum İndirim') && utils.getConfiguration('Motorin Maksimum İndirim').value < utils.currency2Float(data.quote.discountDiesel)" style="color: red; font-size: 1rem"><strong>Uyarı: İndirim oranı yönetici onayına düşecektir</strong></span>-->
+							</div>
+							<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<input type="text" [textMask]="{mask: utils.percentageMask}" matInput placeholder="İndirim Oranı" (ngModelChange)="dataChanged()" [(ngModel)]="data.quote.discountGasoline" name="quote.discountGasoline" />
+								</mat-form-field>
+								<span *ngIf="data.quote.discountGasoline !== undefined && utils.getConfiguration('Benzin Maksimum İndirim') && utils.getConfiguration('Benzin Maksimum İndirim').value < utils.currency2Float(data.quote.discountGasoline)" style="color: red; font-size: 1rem"><strong>Uyarı: İndirim oranı yönetici onayına düşecektir</strong></span>
+							</div>
+
+							<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<mat-select [compareWith]="utils.compareObjects" placeholder="Ödeme Periyodu" (ngModelChange)="dataChanged()" [(ngModel)]="data.quote.paymentPeriod" name="quote.paymentPeriod">
+										<mat-option *ngFor="let option of baseService.getAttr('Söz_ÖdP')?.values" [value]="option">{{option.label}}</mat-option>
+									</mat-select>
+								</mat-form-field>
+							</div>
+							<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<mat-select [compareWith]="utils.compareObjects" placeholder="Ödeme Yöntemi" (ngModelChange)="dataChanged()" [(ngModel)]="data.quote.paymentMethod" name="quote.paymentMethod">
+										<mat-option *ngFor="let option of baseService.getAttr('Söz_ÖdY')?.values" [value]="option">{{option.label}}</mat-option>
+									</mat-select>
+								</mat-form-field>
+							</div>
+							<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<input type="number" matInput placeholder="Ödeme Günü" (ngModelChange)="dataChanged()" [(ngModel)]="data.quote.paymentDay" name="quote.paymentDay" />
+								</mat-form-field>
+							</div>
+							<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<mat-select [compareWith]="utils.compareObjects" placeholder="Olasılık" (ngModelChange)="dataChanged()" [(ngModel)]="data.quote.probability" name="quote.probability">
+										<mat-option *ngFor="let option of baseService.getAttr('Tek_Ola')?.values" [value]="option">{{option.label}}</mat-option>
+									</mat-select>
+								</mat-form-field>
+							</div>
+							<!--<div class="col-xs-12 col-md-12 col-lg-12 col-xl-12 kt-margin-b-20 ">
+								<div class="checkInOut">
+									<button (click)="sendInfo()" class="btn btn-success">
+										<i class="fa fa-file-contract" style="margin-top: -2px"></i> Müşteriye Bilgilendirme Dökümanı Gönder
+									</button>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-12 col-lg-12 col-xl-12 kt-margin-b-20 ">
+								<div class="checkInOut">
+									<button (click)="sendContract()" class="btn btn-success">
+										<i class="fa fa-file-contract" style="margin-top: -2px"></i> Müşteriye Sözleşme Gönder
+									</button>
+								</div>
+							</div>-->
+							<div class="col-xs-12 col-md-12 col-lg-12 col-xl-12 kt-margin-b-20 ">
+								<div class="checkInOut">
+									<mat-checkbox (ngModelChange)="dataChanged()" [(ngModel)]="data.createContract" name="createContract">Sözleşme İmzalandı
+									</mat-checkbox>
+								</div>
+								<div class="checkInOut" *ngIf="data.createContract && (!data.customer.name || data.customer.name === '' ||
+									!data.customer.email || data.customer.email === '' ||
+									!data.customer.phone || data.customer.phone === '' ||
+									!data.address.detail || data.contact.detail === '' ||
+									!data.contact.firstName || data.contact.firstName === '')" style="color: red; font-size: 1rem">Uyarı: Sözleşme imzalandıysa;&nbsp;<strong> firma unvanı, adres, email, telefon, yetkili kişi</strong>&nbsp;bilgileri mutlaka girilmelidir
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="kt-wizard-v1__content" data-ktwizard-type="step-content">
+						<div class="kt-heading kt-heading--md">Görev Atama</div>
+						<div class="form-group kt-form__group row">
+							<div class="col-xs-12 col-md-12 col-lg-12 col-xl-12 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<input type="text" autocomplete="disabled" name="data.task.owner" placeholder="Kişi Seçimi" matInput [(value)]="data.task.owner" [ngModel]="data.task.owner | objectPipe" [matAutocomplete]="auto6" (ngModelChange)="filterOptions(utils.getModel('user'), $event); data.task.owner = $event;" (focus)="filterOptions(utils.getModel('user'), $event)">
+									<mat-autocomplete #auto6="matAutocomplete" [displayWith]="objectDisplay.bind(this)" (optionSelected)="dataChanged();">
+										<mat-option *ngFor="let option of filteredOptionss['User']" [value]="option">{{option['instanceName']}}</mat-option>
+									</mat-autocomplete>
+								</mat-form-field>
+							</div>
+							<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<mat-select [compareWith]="utils.compareObjects" placeholder="Konu" (ngModelChange)="dataChanged()" [(ngModel)]="data.task.type" name="task.type">
+										<mat-option *ngFor="let option of baseService.getAttr('Gör_Tip')?.values" [value]="option">{{option.label}}</mat-option>
+									</mat-select>
+								</mat-form-field>
+							</div>
+							<div class="col-xs-12 col-md-6 col-lg-6 col-xl-6 kt-margin-b-20">
+								<div class="row">
+									<div class="col-md-9">
+										<mat-form-field class="mat-form-field-fluid">
+											<input matInput [matDatepicker]="picker" placeholder="Yapılacak Zaman" [(ngModel)]="data.task.dueTime" name="task.dueTime" (focus)="picker.open()">
+											<mat-datepicker-toggle matSuffix [for]="picker" tabIndex="-1">
+											</mat-datepicker-toggle>
+											<mat-datepicker touchUi="false" #picker>
+											</mat-datepicker>
+										</mat-form-field>
+									</div>
+									<div class="col-md-3">
+										<div style="width: 45%; float: left;">
+											<mat-form-field class="mat-form-field-fluid">
+												<mat-select placeholder="SS" [(ngModel)]="data.task.dueTimeHour" name="task.dueTimeHour">
+													<mat-option *ngFor="let option of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]" [value]="option">
+														{{option.toString().padStart(2, '0')}}
+													</mat-option>
+												</mat-select>
+											</mat-form-field>
+										</div>
+										<div style="width: 45%; float: left;">
+											<mat-form-field class="mat-form-field-fluid">
+												<mat-select placeholder="DD" [(ngModel)]="data.task.dueTimeMinute" name="task.dueTimeMinute">
+													<mat-option *ngFor="let option of [0,5,10,15,20,25,30,35,40,45,50,55]" [value]="option">
+														{{option.toString().padStart(2, '0')}}
+													</mat-option>
+												</mat-select>
+											</mat-form-field>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-12 col-lg-12 col-xl-12 kt-margin-b-20">
+								<mat-form-field class="mat-form-field-fluid">
+									<textarea matInput placeholder="Açıklama" matTextareaAutosize matAutosizeMinRows="3" (ngModelChange)="dataChanged()" [(ngModel)]="data.task.description" name="task.description"></textarea>
+								</mat-form-field>
+							</div>
+						</div>
+					</div>
+
+					<!-- <div class="kt-wizard-v1__content" data-ktwizard-type="step-content">
+						<div class="kt-heading kt-heading--md">Bilgileri Kontrol Edin</div>
+						<div class="kt-form__section kt-form__section--first">
+							<div class="kt-wizard-v1__review row">
+								<div class="kt-wizard-v1__review-item col-xl-6">
+									<div class="kt-wizard-v1__review-title">
+										Müşteri Bilgileri
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										{{ data.oldCustomer.id ? data.oldCustomer.name : data.customer.name }}
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										{{ data.oldCustomer.id ? data.oldCustomer.phone : data.customer.phone }}
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										{{ data.oldCustomer.id ? data.oldCustomer.email : data.customer.email }}
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										{{ data.oldCustomer.id ? (data.oldCustomer.sector ? data.oldCustomer.sector.label : '') : (data.customer.sector ? data.customer.sector.label : '') }}
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										{{ data.oldCustomer.id ? data.oldCustomer.vehicleCount : data.customer.vehicleCount}}
+									</div>
+								</div>
+								<div class="kt-wizard-v1__review-item col-xl-6">
+									<div class="kt-wizard-v1__review-title">
+										Yetkili Kişi Bilgileri
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										{{ data.oldContact.id ? data.oldContact.firstName : data.contact.firstName }}
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										{{ data.oldContact.id ? data.oldContact.lastName : data.contact.lastName }}
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										{{ data.oldContact.id ? data.oldContact.phone : data.contact.phone }}
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										{{ data.oldContact.id ?  data.oldContact.email : data.contact.email }}
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										{{ data.oldContact.id ? (data.oldContact.type ? data.oldContact.type.label : '') : (data.contact.type ? data.contact.type.label : '') }}
+									</div>
+								</div>
+								<div class="kt-wizard-v1__review-item col-xl-12">
+									<div class="kt-wizard-v1__review-title">
+										Ziyaret Bilgileri
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										{{data.activity.type ? data.activity.type.label : ''}}
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										{{data.activity.description}}
+									</div>
+								</div>
+								<div class="kt-wizard-v1__review-item col-xl-6">
+									<div class="kt-wizard-v1__review-title">
+										Teklif Bilgileri
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										Aylık Tüketim (Litre): <strong>{{data.quote.fuelLt}}</strong>
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										Aylık Tüketim (TL): <strong>{{data.quote.fuelTl}}</strong>
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										Motorin İndirim: <strong>{{data.quote.discountDiesel}}</strong>
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										Benzin İndirim: <strong>{{data.quote.discountGasoline}}</strong>
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										Ödeme Periyodu: <strong>{{data.quote.paymentPeriod ? data.quote.paymentPeriod.label : ''}}</strong>
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										Ödeme Yöntemi: <strong>{{data.quote.paymentMethod ? data.quote.paymentMethod.label : ''}}</strong>
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										Ödeme Günü: <strong>{{data.quote.paymentDay}}</strong>
+									</div>
+									<div class="kt-wizard-v1__review-content">
+										Olasılık: <strong>{{data.quote.probability ? data.quote.probability.label : ''}}</strong>
+									</div>
+								</div>
+								<div class="kt-wizard-v1__review-item col-xl-6">
+									<div class="kt-wizard-v1__review-content">
+										Sözleşme imzalandı mı?: <strong>{{data.createContract ? 'Evet' : 'Hayır'}}</strong>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div> -->
+
+					<div class="kt-form__actions">
+						<div class="btn btn-secondary btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u" data-ktwizard-type="action-prev">
+							Önceki Adım
+						</div>
+						<button (click)="checkInOrOut(false, false)" [disabled]="!data.activity.checkInTime || (loading$ | async) || wizardForm.invalid" class="btn btn-warning btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u" data-ktwizard-type="action-submit">
+							Check-Out & Kaydet
+							<div style="color: red" *ngIf="wizardForm.invalid">(E-mail Hatalı)</div>
+						</button>
+						<div class="btn btn-brand btn-md btn-tall btn-wide kt-font-bold kt-font-transform-u" data-ktwizard-type="action-next">
+							Sonraki Adım
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+
+	</kt-portlet-body>
+</kt-portlet>

@@ -1,0 +1,76 @@
+<kt-portlet-header>
+	<ng-container ktPortletTitle>
+		<h3 class="kt-portlet__head-title">
+			<mat-form-field>
+				<mat-select (selectionChange)="filterChange.emit()" [(value)]="activeFilter">
+					<mat-option selected value="All">
+						Tümü
+					</mat-option>
+					<mat-option *ngFor="let filter of filters" [value]="filter">{{filter.name}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</h3>
+	</ng-container>
+	<ng-container ktPortletTools>
+		<div class="page-header-buttons">
+			<button type="button" class="btn btn-label-brand kt-margin-l-10" mat-icon-button matTooltip="Filtreyi Düzenle" (click)="showFilterDialog()">
+				<mat-icon>filter_list</mat-icon>
+			</button>
+			<div ngbDropdown [placement]="'bottom-left'" class="dropdown">
+				<!--<button *ngIf="utils.hasOperation('Dosya_Export')" type="button" ngbDropdownToggle class="btn btn-label-brand kt-margin-l-10" mat-icon-button matTooltip="Dosya İndir">
+					<mat-icon>arrow_downward</mat-icon>
+				</button> -->
+				<div ngbDropdownMenu class="dropdown-menu dropdown-menu-fit" style="z-index: 10111;">
+					<ul class="kt-nav">
+						<!-- <li class="kt-nav__section kt-nav__section--first">
+							<span class="kt-nav__section-text kt-margin-b-10">Dosya İndir</span>
+						</li> -->
+						<li class="kt-nav__item">
+							<a class="kt-nav__link" (click)="exportFile.emit('Excel')">
+								<i class="kt-nav__link-icon la la-file-excel-o"></i>
+								<span class="kt-nav__link-text">Excel</span>
+							</a>
+						</li>
+						<li class="kt-nav__item">
+							<a class="kt-nav__link" (click)="exportFile.emit('Csv')">
+								<i class="kt-nav__link-icon la la-file-text-o"></i>
+								<span class="kt-nav__link-text">CSV</span>
+							</a>
+						</li>
+						<!-- <li class="kt-nav__item">
+							<a class="kt-nav__link" (click)="exportFile.emit('Text')">
+								<i class="kt-nav__link-icon la la-file-text-o"></i>
+								<span class="kt-nav__link-text">TXT</span>
+							</a>
+						</li> -->
+					</ul>
+				</div>
+			</div>
+			<ng-container *ngFor="let button of buttons">
+				<div *ngIf="button.subs && button.subs.length > 0" ngbDropdown [placement]="'bottom-right'" class="dropdown">
+					<button type="button" ngbDropdownToggle class="btn btn-label-brand kt-margin-l-10" mat-icon-button [matTooltip]="button.title">
+						<mat-icon>{{button.icon}}</mat-icon>
+					</button>
+					<div ngbDropdownMenu class="dropdown-menu dropdown-menu-fit" style="z-index: 10111;">
+						<ul class="kt-nav">
+							<li class="kt-nav__item" *ngFor="let sub of button.subs">
+								<a href="javascript:;" class="kt-nav__link" (click)="sub.click()">
+									<span class="kt-nav__link-text">{{sub.title}}</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<button *ngIf="button.display && (!button.subs || button.subs.length == 0)" type="button" class="btn btn-label-brand kt-margin-l-10" mat-icon-button [matTooltip]="button.title" (click)="button.click()">
+					<mat-icon>{{button.icon}}</mat-icon>
+				</button>
+			</ng-container>
+			<mat-form-field style="width: 12rem" class="mat-form-field-fluid kt-margin-t-10 kt-margin-l-15">
+				<input matInput #searchInput placeholder="Arama" (keyup.enter)="searchChange.emit(searchStr)" [(ngModel)]="searchStr">
+				<button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="searchChange.emit(searchStr)">
+					<mat-icon>search</mat-icon>
+				</button>
+			</mat-form-field>
+		</div>
+	</ng-container>
+</kt-portlet-header>

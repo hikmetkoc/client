@@ -1,0 +1,137 @@
+<kt-portlet *ngIf="!naked">
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<button mat-icon-button mat-button matTooltip="Geri dön" (click)="resetCurrent.emit()" class="kt-margin-r-5">
+				<mat-icon>keyboard_arrow_left</mat-icon>
+			</button>
+			<h3 class="kt-portlet__head-title">
+				{{model.title}} Detayı <span style="color: #999999">&nbsp;({{current.instanceName}})</span>
+			</h3>
+		</ng-container>
+		<ng-container ktPortletTools>
+			<div class="page-header-buttons">
+				<button *ngIf="this.model.apiName === 'users'" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="İzin Bilgileri" (click)="showHolidayDetail()">
+					<mat-icon>list</mat-icon>
+				</button>
+				<button *ngIf="this.model.apiName === 'users' && this.baseService.getUserId() === 2" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Kullanıcı Rolü Düzenleme" (click)="onEditClick()">
+					<mat-icon>person</mat-icon>
+				</button>
+				<button *ngIf="this.model.apiName === 'users' && this.baseService.getUserId() === 2" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Hiyerarşi Düzenleme" (click)="editClick.emit(current)">
+					<mat-icon>device_hub</mat-icon>
+				</button>
+				<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Düzenle" (click)="editClick.emit(current)">
+					<mat-icon>create</mat-icon>
+				</button>
+				<button *ngIf="baseService.getPermissionRule(model.name,'delete')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="warn" matTooltip="Sil" (click)="delete(current)">
+					<mat-icon>delete</mat-icon>
+				</button>
+				<kt-filemanager [(current)]="current" [model]="model"></kt-filemanager>
+				<!-- <kt-history [(current)]="current" [model]="model"></kt-history> -->
+
+				<ng-container *ngFor="let button of buttons">
+					<div *ngIf="button.subs && button.subs.length > 0" ngbDropdown [placement]="'bottom-left'" class="dropdown">
+						<button type="button" ngbDropdownToggle class="btn btn-label-brand kt-margin-l-10" mat-icon-button [matTooltip]="button.title">
+							<mat-icon>{{button.icon}}</mat-icon>
+						</button>
+						<div ngbDropdownMenu class="dropdown-menu dropdown-menu-fit" style="z-index: 10111;">
+							<ul class="kt-nav">
+								<li class="kt-nav__item" *ngFor="let sub of button.subs">
+									<a href="javascript:;" class="kt-nav__link" (click)="sub.click()">
+										<span class="kt-nav__link-text">{{sub.title}}</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<button *ngIf="button.display && (!button.subs || button.subs.length == 0)" type="button" class="btn btn-label-brand kt-margin-l-10" mat-icon-button [matTooltip]="button.title" (click)="button.click()">
+						<mat-icon>{{button.icon}}</mat-icon>
+					</button>
+				</ng-container>
+			</div>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<ng-container [ngTemplateOutlet]="mFields"></ng-container>
+	</kt-portlet-body>
+</kt-portlet>
+
+<ng-container *ngIf="naked">
+	<ng-container [ngTemplateOutlet]="mFields"></ng-container>
+</ng-container>
+
+<ng-template #mFields>
+	<div class="row">
+		<div *ngFor="let modelRow of this.modelRows" [class]="tiny ? 'col-sm-12' : 'kt-widget4 col-sm-6 col-lg-3'">
+			<div *ngFor="let field of modelRow" [class]="tiny ? '' : 'kt-widget4__item'">
+				<div class="kt-widget4__info">
+					<span *ngIf="!tiny" class="kt-widget4__sub">
+						{{field.title}}:<br />
+					</span>
+					<span *ngIf="tiny">
+						<b>{{field.title}}</b>:
+					</span>
+					<span *ngIf="['integer','text','url'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{current[field.name]}}
+					</span>
+					<span *ngIf="['iban'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{current[field.name] ? current[field.name] : current[field.name]['instanceName']}}
+					</span>
+					<span *ngIf="['number'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{current[field.name]}}
+					</span>
+					<span *ngIf="['phone'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						<a href="{{'tel:0' + current[field.name]}}">{{current[field.name]}}</a>
+					</span>
+					<span *ngIf="['currency'].indexOf(field.fieldType) > -1 && this.model.apiName === 'buys'" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{current[field.name] | number: '1.2-2'}}
+					</span>
+					<span *ngIf="['currency'].indexOf(field.fieldType) > -1 && this.model.apiName !== 'buys'" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{current[field.name] | number: '1.2-2'}}
+					</span>
+					<span *ngIf="['percentage'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						% {{current[field.name]}}
+					</span>
+					<span *ngIf="['email'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						<a [href]="'mailto:' + current[field.name]" class="kt-link">{{current[field.name]}}</a>
+					</span>
+					<span *ngIf="['select'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						<ng-container *ngIf="field.multiple">
+							<ng-container *ngFor="let attr of current[field.name]">
+								{{baseService.getAttrById(field.attribute, attr)?.name}}<br />
+							</ng-container>
+						</ng-container>
+						<ng-container *ngIf="!field.multiple">
+							{{ current[field.name] ? baseService.getAttrVal(current[field.name].id)?.label : '' }}
+						</ng-container>
+					</span>
+					<span *ngIf="['object'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{current[field.name] ? current[field.name]['instanceName'] : ''}}
+						<button *ngIf="current[field.name] && !tiny && field.name !== 'owner' && field.name !== 'assigner' && field.name !== 'secondAssigner' && field.name !== 'city' && field.name !== 'county' && field.name !== 'buyowner' && field.name !== 'user' && field.name !== 'muhasebeci' && field.name !== 'cancelUser' && field.name !== 'iban'" mat-icon-button [ngbPopover]="bubble" triggers="mouseenter:mouseleave" [hidden]="(this.baseService.getUser().birim.label === 'Muhasebe' && (field.name === 'customer' || field.name === 'iban'))" [popoverTitle]="current[field.name]['instanceName']" color="primary" (mouseenter)="bubbleOpen(current[field.name], field.objectApiName)" placement="right" container="body" [routerLink]="['/' + field.name?.toLowerCase()]" [queryParams]="{id: current[field.name].id, sourceObject: model.apiName?.toLowerCase(), sourceId: current['id']}">
+							<mat-icon>info</mat-icon>
+						</button>
+					</span>
+					<span *ngIf="['time'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{current[field.name] | date:'short'}}
+					</span>
+					<span *ngIf="['date'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{current[field.name] | date:'shortDate'}}
+					</span>
+					<span *ngIf="['duration'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{current[field.name] ? current[field.name] + ' dakika':''}}
+					</span>
+					<span *ngIf="['boolean'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						<mat-checkbox [checked]="current[field.name]" disabled="true"></mat-checkbox>
+					</span>
+					<span *ngIf="['textarea'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{current[field.name]}}
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #bubble>
+	<kt-detail *ngIf="bubbleModel" [(current)]="bubbleObject" [model]="bubbleModel" [naked]="true" [tiny]="true">
+	</kt-detail>
+</ng-template>

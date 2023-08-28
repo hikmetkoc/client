@@ -1,0 +1,95 @@
+<div ngbDropdown placement="bottom-right" *ngIf="user$ | async as _user" class="kt-header__topbar-item kt-header__topbar-item--user">
+	<div ngbDropdownToggle class="kt-header__topbar-wrapper">
+		<!-- <span class="kt-header__topbar-username">{{_user.firstName + ' ' + _user.lastName}}</span> -->
+		<span class="kt-header__topbar-icon" style="font-size: 18px"><div style="margin-top: -2px"><b>{{_user.firstName|firstLetter}}{{(_user.lastName ? _user.lastName : '')|firstLetter}}</b></div></span>
+		<!-- <img *ngIf="avatar" alt="Pic" [attr.src]="_user.pic"> -->
+	</div>
+	<div ngbDropdownMenu class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl">
+		<!--begin: Head -->
+		<div class="kt-user-card kt-user-card--skin-dark kt-notification-item-padding-x" style="background-image: url(./assets/media/misc/bg-1.jpg)">
+			<div class="kt-user-card__avatar">
+				<!-- <img alt="Pic" [attr.src]="_user.pic"/> -->
+				<span class="kt-badge kt-badge--lg kt-badge--rounded kt-badge--bold kt-font-success">
+					<b>{{_user.firstName|firstLetter}}{{(_user.lastName ? _user.lastName : '')|firstLetter}}</b>
+				</span>
+			</div>
+			<div class="kt-user-card__name">
+				{{_user.firstName + ' ' + (_user.lastName ? _user.lastName : '')}}
+			</div>
+			<div class="kt-user-card__badge border rounded p-2 mb-2">
+				<span class="d-block text-light font-weight-bold">{{_user.sirket.label ? _user.sirket.label : ''}}</span>
+				<span class="d-block text-light font-weight-bold">{{_user.birim.label ? _user.birim.label : ''}}</span>
+				<span class="d-block text-light font-weight-bold">{{_user.unvan.label ? _user.unvan.label : ''}}</span>
+			</div>
+
+
+		</div>
+		<!--end: Head -->
+
+		<!--begin: Navigation -->
+		<div class="kt-notification">
+			<!-- <a ngbDropdownItem routerLink="profile" href="javascript:;" class="kt-notification__item">
+				<div class="kt-notification__item-icon">
+					<i class="flaticon2-rocket-1 kt-font-danger"></i>
+				</div>
+				<div class="kt-notification__item-details">
+					<div class="kt-notification__item-title kt-font-bold">
+						Aktivitelerim
+					</div>
+					<div class="kt-notification__item-time">
+						Açık görev ve etkinliklerim
+					</div>
+				</div>
+			</a>
+			<a ngbDropdownItem routerLink="profile" href="javascript:;" class="kt-notification__item">
+				<div class="kt-notification__item-icon">
+					<i class="flaticon2-hourglass kt-font-brand"></i>
+				</div>
+				<div class="kt-notification__item-details">
+					<div class="kt-notification__item-title kt-font-bold">
+						Fırsatlarım
+					</div>
+					<div class="kt-notification__item-time">
+						Açık fırsatlarım
+					</div>
+				</div>
+			</a> -->
+			<div class="kt-notification__custom">
+				<a href="javascript:;" (click)="logout()" class="btn btn-outline-brand btn-upper btn-sm btn-bold">Çıkış</a>
+			</div>
+		</div>
+		<!--end: Navigation -->
+
+		<!--begin: Navigation(alternative) -->
+		<ul class="kt-nav kt-margin-b-10 kt-hidden">
+			<li class="kt-nav__item">
+				<a ngbDropdownItem routerLink="profile" class="kt-nav__link">
+					<span class="kt-nav__link-icon"><i class="flaticon2-calendar-3"></i></span>
+					<span class="kt-nav__link-text">My Profile</span>
+				</a>
+			</li>
+			<li class="kt-nav__item">
+				<a ngbDropdownItem routerLink="profile" class="kt-nav__link">
+					<span class="kt-nav__link-icon"><i class="flaticon2-browser-2"></i></span>
+					<span class="kt-nav__link-text">My Tasks</span>
+				</a>
+			</li>
+			<li class="kt-nav__item">
+				<a ngbDropdownItem routerLink="profile" class="kt-nav__link">
+					<span class="kt-nav__link-icon"><i class="flaticon2-mail"></i></span>
+					<span class="kt-nav__link-text">Messages</span>
+				</a>
+			</li>
+			<li class="kt-nav__item">
+				<a ngbDropdownItem routerLink="profile" class="kt-nav__link">
+					<span class="kt-nav__link-icon"><i class="flaticon2-gear"></i></span>
+					<span class="kt-nav__link-text">Settings</span>
+				</a>
+			</li>
+			<li class="kt-nav__item kt-nav__item--custom kt-margin-t-15">
+				<a (click)="logout()" class="btn btn-label-brand btn-sm btn-bold">Sign Out</a>
+			</li>
+		</ul>
+		<!--end: Navigation(alternative) -->
+	</div>
+</div>

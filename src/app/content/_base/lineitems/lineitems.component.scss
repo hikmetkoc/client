@@ -1,0 +1,12 @@
+kt-lineitems {
+	.mat-form-field-appearance-legacy .mat-form-field-underline {
+		background-image: linear-gradient(to right, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.42) 33%, transparent 0%);
+		background-size: 4px 100%;
+		background-repeat: repeat-x;
+		background-color: transparent;
+	}
+
+	// .mat-form-field-infix {
+	//     width: 100%;
+	// }
+}
