@@ -232,11 +232,11 @@ export class GridComponent implements AfterViewInit {
 			});
 		}
 		if (this.model.name === 'User') {
-			if (this.baseService.getUserId() === 26800) {
+			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
 				filters.add({
 					name: 'id',
 					operator: FilterOperation.EQUALS,
-					value: 26800
+					value: this.baseService.getUser().id
 				});
 			}
 		}
@@ -262,6 +262,13 @@ export class GridComponent implements AfterViewInit {
 					operator: FilterOperation.EQUALS,
 					value: null
 				});*/
+			}
+			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
+				filters.add({
+					name: 'createdBy',
+					operator: FilterOperation.EQUALS,
+					value: 1
+				});
 			}
 		}
 		if (this.baseService.getUserId() === 99 && this.model.name === 'Holiday') {

@@ -5,7 +5,7 @@ export class Permission extends BaseModel {
     title: string;
     level: number;
     parentId: number;
-    isSelected:  boolean;
+    isSelected: boolean;
     name: string;
     _children: Permission[];
 

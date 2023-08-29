@@ -352,6 +352,11 @@ export class BaseService {
 		return user ? user.firstName + ' ' + user.lastName : undefined;
 	}
 
+	public getUserPermission(): any {
+		const permission = JSON.parse(localStorage.getItem('user_permission'));
+		return permission;
+	}
+
 	public getRoleId(): string {
 		const role = this.getUser().roles;
 		return role ? role[0].id : undefined;
