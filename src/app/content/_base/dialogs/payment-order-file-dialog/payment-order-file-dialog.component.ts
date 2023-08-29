@@ -58,7 +58,7 @@ export class PaymentOrderFileDialogComponent implements OnInit {
 	convertToBinaryAndSendToAPI(): void {
 		this.isUploading = false;
 		const reader = new FileReader();
-		const apiUrl = 'api/payment_orders/uploadPDF';
+		const apiUrl = 'api/' + this.model.apiName + '/uploadPDF';
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
 
 		reader.onload = (event: any) => {

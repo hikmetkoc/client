@@ -815,7 +815,7 @@ export class GridComponent implements AfterViewInit {
 			} else {
 				if (entity.status.id === 'Payment_Status_Red' || entity.status.id === 'Payment_Status_Ode' || entity.status.id === 'Payment_Status_Kısmi' || entity.status.id === 'Payment_Status_OtoOde' || entity.status.id === 'Payment_Status_Onay') {
 					Utils.showActionNotification('Bu fatura onay aşamasında değildir!', 'warning', 10000, true, false, 3000, this.snackBar);
-				} else if (entity.status.id === 'Payment_Status_Muh' && this.baseService.getUserId() !== 26800 ) {
+				} else if (entity.status.id === 'Payment_Status_Muh' && this.baseService.getMuhUser() !== true ) {
 					Utils.showActionNotification('Bu fatura Muhasebe onayı aşamasındadır, sadece Muhasebe Personeli onay verebilir!', 'warning', 10000, true, false, 3000, this.snackBar);
 				} else if (entity.status.id === 'Payment_Status_Bek1' && this.baseService.getUserId() !== entity.assigner.id ) {
 					Utils.showActionNotification('Bu fatura 1.onay aşamasındadır, sadece 1.onaycı onaylayabilir!', 'warning', 10000, true, false, 3000, this.snackBar);
@@ -1153,6 +1153,28 @@ export class GridComponent implements AfterViewInit {
 		this.loading = false;
 	}
 
+	toUploadDekont(entity, e?, presetValues = []) {
+		this.loading = true;
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const dialogRef = this.dialog.open(PaymentOrderFileDialogComponent, {
+			width: '800px',
+			data: {current: entity, model: this.model},
+			disableClose: true,
+		});
+		dialogRef.afterClosed().subscribe(() => {
+			this.loadList();
+		});
+		this.loading = false;
+	}
+
 	infoPaymentOrder(entity, e?, presetValues = []) {
 		if (e) {
 			e.stopPropagation();
@@ -1297,6 +1319,48 @@ export class GridComponent implements AfterViewInit {
 			},
 			error => {
 				Utils.showActionNotification('Bu Faturaya ait PDF veya PNG bulunamadı!', 'warning', 10000, true, false, 3000, this.snackBar);
+			}
+		);
+	}
+	toShowDekont(entity, e?, presetValues = []) {
+		if (e) { e.stopPropagation(); }
+		const apiUrl = `api/spends/toShowDekont/${entity.id}`;
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+
+		this.http.get(apiUrl, { headers: httpHeaders, responseType: 'text' }).subscribe(
+			response => {
+				const decodedData = atob(response);
+				const fileSignature = decodedData.substring(0, 4);
+				console.log(fileSignature);
+				let fileType: string;
+
+				if (fileSignature === '%PDF') {
+					fileType = 'application/pdf';
+				} else if (fileSignature === 'ÿØÿâ' || fileSignature === 'ÿÛÿà') {
+					fileType = 'image/jpeg';
+				} else if (fileSignature === 'PNG') {
+					fileType = 'image/png';
+				} else if (fileSignature === 'GIF8') {
+					fileType = 'image/gif';
+				} else if (fileSignature === 'RIFF' && decodedData.substr(8, 4) === 'WEBP') {
+					fileType = 'image/webp';
+				} else if (fileSignature === 'II*\x00' || fileSignature === 'MM\x00*') {
+					fileType = 'image/tiff';
+				} else {
+					Utils.showActionNotification('Dosya türü belirlenemedi!', 'warning', 10000, true, false, 3000, this.snackBar);
+					return;
+				}
+
+				const uint8Array = new Uint8Array(decodedData.length);
+				for (let i = 0; i < decodedData.length; ++i) {
+					uint8Array[i] = decodedData.charCodeAt(i);
+				}
+				const blob = new Blob([uint8Array], { type: fileType });
+				const fileUrl = URL.createObjectURL(blob);
+				window.open(fileUrl, '_blank');
+			},
+			error => {
+				Utils.showActionNotification('Bu Dekonta ait PDF veya PNG bulunamadı!', 'warning', 10000, true, false, 3000, this.snackBar);
 			}
 		);
 	}

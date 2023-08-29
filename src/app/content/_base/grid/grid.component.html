@@ -426,6 +426,12 @@
 						<button *ngIf="finans === true && row.status.label === 'Ödenmedi' && row.paymentorder.moneyType.label === 'Dolar' && row.paymentorder.paymentStyle.label === 'Türk Lirası'" mat-icon-button color="success" matTooltip="Ödeme Yap" type="button" (click)="toPay(row, $event)">
 							<mat-icon>payment</mat-icon>
 						</button>
+						<button *ngIf="this.baseService.getUser().birim.id === 'Birim_Fin' && row.status.label === 'Ödendi' && row.paymentorder.dekont === true && row.dekont === null" mat-icon-button color="success" matTooltip="Dekont Yükle" type="button" (click)="toUploadDekont(row, $event)">
+							<mat-icon>receipt</mat-icon>
+						</button>
+						<button *ngIf="row.paymentorder.dekont === true && row.dekont !== null" mat-icon-button color="warn" matTooltip="Dekont Görüntüle" type="button" (click)="toShowDekont(row, $event)">
+							<mat-icon>remove_red_eye</mat-icon>
+						</button>
 					</div>
 					<div *ngIf="model.apiName === 'fuellimits'">
 						<button *ngIf="eklimitonayi === true" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">

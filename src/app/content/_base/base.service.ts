@@ -352,9 +352,15 @@ export class BaseService {
 		return user ? user.firstName + ' ' + user.lastName : undefined;
 	}
 
-	public getUserPermission(): any {
-		const permission = JSON.parse(localStorage.getItem('user_permission'));
-		return permission;
+	public getMuhUser(): boolean {
+		const user = this.getUser();
+		const birim = user.birim.id;
+		console.log(birim);
+		if (birim === 'Birim_Muh') {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public getRoleId(): string {
