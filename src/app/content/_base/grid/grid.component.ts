@@ -240,6 +240,15 @@ export class GridComponent implements AfterViewInit {
 				});
 			}
 		}
+		if (this.model.name === 'Customer') {
+			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
+				filters.add({
+					name: 'id',
+					operator: FilterOperation.EQUALS,
+					value: null
+				});
+			}
+		}
 		if (this.model.name === 'Spend') {
 			if (this.baseService.getUser().birim.id === 'Birim_Fin') {
 				filters.add({

@@ -10,7 +10,7 @@ export class MenuConfig {
 					page: '/dashboard',
 				},
 				{
-					title: 'Talepler',
+					title: 'TALEPLER',
 					root: true,
 					alignment: 'left',
 					icon: 'flaticon2-writing',
@@ -34,7 +34,7 @@ export class MenuConfig {
 					title: 'TEDARİKÇİ İŞLEMLERİ',
 					root: true,
 					alignment: 'left',
-					icon: 'flaticon2-writing',
+					icon: 'flaticon-suitcase',
 					submenu: [ // İşlemler menüsünü burada alt başlık olarak ekliyoruz
 						{
 							title: 'Tedarikçiler',
@@ -66,7 +66,7 @@ export class MenuConfig {
 					title: 'SATIN ALMA İŞLEMLERİ',
 					root: true,
 					alignment: 'left',
-					icon: 'flaticon2-writing',
+					icon: 'flaticon2-shopping-cart-1',
 					submenu: [ // İşlemler menüsünü burada alt başlık olarak ekliyoruz
 						{
 							title: 'Satın Alma',
@@ -83,10 +83,10 @@ export class MenuConfig {
 					]
 				},
 				{
-					title: 'Fatura İşlemleri',
+					title: 'FATURA İŞLEMLERİ',
 					root: true,
 					alignment: 'left',
-					icon: 'flaticon2-writing',
+					icon: 'flaticon-coins',
 					submenu: [ // İşlemler menüsünü burada alt başlık olarak ekliyoruz
 						{
 							title: 'Fatura Listesi',
@@ -112,7 +112,7 @@ export class MenuConfig {
 					title: 'İNSAN KAYNAKLARI',
 					root: true,
 					alignment: 'left',
-					icon: 'flaticon2-writing',
+					icon: 'flaticon2-avatar',
 					submenu: [
 						{
 							title: 'Personeller',
