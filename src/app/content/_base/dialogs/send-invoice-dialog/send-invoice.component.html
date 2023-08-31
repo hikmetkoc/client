@@ -11,7 +11,7 @@
 				<mat-form-field>
 					<mat-label>Kullanıcı Seç</mat-label>
 					<mat-select [(value)]="selectedUserId">>
-						<mat-option *ngFor="let user of userList" [value]="user">{{user.firstName + ' ' + user.lastName}}</mat-option>
+						<mat-option *ngFor="let user of userList" [value]="user.user">{{user.user.firstName + ' ' + user.user.lastName}}</mat-option>
 					</mat-select>
 				</mat-form-field>
 			</h3>

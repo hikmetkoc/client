@@ -92,12 +92,12 @@ export class SendInvoiceComponent implements OnInit {
 		const filters = new Set();
 		const queryParams = new QueryParamsModel(
 			Utils.makeFilter(filters),
-			[{ sortBy: 'firstName', sortOrder: 'ASC' }],
+			[{ sortBy: 'user.firstName', sortOrder: 'ASC' }],
 			0,
 			10000
 		);
-		this.baseService.find(queryParams, 'users').subscribe(res => {
-			this.userList = res.body.filter(hld => hld.activated === true && (hld.roles.some(role => role.id === 'ROLE_SATIN_ALMA') || hld.roles.some(role => role.id === 'ROLE_TAL')));
+		this.baseService.find(queryParams, 'user_permissions').subscribe(res => {
+			this.userList = res.body.filter(hld => hld.createPayment === true && hld.user.activated === true );
 			this.cdr.markForCheck();
 		});
 	}
