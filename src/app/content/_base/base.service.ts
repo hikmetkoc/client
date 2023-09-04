@@ -355,14 +355,12 @@ export class BaseService {
 	public getMuhUser(): boolean {
 		const user = this.getUser();
 		const birim = user.birim.id;
-		console.log(birim);
 		if (birim === 'Birim_Muh') {
 			return true;
 		} else {
 			return false;
 		}
 	}
-
 	public getRoleId(): string {
 		const role = this.getUser().roles;
 		return role ? role[0].id : undefined;

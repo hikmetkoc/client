@@ -48,6 +48,7 @@ import {SpendToTlComponent} from "../dialogs/spend-to-tl-dialog/spend-to-tl.comp
 import {ConnectStoreDialogComponent} from "../dialogs/connect-store-dialog/connect-store-dialog.component";
 import {SpendOkeyComponent} from "../dialogs/spend-okey-dialog/spend-okey.component";
 import {PaymentOkeyComponent} from "../dialogs/payment-okey-dialog/payment-okey.component";
+import {reportInvalidActions} from "@ngrx/effects/src/effect_notification";
 
 @Component({
 	selector: 'kt-grid',
@@ -880,11 +881,11 @@ export class GridComponent implements AfterViewInit {
 		}
 		if (this.model.name === 'FuelLimit') {
 
-			entity.status = this.baseService.getAttrVal('Fuel_Dur_Onay');
+			/*entity.status = this.baseService.getAttrVal('Fuel_Dur_Onay');
 			this.baseService.update(entity, 'fuellimits').subscribe(() => {
 				this.loadList();
 				this.change.emit(this.result);
-			});
+			});*/
 			const httpHeaders = this.httpUtils.getHTTPHeaders();
 			const fuelTl = Number(entity.fuelTl);
 			const curcode = entity.curcode;
@@ -894,9 +895,38 @@ export class GridComponent implements AfterViewInit {
 			const startDate = this.formatDate(startDate1);
 			const endDate = this.formatDate(endDate1);
 
-			const apiUrl = 'https://srv.meteorpetrol.com/DisServis/limitguncelle';
+			const servisSifre = '14ADa23.';
+			const firmaKodu = 875257;
+			const cariKodu = curcode;
+			const apiUrl = `https://srv.meteorpetrol.com/DisServis/riskdetayget?ServisSifre=${servisSifre}&CariKodu=${cariKodu}&FirmaKodu=${firmaKodu}`;
 
-			const requestBody = {
+			/*const requestBody = {
+				ServisSifre : '14ADa23.',
+				FirmaKodu : 875257,
+				KullaniciId : 47468,
+				CariKodu : curcode,
+				EkLimitTutar : fuelTl,
+				EkLimitAciklama : description,
+				BaslangicTarihi : startDate,
+				BitisTarihi : endDate
+			};*/
+			//const apiUrl = `api/invoice_lists/${entity.invoiceNum}`;
+
+			this.http.get(apiUrl, { headers: httpHeaders, responseType: 'json' })
+				.subscribe(
+					(response) => {
+						console.log('API Cevabı:', response);
+						const cariKoduRes = response[0].CariUnvan + ' - ' + response[0].KullanilabilirLimit + ' - ' + response[0].NakitRisk;
+						console.log('RES Cevabı:', cariKoduRes);
+						const apidescription = cariKoduRes || 'Bir sorun ile karşılaşıldı, lütfen girdiğiniz Cari Kodunu kontrol edin veya Ferit Bey ile iletişime geçiniz!';
+						Utils.showActionNotification(apidescription, 'success', 10000, true, false, 3000, this.snackBar);
+					},
+					(error) => {
+						Utils.showActionNotification(error.toString(), 'success', 10000, true, false, 3000, this.snackBar);
+					}
+				);
+
+			/*const requestBody = {
 				ServisSifre : '14ADa23.',
 				FirmaKodu : 875257,
 				KullaniciId : 47468,
@@ -916,7 +946,7 @@ export class GridComponent implements AfterViewInit {
 					(error) => {
 						Utils.showActionNotification(error.toString(), 'success', 10000, true, false, 3000, this.snackBar);
 					}
-				);
+				);*/
 		}
 		this.loadList();
 	}
@@ -994,7 +1024,7 @@ export class GridComponent implements AfterViewInit {
 			this.change.emit(this.result);
 		});
 
-		this.loadList();
+		//this.loadList();
 	}
 
 	toPay(entity, e?, presetValues = []) {
@@ -1032,7 +1062,7 @@ export class GridComponent implements AfterViewInit {
 			this.change.emit(this.result);
 		});
 
-		this.loadList();
+		//this.loadList();
 	}
 
 	control(entity, e?, presetValues = []) {
@@ -1063,11 +1093,10 @@ export class GridComponent implements AfterViewInit {
 			entity[p.field] = p.value;
 		}
 		entity.preparation = this.baseService.getAttrVal('Tek_Dur_Tam');
-		this.baseService.update(entity, 'buys').subscribe(() => {
+		this.baseService.update(entity, 'buys').subscribe((res) => {
 			this.loadList();
 			this.change.emit(this.result);
 		});
-		this.loadList();
 	}
 
 	correct(entity, e?, presetValues = []) {

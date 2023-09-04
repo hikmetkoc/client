@@ -114,7 +114,7 @@ export class InvoiceListComponent extends BaseComponent implements OnInit, After
 		this.buttons = [];
 
 		this.buttons.push({
-			display: this.baseService.getUserId() === 26800,
+			display: this.baseService.getUserId() === 26800 || this.baseService.getUserId() === 2,
 			title: 'Fatura Listesini Güncelle',
 			icon: 'refresh',
 			click: this.runInvoiceService.bind(this)

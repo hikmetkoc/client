@@ -7,14 +7,42 @@
 				<div class="form-container" [hidden]="onayla === true">
 					<mat-form-field class="form-field">
 						<mat-label>Satın Alma Kodu</mat-label>
-						<mat-select [(value)]="selectedStoreId">
-							<mat-option *ngFor="let store of storeList" [value]="store.id">{{ store.stcode }}</mat-option>
+						<mat-select [(value)]="selectedStoreId" (selectionChange)="onStoreSelectionChange()">
+							<mat-option *ngFor="let store of storeList" [value]="store.store.id">{{ store.stcode }}</mat-option>
 						</mat-select>
 					</mat-form-field>
 				</div>
 			</h3>
 		</ng-container>
 	</kt-portlet-header>
+	<ng-container>
+		<div class="table table-striped">
+			<table>
+				<thead>
+				<tr>
+					<th>Satın Alma Kodu</th>
+					<th>Satın Alma Sorumlusu</th>
+					<th>Onaycı</th>
+					<th>Tedarikçi</th>
+					<th>Tutar</th>
+					<th>Para Birimi</th>
+					<th>Onay Tarihi</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let product of filteredProducts">
+					<td>{{ product.stcode }}</td>
+					<td>{{ product.owner.firstName + ' ' + product.owner.lastName }}</td>
+					<td>{{ product.secondAssigner.firstName + ' ' + product.secondAssigner.lastName }}</td>
+					<td>{{ product.customer.name }}</td>
+					<td>{{ formatCurrency(product.fuelTl) }}</td>
+					<td>{{ product.moneyType.label }}</td>
+					<td>{{ formatDate(product.okeyFirst) }}</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</ng-container>
 	<kt-portlet-body>
 		<div class="button-container" style="display: flex; justify-content: center; gap: 10px;">
 			<button [hidden]="onayla === true" type="button" mat-raised-button color="primary" (click)="onYesClick()" matTooltip="Tamam">

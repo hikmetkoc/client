@@ -371,27 +371,27 @@
 							<mat-icon>cancel</mat-icon>
 						</button>
 					</div>
-					<div *ngIf="model.apiName == 'buys'">
-						<button *ngIf="onayci === true" mat-icon-button color="success" matTooltip="Teklifi Tamamla" type="button" (click)="okeyQuote(row, $event)">
+					<div *ngIf="model.apiName == 'buys'"> <!-- TEKLİF BUTONLARI -->
+						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.preparation.id === 'Tek_Dur_Haz'" mat-icon-button color="success" matTooltip="Teklifi Tamamla" type="button" (click)="okeyQuote(row, $event)">
 							<mat-icon>check_circle</mat-icon>
 						</button>
-						<button *ngIf="onayci === true" mat-icon-button color="primary" matTooltip="Öner" (click)="okey2(row, $event)">
+						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.suggest === false" mat-icon-button color="primary" matTooltip="Öner" (click)="okey2(row, $event)">
 							<mat-icon>thumb_up</mat-icon>
 						</button>
-						<button *ngIf="onayci === true" mat-icon-button color="warn" matTooltip="Önerme" type="button" (click)="cancel2(row, $event)">
+						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.suggest === true" mat-icon-button color="warn" matTooltip="Önerme" type="button" (click)="cancel2(row, $event)">
 							<mat-icon>thumb_down</mat-icon>
 						</button>
-						<button *ngIf="onayci2 === true" mat-icon-button color="primary" matTooltip="Onayla" (click)="okey(row, $event)">
+						<button *ngIf="row.secondAssigner.id === this.baseService.getUserId() && row.quoteStatus.label === 'Onay Bekliyor'" mat-icon-button color="primary" matTooltip="Onayla" (click)="okey(row, $event)">
 							<mat-icon>check</mat-icon>
 						</button>
-						<button *ngIf="onayci2 === true" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
+						<button *ngIf="row.secondAssigner.id === this.baseService.getUserId() && row.quoteStatus.label === 'Onay Bekliyor'" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
 							<mat-icon>cancel</mat-icon>
 						</button>
-						<button mat-icon-button color="primary" matTooltip="Proforma Fatura" type="button" (click)="showFiles(row, $event)">
+						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.preparation.id === 'Tek_Dur_Haz'" mat-icon-button color="primary" matTooltip="Proforma Fatura" type="button" (click)="showFiles(row, $event)">
 							<mat-icon>folder</mat-icon>
 						</button>
 					</div>
-					<div *ngIf="model.apiName == 'payment_orders'">
+					<div *ngIf="model.apiName == 'payment_orders'"> <!-- ÖDEME TALİMATI BUTONLARI -->
 						<button mat-icon-button color="secondary" matTooltip="Bilgi" type="button" (click)="infoPaymentOrder(row, $event)">
 							<mat-icon>information</mat-icon>
 						</button>
@@ -416,7 +416,7 @@
 							<mat-icon>link</mat-icon>
 						</button>
 					</div>
-					<div *ngIf="model.apiName == 'spends'">
+					<div *ngIf="model.apiName == 'spends'"> <!-- ÖDEMELER BUTONLARI -->
 						<button *ngIf="finans === true && row.status.label === 'Ödenmedi'" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
 							<mat-icon>check</mat-icon>
 						</button>
@@ -433,7 +433,7 @@
 							<mat-icon>remove_red_eye</mat-icon>
 						</button>
 					</div>
-					<div *ngIf="model.apiName === 'fuellimits'">
+					<div *ngIf="model.apiName === 'fuellimits'"> <!-- EK LİMİT TALEBİ BUTONLARI -->
 						<button *ngIf="eklimitonayi === true" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
 							<mat-icon>check</mat-icon>
 						</button>
@@ -441,22 +441,12 @@
 							<mat-icon>cancel</mat-icon>
 						</button>
 					</div>
-					<div *ngIf="model.apiName === 'stores'">
-						<button *ngIf="row.buyStatus.label === 'Onaylandı' && row.buyowner.id === this.baseService.getUserId() && row.status.label === 'Onay Bekliyor'" mat-icon-button color="success" matTooltip="Merkezden Tedarik Edildi" type="button" (click)="changecenter(row, $event)">
+					<div *ngIf="model.apiName === 'stores'"> <!-- SATIN ALMA BUTONLARI -->
+						<button *ngIf="row.status.label === 'Onaylandı' && row.buyowner.id === this.baseService.getUserId() && row.buyStatus.label === 'Onay Bekliyor'" mat-icon-button color="success" matTooltip="Merkezden Tedarik Edildi" type="button" (click)="changecenter(row, $event)">
 							<mat-icon>shop</mat-icon>
 						</button>
 					</div>
-					<div *ngIf="model.apiName != 'buys' && model.apiName != 'invoice_lists' && model.apiName != 'payment_orders' && model.apiName != 'spends'">
-						<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
-							<mat-icon>create</mat-icon>
-						</button>
-						<div *ngIf="model.apiName != 'stores' && model.apiName != 'activities' && model.apiName != 'holidays' && model.apiName != 'users' && model.apiName != 'tasks' && model.apiName != 'payment_orders' && model.apiName != 'invoice_lists' && model.apiName != 'spends' && model.apiName != 'fuellimits'">
-							<button *ngIf="baseService.getPermissionRule(model.name,'delete') && model.delete !== false && !row.isKPAPG && model.name !== 'ContProduct'" mat-icon-button color="warn" matTooltip="Sil" type="button" (click)="delete(row, $event)">
-								<mat-icon>delete</mat-icon>
-							</button>
-						</div>
-					</div>
-					<div *ngIf="model.apiName == 'invoice_lists'">
+					<div *ngIf="model.apiName == 'invoice_lists'"> <!-- FATURA LİSTESİ BUTONLARI -->
 						<button *ngIf="baseService.getUserId() === 26800 && (row.invoiceStatus.label === 'Sahipsiz' || row.invoiceStatus.label === 'Atandı' || row.invoiceStatus.label === 'Hatalı Atama')" mat-icon-button color="success" matTooltip="Sorumlu Ata" type="button" (click)="sendOwner(row, $event)">
 							<mat-icon>supervisor_account</mat-icon>
 						</button>
@@ -467,7 +457,17 @@
 							<mat-icon>check_circle</mat-icon>
 						</button>
 					</div>
-
+					<!-- DÜZENLE VE SİL BUTONLARI -->
+					<div *ngIf="model.apiName != 'buys' && model.apiName != 'invoice_lists' && model.apiName != 'payment_orders' && model.apiName != 'spends'">
+						<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
+							<mat-icon>create</mat-icon>
+						</button>
+						<div *ngIf="model.apiName != 'stores' && model.apiName != 'activities' && model.apiName != 'holidays' && model.apiName != 'users' && model.apiName != 'tasks' && model.apiName != 'payment_orders' && model.apiName != 'invoice_lists' && model.apiName != 'spends' && model.apiName != 'fuellimits'">
+							<button *ngIf="baseService.getPermissionRule(model.name,'delete') && model.delete !== false && !row.isKPAPG && model.name !== 'ContProduct'" mat-icon-button color="warn" matTooltip="Sil" type="button" (click)="delete(row, $event)">
+								<mat-icon>delete</mat-icon>
+							</button>
+						</div>
+					</div>
 				</mat-cell>
 			</ng-container>
 

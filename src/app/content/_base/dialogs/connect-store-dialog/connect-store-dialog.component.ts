@@ -16,6 +16,7 @@ export class ConnectStoreDialogComponent implements OnInit {
 	@Input() current: any;
 	@Input() model: any;
 	storeList = [];
+	filteredProducts = [];
 	selectedStoreId: any;
 	paymentOrderId: any;
 	onayla: boolean;
@@ -106,19 +107,59 @@ export class ConnectStoreDialogComponent implements OnInit {
 		);
 	}
 
+	onStoreSelectionChange() {
+		// Burada seçilen mağazaya göre verileri güncelleyin.
+		// Örnek: Seçilen mağaza ID'sini kullanarak yeni verileri alın veya bir hizmeti çağırın.
+		// Güncellenmiş verileri bir değişkende saklayabilirsiniz.
+		this.updateTableData();
+	}
 
+	updateTableData() {
+		// Tablo verilerini güncellemek için bu işlevi kullanabilirsiniz.
+		// Güncellenmiş verileri tabloya atayarak tabloyu yenileyebilirsiniz.
+		this.filteredProducts = this.storeList.filter(store => store.store.id === this.selectedStoreId);
+
+	}
+
+	formatDate(date: string): string {
+		if (!date) return '';
+
+		const formattedDate = new Date(date);
+		const day = ('0' + formattedDate.getDate()).slice(-2);
+		const month = ('0' + (formattedDate.getMonth() + 1)).slice(-2);
+		const year = formattedDate.getFullYear();
+		const hour = ('0' + formattedDate.getHours()).slice(-2);
+		const minute = ('0' + formattedDate.getMinutes()).slice(-2);
+
+		return `${day}-${month}-${year} ${hour}:${minute}`;
+	}
+	formatCurrency(amount, decimalCount = 2, decimal = ',', thousands = '.') {
+		try {
+			decimalCount = Math.abs(decimalCount);
+			decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+
+			const negativeSign = amount < 0 ? '-' : '';
+
+			const i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount), 0).toString();
+			const j = (i.length > 3) ? i.length % 3 : 0;
+
+			return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j)
+				.replace(/(\d{3})(?=\d)/g, '$1' + thousands) + (decimalCount ? decimal + Math.abs(amount - parseInt(i, 0)).toFixed(decimalCount).slice(2) : '');
+		} catch (e) {
+			console.error(e);
+		}
+	}
 	getStoreValues() {
 		const filters = new Set();
 		const queryParams = new QueryParamsModel(
 			Utils.makeFilter(filters),
-			[{ sortBy: 'stcode', sortOrder: 'ASC' }],
+			[{ sortBy: 'createdDate', sortOrder: 'ASC' }],
 			0,
-			100
+			1000
 		);
-		this.baseService.find(queryParams, 'stores').subscribe(res => {
-			this.storeList = res.body.filter(hld => hld.stcode !== 'PRIM');
+		this.baseService.find(queryParams, 'buys').subscribe(res => {
+			this.storeList = res.body.filter(hld => hld.stcode !== 'PRIM' && hld.customer.id === this.current.customer.id && hld.quoteStatus.label === 'Onaylandı');
 			this.cdr.markForCheck();
 		});
 	}
-
 }
