@@ -70,7 +70,7 @@
 					<span *ngIf="tiny">
 						<b>{{field.title}}</b>:
 					</span>
-					<span *ngIf="['integer','text','url'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+					<span *ngIf="['integer','text','url'].indexOf(field.fieldType) > -1 && field.name !== 'password'" [class]="tiny ? '' : 'kt-widget4__title'">
 						{{current[field.name]}}
 					</span>
 					<span *ngIf="['iban'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">

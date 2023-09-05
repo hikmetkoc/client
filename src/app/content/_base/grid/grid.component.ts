@@ -49,6 +49,8 @@ import {ConnectStoreDialogComponent} from "../dialogs/connect-store-dialog/conne
 import {SpendOkeyComponent} from "../dialogs/spend-okey-dialog/spend-okey.component";
 import {PaymentOkeyComponent} from "../dialogs/payment-okey-dialog/payment-okey.component";
 import {reportInvalidActions} from "@ngrx/effects/src/effect_notification";
+import {ChangeRoleComponent} from "../dialogs/change-role-dialog/change-role.component";
+import {ChangeGroupComponent} from "../dialogs/change-group-dialog/change-group.component";
 
 @Component({
 	selector: 'kt-grid',
@@ -190,11 +192,27 @@ export class GridComponent implements AfterViewInit {
 			filters.add(f);
 		}
 		if (this.model.name === 'User') {
-			filters.add({
-				name: 'activated',
-				operator: FilterOperation.EQUALS,
-				value: true
-			});
+			if (this.baseService.getUserId() !== 2) {
+				filters.add({
+					name: 'activated',
+					operator: FilterOperation.EQUALS,
+					value: true
+				});
+			}
+			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
+				filters.add({
+					name: 'id',
+					operator: FilterOperation.EQUALS,
+					value: this.baseService.getUser().id
+				});
+			}
+			if ((this.baseService.getUser().birim.id === 'Birim_Loher' || this.baseService.getUser().birim.id === 'Birim_Avelice') && this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm') {
+				filters.add({
+					name: 'id',
+					operator: FilterOperation.EQUALS,
+					value: this.baseService.getUser().id
+				});
+			}
 		}
 		if (this.model.name === 'InvoiceList') {
 			if (this.baseService.getUserId() === 90) {
@@ -225,21 +243,24 @@ export class GridComponent implements AfterViewInit {
 				value: 'Payment_Status_Muh'
 			});
 		}
+		if (this.model.name === 'PaymentOrder' && this.baseService.getUser().birim.id === 'Birim_Loher' && this.baseService.getUserId() === 134) {
+			filters.add({
+				name: 'status',
+				operator: FilterOperation.EQUALS,
+				value: 'Payment_Status_Muh'
+			});
+			filters.add({
+				name: 'cost',
+				operator: FilterOperation.EQUALS,
+				value: 'Cost_Place_MeteorIzmir'
+			});
+		}
 		if (this.model.name === 'PaymentOrder' && this.baseService.getUser().birim.id === 'Birim_Fin') {
 			filters.add({
 				name: 'status',
 				operator: FilterOperation.IN,
 				value: ['Payment_Status_Onay', 'Payment_Status_Ode', 'Payment_Status_Kısmi']
 			});
-		}
-		if (this.model.name === 'User') {
-			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
-				filters.add({
-					name: 'id',
-					operator: FilterOperation.EQUALS,
-					value: this.baseService.getUser().id
-				});
-			}
 		}
 		if (this.model.name === 'Customer') {
 			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
@@ -634,9 +655,6 @@ export class GridComponent implements AfterViewInit {
 				/*if (this.model.name === 'Task' && field.name === 'owner' && field.value === undefined) {
 					field.value = this.baseService.getUser();
 				}*/
-				if (this.model.name === 'User' && field.name === 'activated' && field.value === undefined) {
-					//field.value = true;
-				}
 
 				/*if (this.baseService.getUserId().toString() !== '81') {*/
 				// Talep Eden Satırına Kullanıcı Adını Yazdırma
@@ -1412,6 +1430,20 @@ export class GridComponent implements AfterViewInit {
 		} else {
 			Utils.showActionNotification('Talimata Dönüştürülen, mükerrer olan veya iptal olan bir faturaya atama yapamazsınız!', 'warning', 10000, true, false, 3000, this.snackBar);
 		}
+	}
+	changeUserRole(entity, e?, presetValues = []) {
+		if (e) { e.stopPropagation(); }
+		return this.dialog.open(ChangeRoleComponent, {
+			data: {model: this.model, current: entity},
+			width: '600px'
+		});
+	}
+	changeUserGroup(entity, e?, presetValues = []) {
+		if (e) { e.stopPropagation(); }
+		return this.dialog.open(ChangeGroupComponent, {
+			data: {model: this.model, current: entity},
+			width: '600px'
+		});
 	}
 	changecenter(entity, e?, presetValues = []) {
 		if (e) { e.stopPropagation(); }

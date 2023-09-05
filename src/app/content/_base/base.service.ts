@@ -56,7 +56,6 @@ export class BaseService {
 		);
 	}
 
-
 	updateStatus(entities: any[], status: number): Observable<any> {
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
 		const body = {

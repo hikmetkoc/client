@@ -1,0 +1,59 @@
+<kt-portlet>
+	<kt-portlet-header>
+		<ng-container ktPortletTitle class="kt-portlet__head-title text-center">
+			<h3 class="kt-portlet__head-title text-center">
+				Personelin Mevcut Grubu: {{ this.groupId }}
+			</h3>
+		</ng-container>
+	</kt-portlet-header>
+	<ng-container>
+		<div class="table table-striped">
+			<table>
+				<thead>
+				<tr>
+					<th>Group</th>
+					<th>Member</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let product of userGroupList">
+					<td>
+						<ng-container *ngFor="let group of product.groups; let last = last">
+							{{ group.firstName + ' ' + group.lastName }}
+							<span *ngIf="!last">, </span>
+						</ng-container>
+					</td>
+					<td>
+						<ng-container *ngFor="let member of product.members; let last = last">
+							{{ member.firstName + ' ' + member.lastName }}
+							<span *ngIf="!last">, </span>
+						</ng-container>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</ng-container>
+	<kt-portlet-body>
+		<div class="form-container text-center">
+			<mat-form-field>
+				<mat-label>Amir Seç</mat-label>
+				<mat-select [(value)]="selectedGroupId">
+					<mat-option *ngFor="let user of userList" [value]="user.id">{{ user.firstName + ' ' + user.lastName }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+		<!--<div class="form-container text-center">
+			<mat-form-field>
+				<mat-label>Çalışan Seç</mat-label>
+				<mat-select [(value)]="selectedMemberId">
+					<mat-option *ngFor="let user of userList" [value]="user.id">{{ user.firstName + ' ' + user.lastName }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div> -->
+		<div class="button-container text-center">
+			<button type="button" mat-raised-button color="primary" (click)="onYesClick()" matTooltip="Tamam">Onayla</button>
+			<button type="button" mat-raised-button color="warn" (click)="onNoClick()" matTooltip="Vazgeç">Vazgeç</button>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

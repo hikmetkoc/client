@@ -124,6 +124,8 @@ import { HolidayReportDialogComponent } from './_base/dialogs/holiday-report-dia
 import { StoreDialogComponent } from './_base/dialogs/store-dialog/store-dialog.component';
 import { SendSmsDialogComponent } from './_base/dialogs/send-sms-dialog/send-sms-dialog.component';
 import { SendInvoiceComponent} from './_base/dialogs/send-invoice-dialog/send-invoice.component';
+import { ChangeRoleComponent} from './_base/dialogs/change-role-dialog/change-role.component';
+import { ChangeGroupComponent} from './_base/dialogs/change-group-dialog/change-group.component';
 import { ConnectStoreDialogComponent} from './_base/dialogs/connect-store-dialog/connect-store-dialog.component';
 import { SpendOkeyComponent} from './_base/dialogs/spend-okey-dialog/spend-okey.component';
 import { PaymentOkeyComponent} from './_base/dialogs/payment-okey-dialog/payment-okey.component';
@@ -399,6 +401,8 @@ const routes: Routes = [
 		StoreDialogComponent,
 		SendSmsDialogComponent,
 		SendInvoiceComponent,
+		ChangeGroupComponent,
+		ChangeRoleComponent,
 		ConnectStoreDialogComponent,
 		SpendOkeyComponent,
 		PaymentOkeyComponent,
@@ -432,6 +436,8 @@ const routes: Routes = [
 		StoreDialogComponent,
 		SendSmsDialogComponent,
 		SendInvoiceComponent,
+		ChangeRoleComponent,
+		ChangeGroupComponent,
 		ConnectStoreDialogComponent,
 		SpendOkeyComponent,
 		PaymentOkeyComponent,

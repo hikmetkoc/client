@@ -1,0 +1,23 @@
+<kt-portlet>
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title text-center">
+				Personelin Mevcut Rolü: {{ this.roleId }}
+			</h3>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<div class="form-container text-center">
+			<mat-form-field>
+				<mat-label>Rol Seç</mat-label>
+				<mat-select [(value)]="selectedUserId">
+					<mat-option *ngFor="let user of userList" [value]="user.id">{{ user.id }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+		<div class="button-container text-center">
+			<button type="button" mat-raised-button color="primary" (click)="onYesClick()" matTooltip="Tamam">Onayla</button>
+			<button type="button" mat-raised-button color="warn" (click)="onNoClick()" matTooltip="Vazgeç">Vazgeç</button>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

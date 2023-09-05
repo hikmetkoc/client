@@ -457,8 +457,19 @@
 							<mat-icon>check_circle</mat-icon>
 						</button>
 					</div>
+					<div *ngIf="model.apiName == 'users' && baseService.getUserId() === 2"> <!-- PERSONELLER ADMIN BUTONLARI -->
+						<button mat-icon-button color="success" matTooltip="Rol Düzenle" type="button" (click)="changeUserRole(row, $event)">
+							<mat-icon>settings</mat-icon>
+						</button>
+						<button mat-icon-button color="success" matTooltip="Grubunu Düzenle" type="button" (click)="changeUserGroup(row, $event)">
+							<mat-icon>group</mat-icon>
+						</button>
+						<button mat-icon-button color="warn" matTooltip="Pasife Al" type="button" (click)="changeUserActivate(row, $event)">
+							<mat-icon>block</mat-icon>
+						</button>
+					</div>
 					<!-- DÜZENLE VE SİL BUTONLARI -->
-					<div *ngIf="model.apiName != 'buys' && model.apiName != 'invoice_lists' && model.apiName != 'payment_orders' && model.apiName != 'spends'">
+					<div *ngIf="model.apiName != 'buys' && model.apiName != 'invoice_lists' && model.apiName != 'payment_orders' && model.apiName != 'spends' && (model.apiName === 'users' && this.baseService.getUserId() === 2)">
 						<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
 							<mat-icon>create</mat-icon>
 						</button>
