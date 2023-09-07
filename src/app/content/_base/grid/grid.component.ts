@@ -191,6 +191,7 @@ export class GridComponent implements AfterViewInit {
 		for (let f of this.defaultFilter) {
 			filters.add(f);
 		}
+		// SAYFA FİLTRELERİ
 		if (this.model.name === 'User') {
 			if (this.baseService.getUserId() !== 2) {
 				filters.add({
@@ -206,7 +207,7 @@ export class GridComponent implements AfterViewInit {
 					value: this.baseService.getUser().id
 				});
 			}
-			if ((this.baseService.getUser().birim.id === 'Birim_Loher' || this.baseService.getUser().birim.id === 'Birim_Avelice') && this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm') {
+			if ((this.baseService.getUser().birim.id === 'Birim_Loher' || this.baseService.getUser().birim.id === 'Birim_Avelice') && this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm' && this.baseService.getUserId() !== 29600) {
 				filters.add({
 					name: 'id',
 					operator: FilterOperation.EQUALS,
@@ -229,40 +230,38 @@ export class GridComponent implements AfterViewInit {
 					value: this.baseService.getUserId()
 				});
 			}
-			/*filters.add({
-				name: 'createdBy',
-				operator: FilterOperation.EQUALS,
-				value: 1
-			});*/
 		}
-		// todo: Sadece Muhasebe Onayı bekleyenleri Mahasebecilere Göster
-		if (this.model.name === 'PaymentOrder' && this.baseService.getUser().birim.id === 'Birim_Muh') {
-			filters.add({
-				name: 'status',
-				operator: FilterOperation.EQUALS,
-				value: 'Payment_Status_Muh'
-			});
+		if (this.model.name === 'PaymentOrder') {
+			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
+				filters.add({
+					name: 'status',
+					operator: FilterOperation.EQUALS,
+					value: 'Payment_Status_Muh'
+				});
+			}
+			if (this.baseService.getUser().birim.id === 'Birim_Loher' && this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm') {
+				filters.add({
+					name: 'cost',
+					operator: FilterOperation.EQUALS,
+					value: 'Cost_Place_MeteorIzmir'
+				});
+			}
+			if (this.baseService.getUser().birim.id === 'Birim_Avelice' && this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm') {
+				filters.add({
+					name: 'cost',
+					operator: FilterOperation.IN,
+					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir']
+				});
+			}
+			if (this.baseService.getUser().birim.id === 'Birim_Fin') {
+				filters.add({
+					name: 'status',
+					operator: FilterOperation.IN,
+					value: ['Payment_Status_Onay', 'Payment_Status_Ode', 'Payment_Status_Kısmi']
+				});
+			}
 		}
-		if (this.model.name === 'PaymentOrder' && this.baseService.getUser().birim.id === 'Birim_Loher' && this.baseService.getUserId() === 134) {
-			filters.add({
-				name: 'status',
-				operator: FilterOperation.EQUALS,
-				value: 'Payment_Status_Muh'
-			});
-			filters.add({
-				name: 'cost',
-				operator: FilterOperation.EQUALS,
-				value: 'Cost_Place_MeteorIzmir'
-			});
-		}
-		if (this.model.name === 'PaymentOrder' && this.baseService.getUser().birim.id === 'Birim_Fin') {
-			filters.add({
-				name: 'status',
-				operator: FilterOperation.IN,
-				value: ['Payment_Status_Onay', 'Payment_Status_Ode', 'Payment_Status_Kısmi']
-			});
-		}
-		if (this.model.name === 'Customer') {
+		if (this.model.name === 'Customer') {	// Merkez muhasebe Tedarikçileri görüntüleyemesin.
 			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
 				filters.add({
 					name: 'id',
@@ -283,16 +282,6 @@ export class GridComponent implements AfterViewInit {
 					operator: FilterOperation.IN,
 					value: ['Onaylandı', 'Kısmi Ödendi', 'Ödendi', 'Reddedildi']
 				});
-				/*filters.add({
-					name: 'owner.birim.id',
-					operator: FilterOperation.IN,
-					value: ['Birim_Fin', null]
-				});
-				filters.add({
-					name: 'lastModifiedBy',
-					operator: FilterOperation.EQUALS,
-					value: null
-				});*/
 			}
 			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
 				filters.add({
@@ -302,62 +291,58 @@ export class GridComponent implements AfterViewInit {
 				});
 			}
 		}
-		if (this.baseService.getUserId() === 99 && this.model.name === 'Holiday') {
+		if (this.model.name === 'Holiday' && this.baseService.getUserId() === 99) {
 			filters.add({
 				name: 'assigner',
 				operator: FilterOperation.EQUALS,
 				value: 99
 			});
 		}
-		// Cemal Elitaş veya Yonetici IK değilse sadece ortak dokümanları göster.
-		if ((this.baseService.getUserId() !== 2000 && this.baseService.getUserId() !== 90 && this.baseService.getUserId() !== 2) && this.model.name === 'Document') {
-			if (this.baseService.getUserId() !== 5 && this.baseService.getUserId() !== 6 && this.baseService.getUserId() !== 28650 && this.baseService.getUserId() !== 8 && this.baseService.getUserId() !== 91 && this.baseService.getUserId() !== 9 && this.baseService.getUserId() !== 14 && this.baseService.getUserId() !== 18 && this.baseService.getUserId() !== 94)
-				filters.add({
-					name: 'sirket',
-					operator: FilterOperation.EQUALS,
-					value: 'Sirket_Doc_Genel'
-				});
-			if (this.baseService.getUserId() === 91) {
-				filters.add({
-					name: 'sirket',
-					operator: FilterOperation.IN,
-					value: ['Sirket_Doc_Meteor', 'Sirket_Doc_Cemcan', 'Sirket_Doc_Ncc', 'Sirket_Doc_Simya', 'Sirket_Doc_Genel']
-				});
-			}
-			if (this.baseService.getUserId() === 5) {
-				filters.add({
-					name: 'sirket',
-					operator: FilterOperation.IN,
-					value: ['Sirket_Doc_Cemcan', 'Sirket_Doc_Genel']
-				});
-			}
-			if (this.baseService.getUserId() === 6) {
-				filters.add({
-					name: 'sirket',
-					operator: FilterOperation.IN,
-					value: ['Sirket_Doc_Ncc', 'Sirket_Doc_Genel']
-				});
-			}
-			if (this.baseService.getUserId() === 28650) {
-				filters.add({
-					name: 'sirket',
-					operator: FilterOperation.IN,
-					value: ['Sirket_Doc_Meteor', 'Sirket_Doc_Genel']
-				});
-			}
-			if (this.baseService.getUserId() === 8) {
-				filters.add({
-					name: 'sirket',
-					operator: FilterOperation.IN,
-					value: ['Sirket_Doc_Simya', 'Sirket_Doc_Genel']
-				});
-			}
-			if (this.baseService.getUserId() === 9 || this.baseService.getUserId() === 14 || this.baseService.getUserId() === 18 || this.baseService.getUserId() === 94) {
-				filters.add({
-					name: 'sirket',
-					operator: FilterOperation.IN,
-					value: ['Sirket_Doc_MeteorIns', 'Sirket_Doc_Genel']
-				});
+		if (this.model.name === 'Document') {
+			if (this.baseService.getUser().unvan.id !== 'Unvan_Idr_Mud' && this.baseService.getUserId() !== 2000 && this.baseService.getUserId() !== 2) {
+				if (this.baseService.getUser().birim.id === 'Birim_Satin' && this.baseService.getUser().unvan.id === 'Unvan_Ope_Sat_Mud') {
+					filters.add({
+						name: 'sirket',
+						operator: FilterOperation.IN,
+						value: ['Sirket_Doc_Meteor', 'Sirket_Doc_Cemcan', 'Sirket_Doc_Ncc', 'Sirket_Doc_Simya', 'Sirket_Doc_Genel']
+					});
+				} else if (this.baseService.getUser().sirket.id === 'Sirket_Cemcan' && this.baseService.getUser().unvan.id === 'Unvan_Ist_Amr') {
+					filters.add({
+						name: 'sirket',
+						operator: FilterOperation.IN,
+						value: ['Sirket_Doc_Cemcan', 'Sirket_Doc_Genel']
+					});
+				} else if (this.baseService.getUser().sirket.id === 'Sirket_Ncc' && this.baseService.getUser().unvan.id === 'Unvan_Ist_On') {
+					filters.add({
+						name: 'sirket',
+						operator: FilterOperation.IN,
+						value: ['Sirket_Doc_Ncc', 'Sirket_Doc_Genel']
+					});
+				} else if (this.baseService.getUser().birim.id === 'Birim_Ter' && this.baseService.getUser().unvan.id === 'Unvan_Ist_Amr') {
+					filters.add({
+						name: 'sirket',
+						operator: FilterOperation.IN,
+						value: ['Sirket_Doc_Meteor', 'Sirket_Doc_Genel']
+					});
+				} else if (this.baseService.getUser().birim.id === 'Birim_Kafe' && this.baseService.getUser().unvan.id === 'Unvan_Isl_Mud') {
+					filters.add({
+						name: 'sirket',
+						operator: FilterOperation.IN,
+						value: ['Sirket_Doc_Simya', 'Sirket_Doc_Genel']
+					});
+				} else if (this.baseService.getUserId() === 9 || this.baseService.getUserId() === 14 || this.baseService.getUserId() === 18 || this.baseService.getUserId() === 94) {
+					filters.add({
+						name: 'sirket',
+						operator: FilterOperation.IN,
+						value: ['Sirket_Doc_MeteorIns', 'Sirket_Doc_Genel']
+					});
+				} else {
+					filters.add({
+						name: 'sirket',
+						operator: FilterOperation.EQUALS,
+						value: 'Sirket_Doc_Genel'
+					});
+				}
 			}
 		}
 		queryParams.filter = Utils.makeFilter(filters);
@@ -368,102 +353,6 @@ export class GridComponent implements AfterViewInit {
 		queryParams.search = this.searchStr;
 		this.dataSource.load(queryParams);
 		this.dataSource.entitySubject.subscribe(res => {
-			if (this.model.name === 'ContProduct') {
-				for (const data of res) {
-					const ownerID = data.owner.id;
-					const assignerID = data.assigner.id;
-					if (ownerID === this.baseService.getUser().id) {
-						this.onayci = true;
-					}
-					if (assignerID === this.baseService.getUser().id) {
-						this.uruntalep = true;
-					}
-				}
-			}
-			if (this.model.name === 'Buy') {
-				this.onayci = true;
-				this.teklifsay = 0;
-				for (const data of res) {
-					const ownerID = data.owner.id;
-					const secondAssID = data.secondAssigner.id;
-					if (ownerID !== this.baseService.getUser().id || data.quoteStatus.label === 'Onaylandı') {
-						this.onayci = false;
-					}
-					if (secondAssID === this.baseService.getUser().id) {
-						this.onayci2 = true;
-					}
-					if (data.preparation.label === 'Tamamlandı') {
-						this.teklifsay++;
-					}
-				}
-				if (this.teklifsay < 3) {
-					this.onayci2 = false;
-				}
-			}
-			if (this.model.name === 'Store') {
-				this.satinalmaci = false;
-				let buyownerID = 1;
-				for (const data of res) {
-					if (data.status.label === 'Onaylandı') {
-						buyownerID = data.buyowner.id;
-					}
-					if (buyownerID === this.baseService.getUser().id) {
-						this.satinalmaci = true;
-					}
-				}
-			}
-			if (this.model.name === 'PaymentOrder') {
-				this.taleponaycisi = false;
-				let assigner = 1;
-				let secondAssigner = 1;
-				for (const data of res) {
-					if (data.status.label === '1.Onay Bekleniyor') {
-						assigner = data.assigner.id;
-						if (assigner === this.baseService.getUser().id) {
-							this.taleponaycisi = true;
-						}
-					}
-					if (data.status.label === '2.Onay Bekleniyor') {
-						secondAssigner = data.secondAssigner.id;
-						if (secondAssigner === this.baseService.getUser().id) {
-							this.taleponaycisi = true;
-						}
-					}
-					if (this.baseService.getUser().birim.label === 'Muhasebe') {
-						this.taleponaycisi = true;
-					}
-					/*if (this.baseService.getUser().birim.label === 'Finans') {
-						this.taleponaycisi = true;
-					}*/
-				}
-			}
-			if (this.model.name === 'Spend') {
-				this.finans = false;
-				for (const data of res) {
-					if (data.status.label === 'Ödenmedi') {
-						if (this.baseService.getUser().birim.id === 'Birim_Fin') {
-							this.finans = true;
-						}
-					}
-				}
-			}
-			if (this.model.name === 'FuelLimit') {
-				this.eklimitonayi = false;
-				for (const data of res) {
-					if (data.status.label === 'Onay Bekliyor' && this.baseService.getUserId() === 93) {
-						this.eklimitonayi = true;
-					}
-				}
-			}
-			if (this.model.name === 'Holiday') {
-				for (const data of res) {
-					const assignerID = data.assigner.id;
-					if (assignerID === this.baseService.getUser().id && data.approvalStatus.id === 'Izin_Dur_Pasif') {
-						this.onayci = true;
-					}
-				}
-			}
-
 			if (JSON.stringify(this.result) !== JSON.stringify(res)) {
 				this.result = res;
 				this.loadComplete.emit(res);

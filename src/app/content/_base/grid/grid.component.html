@@ -406,10 +406,10 @@
 						<button mat-icon-button color="secondary" matTooltip="Fatura Görüntüle" type="button" (click)="showPaymentOrderListFiles(row, $event)">
 							<mat-icon>visibility</mat-icon>
 						</button>
-						<button *ngIf="(row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor') || (row.secondAssigner.id === this.baseService.getUserId() && row.status.label === '2.Onay Bekleniyor') || (this.baseService.getUser().birim.label === 'Muhasebe' && row.status.label === 'Muhasebe Onayı')" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
+						<button *ngIf="(row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor') || (row.secondAssigner.id === this.baseService.getUserId() && row.status.label === '2.Onay Bekleniyor') || (this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm' && row.status.label === 'Muhasebe Onayı')" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
 							<mat-icon>check</mat-icon>
 						</button>
-						<button *ngIf="(row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor') || (row.secondAssigner.id === this.baseService.getUserId() && row.status.label === '2.Onay Bekleniyor') || (this.baseService.getUser().birim.label === 'Muhasebe' && row.status.label === 'Muhasebe Onayı') || (this.baseService.getUser().birim.label === 'Finans' && row.status.label === 'Onaylandı')" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
+						<button *ngIf="(row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor') || (row.secondAssigner.id === this.baseService.getUserId() && row.status.label === '2.Onay Bekleniyor') || (this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm' && row.status.label === 'Muhasebe Onayı') || (this.baseService.getUser().birim.label === 'Finans' && row.status.label === 'Onaylandı')" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
 							<mat-icon>cancel</mat-icon>
 						</button>
 						<button *ngIf="row.owner.login === this.baseService.getUser().login && row.store === null" mat-icon-button color="basic" matTooltip="Satın Alma Kodu" type="button" (click)="connectStore(row, $event)">
@@ -417,13 +417,13 @@
 						</button>
 					</div>
 					<div *ngIf="model.apiName == 'spends'"> <!-- ÖDEMELER BUTONLARI -->
-						<button *ngIf="finans === true && row.status.label === 'Ödenmedi'" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
+						<button *ngIf="this.baseService.getUser().birim.id === 'Birim_Fin' && row.status.label === 'Ödenmedi' && row.paymentStatus !== 'Reddedildi'" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
 							<mat-icon>check</mat-icon>
 						</button>
-						<button *ngIf="finans === true && row.status.label === 'Ödenmedi'" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
+						<button *ngIf="this.baseService.getUser().birim.id === 'Birim_Fin' && row.status.label === 'Ödenmedi' && row.paymentStatus !== 'Reddedildi'" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
 							<mat-icon>cancel</mat-icon>
 						</button>
-						<button *ngIf="finans === true && row.status.label === 'Ödenmedi' && row.paymentorder.moneyType.label === 'Dolar' && row.paymentorder.paymentStyle.label === 'Türk Lirası'" mat-icon-button color="success" matTooltip="Ödeme Yap" type="button" (click)="toPay(row, $event)">
+						<button *ngIf="this.baseService.getUser().birim.id === 'Birim_Fin' && row.status.label === 'Ödenmedi' && row.paymentStatus!== 'Reddedildi' && row.paymentorder.moneyType.label === 'Dolar' && row.paymentorder.paymentStyle.label === 'Türk Lirası'" mat-icon-button color="success" matTooltip="Ödeme Yap" type="button" (click)="toPay(row, $event)">
 							<mat-icon>payment</mat-icon>
 						</button>
 						<button *ngIf="this.baseService.getUser().birim.id === 'Birim_Fin' && row.status.label === 'Ödendi' && row.paymentorder.dekont === true && row.dekont === null" mat-icon-button color="success" matTooltip="Dekont Yükle" type="button" (click)="toUploadDekont(row, $event)">
@@ -434,10 +434,10 @@
 						</button>
 					</div>
 					<div *ngIf="model.apiName === 'fuellimits'"> <!-- EK LİMİT TALEBİ BUTONLARI -->
-						<button *ngIf="eklimitonayi === true" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
+						<button *ngIf="this.baseService.getUserId() === 93 && row.status.label === 'Onay Bekliyor'" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
 							<mat-icon>check</mat-icon>
 						</button>
-						<button *ngIf="eklimitonayi === true" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
+						<button *ngIf="this.baseService.getUserId() === 93 && row.status.label === 'Onay Bekliyor'" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
 							<mat-icon>cancel</mat-icon>
 						</button>
 					</div>
