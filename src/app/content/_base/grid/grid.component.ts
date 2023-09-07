@@ -207,7 +207,7 @@ export class GridComponent implements AfterViewInit {
 					value: this.baseService.getUser().id
 				});
 			}
-			if ((this.baseService.getUser().birim.id === 'Birim_Loher' || this.baseService.getUser().birim.id === 'Birim_Avelice') && this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm' && this.baseService.getUserId() !== 29600) {
+			if ((this.baseService.getUser().birim.id === 'Birim_Loher' || this.baseService.getUser().birim.id === 'Birim_Avelice') && this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm') {
 				filters.add({
 					name: 'id',
 					operator: FilterOperation.EQUALS,

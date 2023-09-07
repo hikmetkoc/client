@@ -53,7 +53,7 @@
 						<mat-icon>delete</mat-icon>
 					</button>
 
-					<kt-filemanager *ngIf="baseService.getUserId() === 2000 || baseService.getUserId() === 29600" [(current)]="current" [model]="model"></kt-filemanager>
+					<kt-filemanager *ngIf="baseService.getRoleId() === 'ROLE_IK'" [(current)]="current" [model]="model"></kt-filemanager>
 					<!-- <kt-history [(current)]="current" [model]="model"></kt-history> -->
 				</div>
 			</ng-container>
@@ -62,7 +62,7 @@
 			<kt-detail [(current)]="current" [model]="model" naked="true"></kt-detail>
 		</kt-portlet-body>
 	</kt-portlet>
-	<kt-portlet *ngIf="baseService.getUserId() === 2000 || baseService.getUserId() === 29600">
+	<kt-portlet *ngIf="baseService.getRoleId() === 'ROLE_IK'">
 		<kt-portlet-header>
 			<ng-container ktPortletTitle>
 				<h3 class="kt-portlet__head-title">
