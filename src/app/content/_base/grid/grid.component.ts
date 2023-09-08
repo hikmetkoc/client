@@ -199,10 +199,19 @@ export class GridComponent implements AfterViewInit {
 					operator: FilterOperation.EQUALS,
 					value: true
 				});
+			}
+			if (this.baseService.getUserId() === 2001) {
 				filters.add({
 					name: 'birim',
 					operator: FilterOperation.IN,
 					value: ['Birim_Loher', 'Birim_Muh']
+				});
+			}
+			if (this.baseService.getUser().birim.id === 'Birim_Fin') {
+				filters.add({
+					name: 'birim',
+					operator: FilterOperation.EQUALS,
+					value: 'Birim_Fin'
 				});
 			}
 			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
