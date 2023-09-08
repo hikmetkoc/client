@@ -199,6 +199,11 @@ export class GridComponent implements AfterViewInit {
 					operator: FilterOperation.EQUALS,
 					value: true
 				});
+				filters.add({
+					name: 'birim',
+					operator: FilterOperation.IN,
+					value: ['Birim_Loher', 'Birim_Muh']
+				});
 			}
 			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
 				filters.add({
@@ -291,12 +296,21 @@ export class GridComponent implements AfterViewInit {
 				});
 			}
 		}
-		if (this.model.name === 'Holiday' && this.baseService.getUserId() === 99) {
-			filters.add({
-				name: 'assigner',
-				operator: FilterOperation.EQUALS,
-				value: 99
-			});
+		if (this.model.name === 'Holiday') {
+			if (this.baseService.getUserId() === 99) {
+				filters.add({
+					name: 'assigner',
+					operator: FilterOperation.EQUALS,
+					value: 99
+				});
+			}
+			if (this.baseService.getUserId() === 2001) {
+				filters.add({
+					name: 'user.birim',
+					operator: FilterOperation.IN,
+					value: ['Birim_Loher', 'Birim_Muh']
+				});
+			}
 		}
 		if (this.model.name === 'Document') {
 			if (this.baseService.getUser().unvan.id !== 'Unvan_Idr_Mud' && this.baseService.getUserId() !== 2000 && this.baseService.getUserId() !== 2) {
