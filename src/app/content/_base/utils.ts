@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 export class Utils {
 
     static phoneMask = ['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
-	static ibanMask: Array<RegExp | string> = ['T', 'R', /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/];
+	static ibanMask: Array<RegExp | string> = ['T', 'R', /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/];
 
 	static currencyMask = createNumberMask({
         prefix: '',
@@ -700,9 +700,9 @@ export class Utils {
 	public static ibanClean(iban) {
 		if (!iban || iban === null) { return iban; }
 		if (iban.length < 7) { iban = ''; }
-		if (iban.length > 30) { iban = iban.split('-')[0]; }
+		if (iban.length > 34) { iban = iban.split('-')[0]; }
 		iban = iban.replace(/\D+/g, '');
-		if (iban.length > 30) { iban = iban.substr(0, 30); } else { iban = iban.substr(0, 28); }
+		if (iban.length > 34) { iban = iban.substr(0, 34); } else { iban = iban.substr(0, 32); }
 		return iban;
 	}
 
@@ -753,10 +753,10 @@ export class Utils {
 			return iban;
 		}
 		iban = this.ibanClean(iban);
-		if (iban.length === 30) {
-			iban = 'TR' + iban.substring(2, 4) + ' ' + iban.substring(4, 8) + ' ' + iban.substring(8, 12) + ' ' + iban.substring(12, 16) + ' ' + iban.substring(16, 20) + ' ' + iban.substring(20, 24) + ' ' + iban.substring(24, 26);
+		if (iban.length === 34) {
+			iban = 'TR' + iban.substring(2, 4) + ' ' + iban.substring(4, 8) + ' ' + iban.substring(8, 12) + ' ' + iban.substring(12, 16) + ' ' + iban.substring(16, 20) + ' ' + iban.substring(20, 24) + ' ' + iban.substring(24, 28) + ' ' + iban.substring(28, 30);
 		} else {
-			iban = 'TR' + iban.substring(2, 4) + ' ' + iban.substring(4, 8) + ' ' + iban.substring(8, 12) + ' ' + iban.substring(12, 16) + ' ' + iban.substring(16, 20) + ' ' + ' ' + iban.substring(20, 24);
+			iban = 'TR' + iban.substring(2, 4) + ' ' + iban.substring(4, 8) + ' ' + iban.substring(8, 12) + ' ' + iban.substring(12, 16) + ' ' + iban.substring(16, 20) + ' ' + ' ' + iban.substring(20, 24) + ' ' + iban.substring(24, 28);
 		}
 		return iban;
 	}
