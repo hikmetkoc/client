@@ -64,7 +64,8 @@ export class PaymentOrderFileDialogComponent implements OnInit {
 		reader.onload = (event: any) => {
 			const binaryValue = event.target.result;
 			const currentId = this.current.id.toString(); // ID'yi string olarak gönder
-
+			console.log(currentId);
+			console.log(apiUrl);
 			this.http.post(apiUrl + `?id=${currentId}`, binaryValue, { headers: httpHeaders, responseType: 'text' }).subscribe(
 				response => {
 						Utils.showActionNotification('Dosya yüklemesi başarıyla tamamlandı!', 'success', 5000, true, false, 3000, this.snackBar);

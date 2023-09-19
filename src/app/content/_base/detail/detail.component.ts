@@ -6,6 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DeleteEntityDialogComponent } from '../dialogs/delete-entity-dialog/delete-entity-dialog.component';
 import {ReportManagerDialogComponent} from "./reportmanager/report-manager-dialog/report-manager-dialog.component";
 import {HolidayDetailDialogComponent} from "./reportmanager/holiday-detail-dialog/holiday-detail-dialog.component";
+import {ResignComponent} from "../dialogs/resign-dialog/resign.component";
+import {ShowResignComponent} from "./show-resign-dialog/show-resign.component";
 
 @Component({
 	selector: 'kt-detail',
@@ -51,6 +53,20 @@ export class DetailComponent implements AfterViewInit, OnInit {
 
 	ngAfterViewInit() {
 
+	}
+
+	resign() {
+		const dialogRef = this.dialog.open(ResignComponent, {
+			width: '1200px',
+			data: {current: this.current, model: this.model}
+		});
+	}
+
+	showResign() {
+		const dialogRef = this.dialog.open(ShowResignComponent, {
+			width: '1200px',
+			data: {current: this.current, model: this.model}
+		});
 	}
 
 	makeCols() {

@@ -51,6 +51,9 @@ import {PaymentOkeyComponent} from "../dialogs/payment-okey-dialog/payment-okey.
 import {reportInvalidActions} from "@ngrx/effects/src/effect_notification";
 import {ChangeRoleComponent} from "../dialogs/change-role-dialog/change-role.component";
 import {ChangeGroupComponent} from "../dialogs/change-group-dialog/change-group.component";
+import {
+	ReportManagerDialogComponent
+} from "../detail/reportmanager/report-manager-dialog/report-manager-dialog.component";
 
 @Component({
 	selector: 'kt-grid',
@@ -109,18 +112,12 @@ export class GridComponent implements AfterViewInit {
 	utils;
 	filteredOptionss = {};
 	timer: any;
-	onayci: boolean;
-	onayci2: boolean;
-	satinalmaci: boolean;
-	eklimitonayi: boolean;
-	taleponaycisi: boolean;
-	finans: boolean;
-	uruntalep: boolean;
 	storebuyownerid;
-	teklifsay: number;
 	tablo: any;
 	kalanizin: any;
 	kullanilanizin: any;
+	toplamtlodeme: any;
+	toplamdlodeme: any;
 	izinbul = [];
 	loading: boolean;
 
@@ -143,7 +140,6 @@ export class GridComponent implements AfterViewInit {
 		this.model = Utils.getModel(this.entity);
 		this.displayColumns();
 		this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-		this.izinBul();
 		merge(this.sort.sortChange, this.paginator.page)
 			.pipe(
 				tap(() => {
@@ -167,7 +163,7 @@ export class GridComponent implements AfterViewInit {
 		this.tablo = this.model.apiName;
 	}
 
-	loadList() {
+	async loadList() {
 		this.selection.clear();
 		const queryParams = new QueryParamsModel();
 		if (this.model.name !== 'User') {
@@ -230,11 +226,11 @@ export class GridComponent implements AfterViewInit {
 			}
 		}
 		if (this.model.name === 'InvoiceList') {
-			if (this.baseService.getUserId() === 90) {
+			if (this.baseService.getUser().unvan.id === 'Unvan_Gen_Mud') {
 				filters.add({
-					name: 'createdBy',
+					name: 'owner.id',
 					operator: FilterOperation.EQUALS,
-					value: 1
+					value: this.baseService.getUserId()
 				});
 			}
 			if (this.baseService.getUser().birim.id === 'Birim_Fin') {
@@ -244,13 +240,53 @@ export class GridComponent implements AfterViewInit {
 					value: this.baseService.getUserId()
 				});
 			}
+			if (this.baseService.getUserId() === 29600) {
+				filters.add({
+					name: 'owner.id',
+					operator: FilterOperation.IN,
+					value: [this.baseService.getUserId(), 134]
+				});
+			}
+			if (this.baseService.getUserId() === 134) {
+				filters.add({
+					name: 'owner.id',
+					operator: FilterOperation.EQUALS,
+					value: this.baseService.getUserId()
+				});
+			}
+			if (this.baseService.getUserId() === 133) {
+				filters.add({
+					name: 'owner.birim.id',
+					operator: FilterOperation.EQUALS,
+					value: 'Birim_Avelice'
+				});
+			}
+			if (this.baseService.getUser().unvan.id === 'Unvan_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvan_San_Bas') {
+				filters.add({
+					name: 'owner.birim.id',
+					operator: FilterOperation.IN,
+					value: ['Birim_Loher', 'Birim_Avelice']
+				});
+			}
 		}
 		if (this.model.name === 'PaymentOrder') {
 			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
 				filters.add({
-					name: 'status',
+					name: 'muhasebeGoruntusu',
 					operator: FilterOperation.EQUALS,
-					value: 'Payment_Status_Muh'
+					value: true
+				});
+				filters.add({
+					name: 'cost',
+					operator: FilterOperation.IN,
+					value: ['Cost_Place_MeteorMerkez' , 'Cost_Place_Terminal' , 'Cost_Place_Mudanya' , 'Cost_Place_Ncc' , 'Cost_Place_Cemcan' , 'Cost_Place_Mudanya' , 'Cost_Place_Simya' , 'Cost_Place_Vitalyum' , 'Cost_Place_Vita' , 'Cost_Place_Tepe' , 'Cost_Place_Samanli' , 'Cost_Place_Ciftlikkoy' , 'Cost_Place_Sarj' , 'Cost_Place_Charge' , 'Cost_Place_Otobil']
+				});
+			}
+			if (this.baseService.getUser().unvan.id === 'Unvan_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvan_San_Bas') {
+				filters.add({
+					name: 'cost',
+					operator: FilterOperation.IN,
+					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir', 'Cost_Place_MeteorIzmir']
 				});
 			}
 			if (this.baseService.getUser().birim.id === 'Birim_Loher' && this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm') {
@@ -260,41 +296,66 @@ export class GridComponent implements AfterViewInit {
 					value: 'Cost_Place_MeteorIzmir'
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birim_Avelice' && this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm') {
+			if (this.baseService.getUser().birim.id === 'Birim_Avelice') {
 				filters.add({
 					name: 'cost',
 					operator: FilterOperation.IN,
 					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir']
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birim_Fin') {
+			if (this.baseService.getUser().unvan.id === 'Unvan_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvan_San_Bas') {
 				filters.add({
-					name: 'status',
+					name: 'owner.birim.id',
 					operator: FilterOperation.IN,
-					value: ['Payment_Status_Onay', 'Payment_Status_Ode', 'Payment_Status_Kısmi']
+					value: ['Birim_Loher', 'Birim_Avelice']
 				});
 			}
-		}
-		if (this.model.name === 'Customer') {	// Merkez muhasebe Tedarikçileri görüntüleyemesin.
-			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
+			if (this.baseService.getUser().unvan.id === 'Unvan_Gen_Mud') {
 				filters.add({
-					name: 'id',
+					name: 'secondAssigner.id',
 					operator: FilterOperation.EQUALS,
-					value: null
+					value: this.baseService.getUserId()
+				});
+				filters.add({
+					name: 'status.id',
+					operator: FilterOperation.EQUALS,
+					value: 'Payment_Status_Bek2'
 				});
 			}
 		}
 		if (this.model.name === 'Spend') {
 			if (this.baseService.getUser().birim.id === 'Birim_Fin') {
+				await this.odemelerBul();
 				filters.add({
 					name: 'finance',
 					operator: FilterOperation.EQUALS,
 					value: 1
 				});
-				filters.add({
+				/*filters.add({
 					name: 'paymentStatus',
 					operator: FilterOperation.IN,
 					value: ['Onaylandı', 'Kısmi Ödendi', 'Ödendi', 'Reddedildi']
+				});*/
+			}
+			if (this.baseService.getUser().birim.id === 'Birim_Avelice') {
+				filters.add({
+					name: 'paymentorder.cost',
+					operator: FilterOperation.IN,
+					value: ['Cost_Place_MeteorIgdir', 'Cost_Place_Avelice']
+				});
+			}
+			if (this.baseService.getUser().birim.id === 'Birim_Loher' && this.baseService.getUser().unvan.id !== 'Unvan_San_Bas_Yrd') {
+				filters.add({
+					name: 'paymentorder.cost',
+					operator: FilterOperation.EQUALS,
+					value: 'Cost_Place_MeteorIzmir'
+				});
+			}
+			if (this.baseService.getUser().unvan.id === 'Unvan_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvan_San_Bas') {
+				filters.add({
+					name: 'paymentorder.cost',
+					operator: FilterOperation.IN,
+					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir', 'Cost_Place_MeteorIzmir']
 				});
 			}
 			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
@@ -306,6 +367,7 @@ export class GridComponent implements AfterViewInit {
 			}
 		}
 		if (this.model.name === 'Holiday') {
+			await this.izinBul();
 			if (this.baseService.getUserId() === 99) {
 				filters.add({
 					name: 'assigner',
@@ -318,6 +380,13 @@ export class GridComponent implements AfterViewInit {
 					name: 'user.birim',
 					operator: FilterOperation.IN,
 					value: ['Birim_Loher', 'Birim_Muh']
+				});
+			}
+			if (this.baseService.getUser().unvan.id === 'Unvan_Ic_Uzm') {
+				filters.add({
+					name: 'user',
+					operator: FilterOperation.EQUALS,
+					value: this.baseService.getUser()
 				});
 			}
 		}
@@ -410,6 +479,84 @@ export class GridComponent implements AfterViewInit {
 			}
 			this.cdr.markForCheck();
 		});
+	}
+
+	async odemelerBul() {
+		const apiUrl = 'api/' + this.model.apiName + '/controltotalspends';
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		this.http.post(apiUrl, null, { headers: httpHeaders, responseType: 'text' }).subscribe(
+			response => {
+					const parts = response.split('-');
+					this.toplamtlodeme = parseFloat(parts[0].replace(',', '.'));
+					this.toplamdlodeme = parseFloat(parts[1].replace(',', '.'));
+				},
+			error => {
+				Utils.showActionNotification('Toplama Hatası', 'warning', 10000, true, false, 3000, this.snackBar);
+			}
+		);
+		/*return new Promise((resolve, reject) => {
+			const filters2 = new Set();
+			filters2.add({
+				name: 'lock',
+				operator: 'EQUALS',
+				value: false
+			});
+			const queryParams2 = new QueryParamsModel(
+				Utils.makeFilter(filters2)
+			);
+			this.baseService.find(queryParams2, 'spends').subscribe(
+				(res3) => {
+					this.toplamtlodeme = 0;
+					this.toplamdlodeme = 0;
+					for (const hld of res3.body) {
+						if (hld.status.label !== 'Ödenmedi') {
+							continue;
+						}
+						if (hld.paymentorder.moneyType.id === 'Par_Bir_Tl') {
+							this.toplamtlodeme = this.toplamtlodeme + hld.amount;
+						} else if (hld.paymentorder.moneyType.id !== 'Par_Bir_Tl') {
+							if (hld.paymentorder.paymentStyle.id === 'Payment_Style_Tl') {
+								this.toplamtlodeme = this.toplamtlodeme + hld.payTl;
+							} else {
+								this.toplamdlodeme = this.toplamdlodeme + hld.amount;
+							}
+						}
+					}
+					this.cdr.markForCheck();
+					resolve(); // İşlem tamamlandığında resolve çağrılır.
+				},
+				(error) => {
+					console.error('Sorgu hatası:', error);
+					reject(error); // Hata oluştuğunda reject çağrılır.
+				}
+			);
+		});*/
+	}
+
+	rememberHoliday(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const apiUrl = 'api/' + this.model.apiName + '/sendnotificationmail';
+		const receiver = entity.assigner.eposta;
+		//const receiver = 'hikmet@meteorpetrol.com';
+		const subject = 'İzin Hatırlatması';
+		const message = entity.owner.firstName + ' ' + entity.owner.lastName + ' kullanıcısı, yapmış olduğu bir izin talebini onaylamanız için size bir hatırlatmada bulunuyor.';
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		this.http.post(apiUrl + `?receiver=${receiver}&subject=${subject}&message=${message}`, null, { headers: httpHeaders, responseType: 'blob' }).subscribe(
+			response => {
+				Utils.showActionNotification('E-posta Gönderimi başarılı!', 'success', 10000, true, false, 3000, this.snackBar);
+			},
+			error => {
+				Utils.showActionNotification('E-posta gönderme hatası', 'warning', 10000, true, false, 3000, this.snackBar);
+			}
+		);
 	}
 
 	/*getUserList() {
@@ -545,7 +692,7 @@ export class GridComponent implements AfterViewInit {
 	displayColumns() {
 		this.displayedColumns.push('select');
 		if (this.model.name === 'Spend') {
-			//this.displayedColumns.push('paymentorder1');
+			this.displayedColumns.push('paymentorder1');
 			this.displayedColumns.push('paymentorder2');
 			this.displayedColumns.push('paymentorder3');
 			this.displayedColumns.push('paymentorder4');
@@ -750,7 +897,7 @@ export class GridComponent implements AfterViewInit {
 			});
 		}
 		if (this.model.apiName === 'payment_orders') {
-			if (entity.base64file === null) {
+			if (entity.base64file === null && entity.paymentSubject.label !== 'Saha Primi') {
 				Utils.showActionNotification('Talimatı oluşturan kişi bir dosya eklemeden onay verilemez!', 'warning', 10000, true, false, 3000, this.snackBar);
 			} else {
 				if (entity.status.id === 'Payment_Status_Red' || entity.status.id === 'Payment_Status_Ode' || entity.status.id === 'Payment_Status_Kısmi' || entity.status.id === 'Payment_Status_OtoOde' || entity.status.id === 'Payment_Status_Onay') {
@@ -761,7 +908,7 @@ export class GridComponent implements AfterViewInit {
 					Utils.showActionNotification('Bu fatura 1.onay aşamasındadır, sadece 1.onaycı onaylayabilir!', 'warning', 10000, true, false, 3000, this.snackBar);
 				} else if (entity.status.id === 'Payment_Status_Bek2' && this.baseService.getUserId() !== entity.secondAssigner.id ) {
 					Utils.showActionNotification('Bu fatura 2.onay aşamasındadır, sadece 2.onaycı onaylayabilir!', 'warning', 10000, true, false, 3000, this.snackBar);
-				} else if (entity.base64File === null) {
+				} else if (entity.base64File === null && entity.paymentSubject.label !== 'Saha Primi') {
 					Utils.showActionNotification('Faturaya ait bir dosya bulunmamaktadır, onay veremezsiniz!', 'warning', 10000, true, false, 3000, this.snackBar);
 				} else {
 					let status = '';
@@ -1121,6 +1268,44 @@ export class GridComponent implements AfterViewInit {
 		this.loading = false;
 	}
 
+	uploadHoliday(entity, e?, presetValues = []) {
+		this.loading = true;
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const dialogRef = this.dialog.open(PaymentOrderFileDialogComponent, {
+			width: '800px',
+			data: {current: entity, model: this.model},
+			disableClose: true,
+		});
+		dialogRef.afterClosed().subscribe(() => {
+			this.loadList();
+		});
+		this.loading = false;
+	}
+
+	formHoliday(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const dialogRef = this.dialog.open(ReportManagerDialogComponent, {
+			width: '800px',
+			data: {current: entity, model: this.model}
+		});
+	}
+
 	toUploadDekont(entity, e?, presetValues = []) {
 		this.loading = true;
 		if (e) {
@@ -1248,21 +1433,22 @@ export class GridComponent implements AfterViewInit {
 		);
 	}*/
 
-	showPaymentOrderListFiles(entity, e?, presetValues = []) {
+	showBase64Files(entity, e?, presetValues = []) {
 		if (e) { e.stopPropagation(); }
-		const apiUrl = `api/payment_orders/${entity.id}`;
+		const apiUrl = `api/${this.model.apiName}/${entity.id}`;
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
 
 		this.http.get(apiUrl, { headers: httpHeaders, responseType: 'text' }).subscribe(
 			response => {
 				const decodedData = atob(response);
+				const cleanData = decodedData.replace(/\s+/g, '');
 				const fileSignature = decodedData.substring(0, 4);
 				console.log(fileSignature);
 				let fileType: string;
 
 				if (fileSignature === '%PDF') {
 					fileType = 'application/pdf';
-				} else if (fileSignature === 'ÿØÿâ' || fileSignature === 'ÿÛÿà') {
+				} else if (fileSignature === 'ÿØÿâ' || fileSignature === 'ÿÛÿà' || fileSignature === '/9j/' || fileSignature === 'ÿØÿà') {
 					fileType = 'image/jpeg';
 				} else if (fileSignature === 'PNG') {
 					fileType = 'image/png';
@@ -1286,7 +1472,7 @@ export class GridComponent implements AfterViewInit {
 				window.open(fileUrl, '_blank');
 			},
 			error => {
-				Utils.showActionNotification('Bu Faturaya ait PDF veya PNG bulunamadı!', 'warning', 10000, true, false, 3000, this.snackBar);
+				Utils.showActionNotification('Dosya bulunamadı!', 'warning', 10000, true, false, 3000, this.snackBar);
 			}
 		);
 	}
@@ -1382,7 +1568,9 @@ export class GridComponent implements AfterViewInit {
 			priority_high: row['invoiceStatus'] && row['invoiceStatus'].label === 'Talimata Dönüştürüldü',
 			priority_muk: row['invoiceStatus'] && row['invoiceStatus'].label === 'Mükerrer Fatura',
 			priority_error: row['invoiceStatus'] && row['invoiceStatus'].label === 'Hatalı Atama',
-			priority_cancel: row['invoiceStatus'] && row['invoiceStatus'].label === 'İptal'
+			priority_cancel: row['invoiceStatus'] && row['invoiceStatus'].label === 'İptal',
+			priority_spend_success: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Ödendi',
+			priority_payment_order_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Ödendi'
 		};
 	}
 

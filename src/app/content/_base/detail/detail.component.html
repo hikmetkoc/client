@@ -7,11 +7,17 @@
 			<h3 class="kt-portlet__head-title">
 				{{model.title}} Detayı <span style="color: #999999">&nbsp;({{current.instanceName}})</span>
 			</h3>
+			<button *ngIf="this.model.name === 'User' && this.baseService.getUserId() === 2" type="button" matTooltip="İstifa Et" color="warn" class="btn btn-danger kt-margin-l-10" mat-icon-button (click)="resign()">
+				<mat-icon>error</mat-icon>
+			</button>
+			<button *ngIf="this.model.name === 'User' && this.baseService.getUserId() === 2" type="button" matTooltip="İşten Çıkış Anketi" color="warn" class="btn btn-danger kt-margin-l-10" mat-icon-button (click)="showResign()">
+				<mat-icon>assignment</mat-icon>
+			</button>
 		</ng-container>
 		<ng-container ktPortletTools>
 			<div class="page-header-buttons">
 				<button *ngIf="this.model.apiName === 'users'" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="İzin Bilgileri" (click)="showHolidayDetail()">
-					<mat-icon>list</mat-icon>
+					<mat-icon>bookmark</mat-icon>
 				</button>
 				<button *ngIf="this.model.apiName === 'users' && this.baseService.getUserId() === 2" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Kullanıcı Rolü Düzenleme" (click)="onEditClick()">
 					<mat-icon>person</mat-icon>
@@ -106,7 +112,7 @@
 					</span>
 					<span *ngIf="['object'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
 						{{current[field.name] ? current[field.name]['instanceName'] : ''}}
-						<button *ngIf="current[field.name] && !tiny && field.name !== 'owner' && field.name !== 'assigner' && field.name !== 'secondAssigner' && field.name !== 'city' && field.name !== 'county' && field.name !== 'buyowner' && field.name !== 'user' && field.name !== 'muhasebeci' && field.name !== 'cancelUser' && field.name !== 'iban'" mat-icon-button [ngbPopover]="bubble" triggers="mouseenter:mouseleave" [hidden]="(this.baseService.getUser().birim.label === 'Muhasebe' && (field.name === 'customer' || field.name === 'iban'))" [popoverTitle]="current[field.name]['instanceName']" color="primary" (mouseenter)="bubbleOpen(current[field.name], field.objectApiName)" placement="right" container="body" [routerLink]="['/' + field.name?.toLowerCase()]" [queryParams]="{id: current[field.name].id, sourceObject: model.apiName?.toLowerCase(), sourceId: current['id']}">
+						<button *ngIf="current[field.name] && !tiny && field.name !== 'owner' && field.name !== 'assigner' && field.name !== 'secondAssigner' && field.name !== 'city' && field.name !== 'county' && field.name !== 'buyowner' && field.name !== 'user' && field.name !== 'muhasebeci' && field.name !== 'cancelUser' && field.name !== 'iban'" mat-icon-button [ngbPopover]="bubble" triggers="mouseenter:mouseleave" [popoverTitle]="current[field.name]['instanceName']" color="primary" (mouseenter)="bubbleOpen(current[field.name], field.objectApiName)" placement="right" container="body" [routerLink]="['/' + field.name?.toLowerCase()]" [queryParams]="{id: current[field.name].id, sourceObject: model.apiName?.toLowerCase(), sourceId: current['id']}">
 							<mat-icon>info</mat-icon>
 						</button>
 					</span>

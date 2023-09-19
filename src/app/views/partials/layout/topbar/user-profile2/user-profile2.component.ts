@@ -7,6 +7,10 @@ import { select, Store } from '@ngrx/store';
 // State
 import { AppState } from '../../../../../core/reducers';
 import { currentUser, Logout, User } from '../../../../../core/auth';
+import {
+	PaymentOrderFileDialogComponent
+} from "../../../../../content/_base/dialogs/payment-order-file-dialog/payment-order-file-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
 	selector: 'kt-user-profile2',
@@ -21,7 +25,7 @@ export class UserProfile2Component implements OnInit {
 	@Input() badge: boolean;
 	@Input() icon: boolean;
 
-	constructor(private store: Store<AppState>) {
+	constructor(private store: Store<AppState>, public dialog: MatDialog) {
 	}
 
 	ngOnInit(): void {

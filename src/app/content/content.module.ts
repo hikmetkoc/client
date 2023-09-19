@@ -128,11 +128,13 @@ import { ChangeRoleComponent} from './_base/dialogs/change-role-dialog/change-ro
 import { ChangeGroupComponent} from './_base/dialogs/change-group-dialog/change-group.component';
 import { ConnectStoreDialogComponent} from './_base/dialogs/connect-store-dialog/connect-store-dialog.component';
 import { SpendOkeyComponent} from './_base/dialogs/spend-okey-dialog/spend-okey.component';
+import { ResignComponent} from './_base/dialogs/resign-dialog/resign.component';
 import { PaymentOkeyComponent} from './_base/dialogs/payment-okey-dialog/payment-okey.component';
 import { LoadInvoiceComponent} from './_base/dialogs/load-invoice-dialog/load-invoice.component';
 import { SendSpendComponent} from './_base/dialogs/send-spend-dialog/send-spend.component';
 import { SpendToTlComponent} from './_base/dialogs/spend-to-tl-dialog/spend-to-tl.component';
 import { PaymentOrderFileDialogComponent} from './_base/dialogs/payment-order-file-dialog/payment-order-file-dialog.component';
+import { ShowResignComponent} from './_base/detail/show-resign-dialog/show-resign.component';
 import { PaymentOrderInfoDialogComponent} from './_base/dialogs/payment-order-info-dialog/payment-order-info-dialog.component';
 import { ContinueConfirmComponent } from './_base/dialogs/continue-confirm/continue-confirm.component';
 import { LeadComponent } from './standard/lead/lead.component';
@@ -405,11 +407,13 @@ const routes: Routes = [
 		ChangeRoleComponent,
 		ConnectStoreDialogComponent,
 		SpendOkeyComponent,
+		ResignComponent,
 		PaymentOkeyComponent,
 		LoadInvoiceComponent,
 		SendSpendComponent,
 		SpendToTlComponent,
 		PaymentOrderFileDialogComponent,
+		ShowResignComponent,
 		PaymentOrderInfoDialogComponent,
 		ContinueConfirmComponent,
 		LeadComponent,
@@ -440,11 +444,13 @@ const routes: Routes = [
 		ChangeGroupComponent,
 		ConnectStoreDialogComponent,
 		SpendOkeyComponent,
+		ResignComponent,
 		PaymentOkeyComponent,
 		LoadInvoiceComponent,
 		SendSpendComponent,
 		SpendToTlComponent,
 		PaymentOrderFileDialogComponent,
+		ShowResignComponent,
 		PaymentOrderInfoDialogComponent,
 		ContinueConfirmComponent
 	],

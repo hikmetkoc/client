@@ -20,7 +20,7 @@ import {FileManagerDialogComponent} from "../../detail/filemanager/file-manager-
 import {FileManagerToolComponent} from "../../detail/filemanager/filemanagertool/filemanagertool.component";
 import {FileManagerComponent} from "../../detail/filemanager/filemanager.component";
 import {MatDialog} from "@angular/material/dialog";
-import {catchError, concatMap, tap} from "rxjs/operators";
+import {catchError, concatMap, takeWhile, tap} from "rxjs/operators";
 import { HttpClient } from '@angular/common/http';
 import { HttpUtilsService } from '../../http-utils.service';
 import {Quote} from "@angular/compiler";
@@ -79,6 +79,8 @@ export class EditEntityDialogComponent implements OnInit {
 	deneme: boolean;
 	gizlilik: boolean;
 	gizlilik2: boolean;
+	isButtonClicked = false;
+	dialog2: any;
 
 	constructor(
 		private cdr: ChangeDetectorRef,
@@ -256,9 +258,8 @@ export class EditEntityDialogComponent implements OnInit {
 		input.value = '';
 		this.entityForm.controls[field.name].setValue(undefined);
 	}
-
-
 	onSubmit() {
+		this.isButtonClicked = true;
 		this.checkObjectsValidity();
 		this.isSubmitted = true;
 		this.baseService.loadingSubject.next(true);
@@ -270,11 +271,11 @@ export class EditEntityDialogComponent implements OnInit {
 			);
 
 			this.hasFormErrors = true;
+			this.isButtonClicked = false;
 			this.baseService.loadingSubject.next(false);
 			return;
 		}
 		this.updateEntity(this.prepareEntity());
-
 	}
 	loadList() {
 		if (this.model !== undefined) {
@@ -370,13 +371,21 @@ export class EditEntityDialogComponent implements OnInit {
 	}
 
 	updateEntity(_entity: any) {
-		this.baseService.update(_entity, this.model.apiName).subscribe(() => {
-			this.dialogRef.close({
-				_entity,
-				isEdit: true
-			});
-		});
-		this.baseService.loadingSubject.next(false);
+		this.baseService.update(_entity, this.model.apiName).subscribe(
+			(res) => {
+				this.isButtonClicked = false;
+				this.dialogRef.close({
+					_entity,
+					isEdit: true
+				});
+			}
+		);
+		const checkCondition$ = interval(1000) // Her saniye kontrol et
+			.pipe(
+				takeWhile(() => this.baseService.dialog2 === true) // Koşul sağlandığı sürece devam et
+			);
+		this.isButtonClicked = false;
+		console.log('İçerde - Edit Entity');
 		if (this.model.apiName === 'quotes') {
 			const filters = new Set();
 			filters.add({
@@ -429,58 +438,7 @@ export class EditEntityDialogComponent implements OnInit {
 					});
 				}
 			});*/
-		} /*else if (this.model.apiName === 'buys') {
-			const filters2 = new Set();
-			filters2.add({
-				name: 'owner.id',
-				operator: 'EQUALS',
-				value: this.baseService.getUser().id
-			});
-			const queryParams2 = new QueryParamsModel(
-				Utils.makeFilter(filters2),
-				[{sortBy: 'createdDate', sortOrder: 'ASC'}],
-				0,
-				100
-			);
-			this.baseService.find(queryParams2, 'buys').subscribe(res => {
-				this.quotes2 = [];
-				this.lastquoteid2 = null;
-				this.raporsay3 = 0;
-				for (const quo of res.body) {
-					this.quotes2.push({
-						id: quo.id
-					});
-					this.raporsay3++;
-				}
-			});
-			interval(10).pipe(
-				concatMap(() => {
-					return this.baseService.find(queryParams2, 'buys');
-				})
-			).subscribe(res => {
-				this.quotes2 = [];
-				this.lastquoteid2 = null;
-				this.raporsay4 = 0;
-				for (const quo of res.body) {
-					this.quotes2.push({
-						id: quo.id
-					});
-					this.raporsay4++;
-				}
-				if (this.quotes2.length > 0 && this.raporsay4 === this.raporsay3) {
-					this.lastquoteid2 = this.quotes2[this.quotes2.length - 1].id;
-					this.current = {id: this.lastquoteid2};
-					this.model = {apiName: 'buys', endpoint: 'file-list', entityId: this.current};
-					const dialogRef = this.dialog.open(FileManagerDialogComponent, {
-						width: '800px',
-						data: {current: this.current, model: this.model}
-					});
-					dialogRef.afterClosed().subscribe(() => {
-						this.loadList();
-					});
-				}
-			});
-		}*/
+		}
 	}
 	onAlertClose() {
 		this.hasFormErrors = false;

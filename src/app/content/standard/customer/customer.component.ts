@@ -110,7 +110,7 @@ export class CustomerComponent extends BaseComponent implements OnInit, AfterVie
 				// 	icon: 'map',
 				// 	click: this.launchMap.bind(this)
 				// }, {
-				display: this.baseService.getPermissionRule(this.model.name, 'update') && this.baseService.getUser().birim.id !== 'Birim_Muh',
+				display: this.baseService.getPermissionRule(this.model.name, 'update'),
 				title: 'Yeni ' + this.model.title,
 				icon: 'add_box',
 				click: this.mainGrid.add.bind(this.mainGrid)

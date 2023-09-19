@@ -1,0 +1,217 @@
+<kt-portlet>
+	<kt-portlet-body>
+		<div id = "print-section">
+		<p style="text-align: center; font-size: large; font-weight: bold">İŞTEN ÇIKIŞ ANKETİ</p>
+		<br/>
+		<div style="height: 500px;
+		width:100%;
+		overflow-y: hidden;
+		overflow: auto;
+		white-space: nowrap;">
+			<div class="form-group">
+				<label for="ayrilmaNedeni">AYRILMA NEDENİNİZ NEDİR / NELERDİR / TETİKLEYEN SEBEBLERİ BELİRLEYEBİLİR MİSİNİZ:</label>
+				<textarea id="ayrilmaNedeni" class="form-control" [(ngModel)]="ayrilmaNedeni" placeholder="Ayrılma Nedeni"></textarea>
+			</div>
+
+
+			<style>
+				table {
+					border-collapse: collapse;
+					width: 100%;
+				}
+
+				table, th, td {
+					border: 1px solid black; /* Tablonun kenarlarını kalın yapar */
+				}
+
+				.form-check {
+					text-align: center;
+				}
+			</style>
+
+			<table>
+				<thead style="text-align: center;">
+				<tr>
+					<th>DURUM</th>
+					<th>EVET</th>
+					<th>HAYIR</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>&nbsp;&nbsp;YAPACAĞINIZ İŞ SİZE DETAYLI VE ANLAŞILIR BİR ŞEKİLDE İLETİLDİ Mİ</td>
+					<td>
+						<div class="form-check">
+							<input type="radio" class="form-check-input" id="isDetayliIletildiYes" name="isDetayliIletildi" [(ngModel)]="isDetayliIletildi" value=true>
+							<label class="form-check-label" for="isDetayliIletildiYes">EVET</label>
+						</div>
+					</td>
+					<td>
+						<div class="form-check">
+							<input type="radio" class="form-check-input" id="isDetayliIletildiNo" name="isDetayliIletildi" [(ngModel)]="isDetayliIletildi" value=false>
+							<label class="form-check-label" for="isDetayliIletildiNo">HAYIR</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;ÖZLÜK HAKLARI SİZE DETAYLI VE ANLAŞILIR BİR ŞEKİLDE İLETİLDİ Mİ</td>
+					<td>
+						<div class="form-check">
+							<input type="radio" class="form-check-input" id="isOzlukHaklariIletildiYes" name="isOzlukHaklariIletildi" [(ngModel)]="isOzlukHaklariIletildi" value=true>
+							<label class="form-check-label" for="isOzlukHaklariIletildiYes">EVET</label>
+						</div>
+					</td>
+					<td>
+						<div class="form-check">
+							<input type="radio" class="form-check-input" id="isOzlukHaklariIletildiNo" name="isOzlukHaklariIletildi" [(ngModel)]="isOzlukHaklariIletildi" value=false>
+							<label class="form-check-label" for="isOzlukHaklariIletildiNo">HAYIR</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;İLERİDE ŞİRKETİMİZDE ÇALIŞMAYI DÜŞÜNÜR MÜSÜNÜZ</td>
+					<td>
+						<div class="form-check">
+							<input type="radio" class="form-check-input" id="isIleriDusunurYes" name="isIleriDusunur" [(ngModel)]="isIleriDusunur" value=true>
+							<label class="form-check-label" for="isIleriDusunurYes">EVET</label>
+						</div>
+					</td>
+					<td>
+						<div class="form-check">
+							<input type="radio" class="form-check-input" id="isIleriDusunurNo" name="isIleriDusunur" [(ngModel)]="isIleriDusunur" value=false>
+							<label class="form-check-label" for="isIleriDusunurNo">HAYIR</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;ŞİRKETİMİZİ BAŞKA ADAYLARA ÖNERİR MİSİNİZ</td>
+					<td>
+						<div class="form-check">
+							<input type="radio" class="form-check-input" id="isSirketOnerYes" name="isEsitDavranma" [(ngModel)]="isSirketOner" value=true>
+							<label class="form-check-label" for="isSirketOnerYes">EVET</label>
+						</div>
+					</td>
+					<td>
+						<div class="form-check">
+							<input type="radio" class="form-check-input" id="isSirketOnerNo" name="isEsitDavranma" [(ngModel)]="isSirketOner" value=false>
+							<label class="form-check-label" for="isSirketOnerNo">HAYIR</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;YÖNETİCİNİZ ÇALIŞANLARA KARŞI EŞİT VE ADİL DAVRANIYOR MUYDU</td>
+					<td>
+						<div class="form-check">
+							<input type="radio" class="form-check-input" id="isEsitDavranmaYes" name="isEsitDavranma" [(ngModel)]="isEsitDavranma" value=true>
+							<label class="form-check-label" for="isEsitDavranmaYes">EVET</label>
+						</div>
+					</td>
+					<td>
+						<div class="form-check">
+							<input type="radio" class="form-check-input" id="isEsitDavranmaNo" name="isEsitDavranma" [(ngModel)]="isEsitDavranma" value=false>
+							<label class="form-check-label" for="isEsitDavranmaNo">HAYIR</label>
+						</div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+
+
+
+			<mat-form-field>
+				<mat-label>Sorumluluklar</mat-label>
+				<mat-select [(value)]="selectedSorumlulukId">>
+					<mat-option *ngFor="let attr of attrList" [value]="attr.id">{{attr.label}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<label for="aciklama1">Yorumlar:</label>
+			<textarea id="aciklama1" class="form-control" [(ngModel)]="aciklama1" placeholder="Yorumlar"></textarea>
+
+			<mat-form-field>
+				<mat-label>Çalışma Saatleri</mat-label>
+				<mat-select [(value)]="selectedCalismaSaatId">>
+					<mat-option *ngFor="let attr of attrList" [value]="attr.id">{{attr.label}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<label for="aciklama2">Yorumlar:</label>
+			<textarea id="aciklama2" class="form-control" [(ngModel)]="aciklama2" placeholder="Yorumlar"></textarea>
+
+			<mat-form-field>
+				<mat-label>Çalışma Ortamı</mat-label>
+				<mat-select [(value)]="selectedCalismaOrtamId">>
+					<mat-option *ngFor="let attr of attrList" [value]="attr.id">{{attr.label}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<label for="aciklama3">Yorumlar:</label>
+			<textarea id="aciklama3" class="form-control" [(ngModel)]="aciklama3" placeholder="Yorumlar"></textarea>
+
+			<mat-form-field>
+				<mat-label>Ödeme Şartları</mat-label>
+				<mat-select [(value)]="selectedOdemeSartlariId">>
+					<mat-option *ngFor="let attr of attrList" [value]="attr.id">{{attr.label}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<label for="aciklama4">Yorumlar:</label>
+			<textarea id="aciklama4" class="form-control" [(ngModel)]="aciklama4" placeholder="Yorumlar"></textarea>
+
+			<mat-form-field>
+				<mat-label>Takdir</mat-label>
+				<mat-select [(value)]="selectedTakdirId">>
+					<mat-option *ngFor="let attr of attrList" [value]="attr.id">{{attr.label}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<label for="aciklama5">Yorumlar:</label>
+			<textarea id="aciklama5" class="form-control" [(ngModel)]="aciklama5" placeholder="Yorumlar"></textarea>
+
+			<mat-form-field>
+				<mat-label>Kendini Geliştirme Olanağı</mat-label>
+				<mat-select [(value)]="selectedKendiniGelistirmeId">>
+					<mat-option *ngFor="let attr of attrList" [value]="attr.id">{{attr.label}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<label for="aciklama6">Yorumlar:</label>
+			<textarea id="aciklama6" class="form-control" [(ngModel)]="aciklama6" placeholder="Yorumlar"></textarea>
+
+			<mat-form-field>
+				<mat-label>Yönetici ile İlişki</mat-label>
+				<mat-select [(value)]="selectedYoneticiId">>
+					<mat-option *ngFor="let attr of attrList" [value]="attr.id">{{attr.label}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<label for="aciklama7">Yorumlar:</label>
+			<textarea id="aciklama7" class="form-control" [(ngModel)]="aciklama7" placeholder="Yorumlar"></textarea>
+
+			<mat-form-field>
+				<mat-label>Kariyer İmkanı</mat-label>
+				<mat-select [(value)]="selectedKariyerId">>
+					<mat-option *ngFor="let attr of attrList" [value]="attr.id">{{attr.label}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<label for="aciklama8">Yorumlar:</label>
+			<textarea id="aciklama8" class="form-control" [(ngModel)]="aciklama8" placeholder="Yorumlar"></textarea>
+
+			<mat-form-field>
+				<mat-label>Şirket içi İletişim</mat-label>
+				<mat-select [(value)]="selectedSirketIciId">>
+					<mat-option *ngFor="let attr of attrList" [value]="attr.id">{{attr.label}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<label for="aciklama9">Yorumlar:</label>
+			<textarea id="aciklama9" class="form-control" [(ngModel)]="aciklama9" placeholder="Yorumlar"></textarea>
+			<br/>
+			<div class="form-group">
+				<label for="oneritavsiye">ŞİRKETİMİZİN GELİŞİMİ VE PERSONEL MEMNUNİYETİ İÇİN  ÖNERİLERİNİZ VE TAVSİYELERİNİZ NELERDİR:</label>
+				<textarea id="oneritavsiye" class="form-control" [(ngModel)]="oneritavsiye" placeholder="Öneri Tavsiye"></textarea>
+			</div>
+		</div>
+		</div>
+		<div class="button-container" style="display: flex; justify-content: center; gap: 10px;">
+			<button type="button" mat-raised-button color="primary" (click)="onYesClick()" matTooltip="Tamam">
+				Onayla
+			</button>
+			<button type="button" mat-raised-button color="warn" (click)="onNoClick()" matTooltip="Vazgeç">
+				Vazgeç
+			</button>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

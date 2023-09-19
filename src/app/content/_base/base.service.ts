@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, BehaviorSubject, of } from 'rxjs';
+import {Observable, Subject, BehaviorSubject, of, throwError} from 'rxjs';
 import { HttpUtilsService } from './http-utils.service';
 import {tap, catchError, map} from 'rxjs/operators';
 import { QueryParamsModel } from './models/query-params.model';
@@ -26,6 +26,7 @@ export class BaseService {
 	entityToMerge: any;
 	attrs: any;
 	attrVals: any;
+	dialog2: any;
 
 	constructor(
 		private http: HttpClient,
@@ -48,6 +49,7 @@ export class BaseService {
 				}
 				if (err.error.detail) {
 					Utils.showActionNotification(err.error.detail, 'warning', 10000, true, false, 3000, this.snackBar);
+					this.dialog2 = false;
 				} else {
 					Utils.showActionNotification('Kaydetme Hatası', 'warning', 10000, true, false, 3000, this.snackBar);
 				}
@@ -55,6 +57,7 @@ export class BaseService {
 			})
 		);
 	}
+
 
 	updateStatus(entities: any[], status: number): Observable<any> {
 		const httpHeaders = this.httpUtils.getHTTPHeaders();

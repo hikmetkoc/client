@@ -49,6 +49,20 @@ kt-grid {
 			font-weight: bold;
 		}
 	}
+	.priority_spend_success {
+		background-color: #00bf00;
+
+		mat-cell {
+			font-weight: bold;
+		}
+	}
+	.priority_payment_order_success {
+		background-color: #00bf00;
+
+		mat-cell {
+			font-weight: bold;
+		}
+	}
 
 	.mat-icon-button {
 		width: 30px !important;

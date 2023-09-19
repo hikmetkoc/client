@@ -2,6 +2,14 @@
 <ng-container *ngIf="current">
 	<kt-portlet>
 		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<button mat-icon-button mat-button matTooltip="Geri dön" (click)="resetCurrent()" class="kt-margin-r-5">
+					<mat-icon>keyboard_arrow_left</mat-icon>
+				</button>
+				<h3 class="kt-portlet__head-title">
+					<span>IBAN Detayı</span>
+				</h3>
+			</ng-container>
 			<ng-container ktPortletTools>
 				<div class="page-header-buttons">
 					<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Düzenle" (click)="mainGrid.edit(current)">

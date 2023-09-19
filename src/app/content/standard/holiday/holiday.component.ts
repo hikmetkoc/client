@@ -119,21 +119,6 @@ export class HolidayComponent extends BaseComponent implements OnInit, AfterView
 			click: this.mainGrid.add.bind(this.mainGrid)
 		});
 	}
-	remember() {
-		const apiUrl = 'api/holidays/sendnotificationmail';
-		const receiver = this.current.assigner.eposta;
-		const subject = 'İzin Hatırlatması';
-		const message = this.current.owner.firstName + ' ' + this.current.owner.lastName + ' kullanıcısı, yapmış olduğu bir izin talebini onaylamanız için size bir hatırlatmada bulunuyor.';
-		const httpHeaders = this.httpUtils.getHTTPHeaders();
-		this.http.post(apiUrl + `?receiver=${receiver}&subject=${subject}&message=${message}`, null, { headers: httpHeaders, responseType: 'blob' }).subscribe(
-			response => {
-				Utils.showActionNotification('E-posta Gönderimi başarılı!', 'success', 10000, true, false, 3000, this.snackBar);
-			},
-			error => {
-				Utils.showActionNotification('E-posta gönderme hatası', 'warning', 10000, true, false, 3000, this.snackBar);
-			}
-		);
-	}
 
 	clickButton(e) {
 		this.getEvents(e.data._d);

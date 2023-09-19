@@ -217,7 +217,7 @@
 		</kt-portlet-body>
 	</kt-portlet>
 
-	<kt-portlet>
+	<kt-portlet *ngIf="baseService.getUser().birim.id !== 'Birim_Muh'">
 		<kt-portlet-header>
 			<ng-container ktPortletTitle>
 				<h3 class="kt-portlet__head-title">

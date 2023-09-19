@@ -14,20 +14,6 @@
 			</ng-container>
 			<ng-container ktPortletTools>
 				<div class="page-header-buttons">
-					<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Hatırlat" (click)="remember()">
-						<mat-icon>notifications</mat-icon>
-					</button>
-					<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Düzenle" (click)="mainGrid.edit(current)">
-						<mat-icon>create</mat-icon>
-					</button>
-
-					<button *ngIf="baseService.getPermissionRule(model.name,'delete')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="warn" matTooltip="Sil" (click)="delete(current)" [disabled]="loading$ | async">
-						<mat-icon>delete</mat-icon>
-					</button>
-					<kt-reportmanager [(current)]="current" [model]="model"></kt-reportmanager>
-					<kt-filemanager [(current)]="current" [model]="model"></kt-filemanager>
-
-					<!-- <kt-history [(current)]="current" [model]="model"></kt-history> -->
 				</div>
 			</ng-container>
 		</kt-portlet-header>

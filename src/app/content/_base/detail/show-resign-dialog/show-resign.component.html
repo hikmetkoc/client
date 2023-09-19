@@ -1,0 +1,201 @@
+<kt-portlet>
+	<kt-portlet-header>
+		<ng-container ktPortletTools>
+			<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Yazdır" (click)="print()">
+				<mat-icon>print</mat-icon>
+			</button>
+			<button mat-icon-button class="btn btn btn-danger kt-margin-l-10" color="warn" matTooltip="Kapat" (click)="onNoClick()">
+				<mat-icon>exit_to_app</mat-icon>
+			</button>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<div class="table table-striped" id="print-section">
+			<p style="text-align: center; font-size: large; font-weight: bold">İŞTEN ÇIKIŞ ANKETİ</p>
+			<br/>
+			<div style="height: 700px;
+		width:100%;
+		overflow-y: hidden;
+		overflow: auto;
+		white-space: nowrap;">
+				<style>
+					table {
+						border-collapse: collapse;
+						width: 100%;
+						text-align: center;
+						table-layout: auto;
+						border: 1px solid #000;
+					}
+
+					table, thead, tr, td, th {
+						border: 1px solid black; /* Tablonun kenarlarını kalın yapar */
+					}
+
+					thead {
+						background-color: #0f695f;
+						color: #d7dbf7;
+						font-weight: bold;
+					}
+					.question {
+						text-align: left;
+					}
+				</style>
+				<table>
+					<thead>
+					<tr>
+						<th>Ad Soyad</th>
+						<th>Şirket</th>
+						<th>Unvan</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>{{this.resignList[0].owner.firstName + ' ' + this.resignList[0].owner.lastName}}</td>
+						<td>{{this.resignList[0].owner.sirket.label}}</td>
+						<td>{{this.resignList[0].owner.unvan.label}}</td>
+					</tr>
+					</tbody>
+				</table>
+				<br/>
+				<table>
+					<thead>
+					<tr>
+						<th>SORULAR</th>
+						<th>EVET</th>
+						<th>HAYIR</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td class="question">YAPACAĞINIZ İŞ SİZE DETAYLI VE ANLAŞILIR BİR ŞEKİLDE İLETİLDİ Mİ</td>
+						<td>{{this.resignList[0].isIletildiMi === true ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].isIletildiMi === false ? '&#10004;' : ''}}</td>
+					</tr>
+					<tr>
+						<td class="question">ÖZLÜK HAKLARI SİZE DETAYLI VE ANLAŞILIR BİR ŞEKİLDE İLETİLDİ Mİ</td>
+						<td>{{this.resignList[0].ozlukHaklari === true ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].ozlukHaklari === false ? '&#10004;' : ''}}</td>
+					</tr>
+					<tr>
+						<td class="question">İLERİDE ŞİRKETİMİZDE ÇALIŞMAYI DÜŞÜNÜR MÜSÜNÜZ</td>
+						<td>{{this.resignList[0].ilerideCalismak === true ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].ilerideCalismak === false ? '&#10004;' : ''}}</td>
+					</tr>
+					<tr>
+						<td class="question">ŞİRKETİMİZİ BAŞKA ADAYLARA ÖNERİR MİSİNİZ</td>
+						<td>{{this.resignList[0].sirketOneri === true ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].sirketOneri === false ? '&#10004;' : ''}}</td>
+					</tr>
+					<tr>
+						<td class="question">YÖNETİCİNİZ ÇALIŞANLARA KARŞI EŞİT VE ADİL DAVRANIYORMUYDU</td>
+						<td>{{this.resignList[0].esitAdil === true ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].esitAdil === false ? '&#10004;' : ''}}</td>
+					</tr>
+					</tbody>
+				</table>
+				<br/>
+				<table>
+					<thead>
+					<tr>
+						<th></th> <!-- Boş hücre -->
+						<th>Beklentilerin Altında</th>
+						<th>Beklendiği Gibi</th>
+						<th>Beklentilerin Üstünde</th>
+						<th>Mükemmel</th>
+						<th>Yorumlar</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>Sorumluluklar</td>
+						<td>{{this.resignList[0].sorumluluk.label === 'Beklentilerin Altında' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].sorumluluk.label === 'Beklendiği Gibi' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].sorumluluk.label === 'Beklentilerin Üstünde' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].sorumluluk.label === 'Mükemmel' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].sorumlulukYorumu}}</td>
+					</tr>
+					<tr>
+						<td>Çalışma Saatleri</td>
+						<td>{{this.resignList[0].calismaSaat.label === 'Beklentilerin Altında' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].calismaSaat.label === 'Beklendiği Gibi' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].calismaSaat.label === 'Beklentilerin Üstünde' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].calismaSaat.label === 'Mükemmel' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].calismaSaatYorumu}}</td>
+					</tr>
+					<tr>
+						<td>Çalışma Ortamı</td>
+						<td>{{this.resignList[0].calismaOrtam.label === 'Beklentilerin Altında' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].calismaOrtam.label === 'Beklendiği Gibi' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].calismaOrtam.label === 'Beklentilerin Üstünde' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].calismaOrtam.label === 'Mükemmel' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].calismaOrtamYorumu}}</td>
+					</tr>
+					<tr>
+						<td>Ödeme Şartları</td>
+						<td>{{this.resignList[0].odeme.label === 'Beklentilerin Altında' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].odeme.label === 'Beklendiği Gibi' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].odeme.label === 'Beklentilerin Üstünde' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].odeme.label === 'Mükemmel' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].odemeYorumu}}</td>
+					</tr>
+					<tr>
+						<td>Takdir</td>
+						<td>{{this.resignList[0].takdir.label === 'Beklentilerin Altında' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].takdir.label === 'Beklendiği Gibi' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].takdir.label === 'Beklentilerin Üstünde' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].takdir.label === 'Mükemmel' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].takdirYorumu}}</td>
+					</tr>
+					<tr>
+						<td>Kendini Geliştirme Olanağı</td>
+						<td>{{this.resignList[0].gelistirme.label === 'Beklentilerin Altında' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].gelistirme.label === 'Beklendiği Gibi' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].gelistirme.label === 'Beklentilerin Üstünde' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].gelistirme.label === 'Mükemmel' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].gelistirmeYorumu}}</td>
+					</tr>
+					<tr>
+						<td>Yönetici ile İlişki</td>
+						<td>{{this.resignList[0].iliski.label === 'Beklentilerin Altında' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].iliski.label === 'Beklendiği Gibi' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].iliski.label === 'Beklentilerin Üstünde' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].iliski.label === 'Mükemmel' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].iliskiYorumu}}</td>
+					</tr>
+					<tr>
+						<td>Kariyer İmkanları</td>
+						<td>{{this.resignList[0].kariyer.label === 'Beklentilerin Altında' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].kariyer.label === 'Beklendiği Gibi' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].kariyer.label === 'Beklentilerin Üstünde' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].kariyer.label === 'Mükemmel' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].kariyerYorumu}}</td>
+					</tr>
+					<tr>
+						<td>Şirket içi İletişim</td>
+						<td>{{this.resignList[0].iletisim.label === 'Beklentilerin Altında' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].iletisim.label === 'Beklendiği Gibi' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].iletisim.label === 'Beklentilerin Üstünde' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].iletisim.label === 'Mükemmel' ? '&#10004;' : ''}}</td>
+						<td>{{this.resignList[0].iletisimYorumu}}</td>
+					</tr>
+					</tbody>
+				</table>
+				<br/>
+				<div style="overflow: hidden;">
+					<p style="font-weight: bold; font-size: 16px; width: 100%; white-space: normal">NOT: Bu formda toplanan tüm bilgilere gizli olarak işlem yapılacağının ve sadece genel istatistiklerde kullanılacağını ve adınızın açıklanmayacağını belirtmek isteriz. Yardımınız için şimdiden teşekkür ederiz ve aynı zamanda şirket dışındaki yeni görevinizde başarılı olmanızı dileriz</p>
+				</div>
+				<br/>
+				<table style="float: right; margin-right: 20px; width: 35%; font-weight: bold">
+					<tr>
+						<td>Tarih</td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					</tr>
+					<tr>
+						<td>İmza</td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

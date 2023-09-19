@@ -754,9 +754,9 @@ export class Utils {
 		}
 		iban = this.ibanClean(iban);
 		if (iban.length === 34) {
-			iban = 'TR' + iban.substring(2, 4) + ' ' + iban.substring(4, 8) + ' ' + iban.substring(8, 12) + ' ' + iban.substring(12, 16) + ' ' + iban.substring(16, 20) + ' ' + iban.substring(20, 24) + ' ' + iban.substring(24, 28) + ' ' + iban.substring(28, 30);
+			iban = 'TR' + iban.substring(0, 2) + ' ' + iban.substring(2, 6) + ' ' + iban.substring(6, 10) + ' ' + iban.substring(10, 14) + ' ' + iban.substring(14, 18) + ' ' + iban.substring(18, 22) + ' ' + iban.substring(22, 26) + ' ' + iban.substring(26, 28);
 		} else {
-			iban = 'TR' + iban.substring(2, 4) + ' ' + iban.substring(4, 8) + ' ' + iban.substring(8, 12) + ' ' + iban.substring(12, 16) + ' ' + iban.substring(16, 20) + ' ' + ' ' + iban.substring(20, 24) + ' ' + iban.substring(24, 28);
+			iban = 'TR' + iban.substring(0, 2) + ' ' + iban.substring(2, 6) + ' ' + iban.substring(6, 10) + ' ' + iban.substring(10, 14) + ' ' + iban.substring(14, 18) + ' ' + iban.substring(18, 22) + ' ' + iban.substring(22, 26) + ' ' + iban.substring(26, 28);
 		}
 		return iban;
 	}

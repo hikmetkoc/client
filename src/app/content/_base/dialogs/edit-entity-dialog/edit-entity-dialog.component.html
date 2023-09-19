@@ -141,7 +141,7 @@
 					</div>
 
 
-					<div *ngIf="['object'].indexOf(field.fieldType) > -1" [hidden]="field.readOnly || !field.active" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
+					<div *ngIf="['object'].indexOf(field.fieldType) > -1 && field.name !== 'iban'" [hidden]="field.readOnly || !field.active" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
 						<mat-form-field class="mat-form-field-fluid">
 							<input type="text" autocomplete="disabled" #objectSelectInput [placeholder]="field.title + (field.required ? ' *' : '')" matInput formControlName="{{field.name}}" [matAutocomplete]="auto" (focus)="filterOptions(field, $event)" (ngModelChange)="filterOptions(field, $event); fieldChange(field, $event)">
 							<button mat-button *ngIf="entityForm.controls[field.name].value && entityForm.controls[field.name].value.id; else searchIcon" matSuffix mat-icon-button aria-label="Clear" (click)="clearObjectSelect(field, objectSelectInput)">
@@ -155,6 +155,26 @@
 							<mat-autocomplete #auto="matAutocomplete" [displayWith]="objectDisplay.bind(this, field)">
 								<mat-option *ngFor="let option of filteredOptionss[field.name]" [value]="option">
 									{{option['instanceName']}}</mat-option>
+							</mat-autocomplete>
+							<mat-error *ngIf="field.required">{{field.title}}
+								<strong>zorunludur</strong>
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div *ngIf="['object'].indexOf(field.fieldType) > -1 && field.name === 'iban'" [hidden]="field.readOnly || !field.active" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
+						<mat-form-field class="mat-form-field-fluid">
+							<input type="text" autocomplete="disabled" #objectSelectInput [placeholder]="field.title + (field.required ? ' *' : '')" matInput formControlName="{{field.name}}" [matAutocomplete]="auto" (focus)="filterOptions(field, $event)" (ngModelChange)="filterOptions(field, $event); fieldChange(field, $event)">
+							<button mat-button *ngIf="entityForm.controls[field.name].value && entityForm.controls[field.name].value.id; else searchIcon" matSuffix mat-icon-button aria-label="Clear" (click)="clearObjectSelect(field, objectSelectInput)">
+								<mat-icon>close</mat-icon>
+							</button>
+							<ng-template #searchIcon>
+								<button mat-button matSuffix mat-icon-button aria-label="Search">
+									<mat-icon>search</mat-icon>
+								</button>
+							</ng-template>
+							<mat-autocomplete #auto="matAutocomplete" [displayWith]="objectDisplay.bind(this, field)">
+								<mat-option *ngFor="let option of filteredOptionss[field.name]" [value]="option">
+									{{option['instanceName']}}    |    {{option['moneyType'].label}}</mat-option>
 							</mat-autocomplete>
 							<mat-error *ngIf="field.required">{{field.title}}
 								<strong>zorunludur</strong>
@@ -257,7 +277,7 @@
 						<button type="button" mat-raised-button [mat-dialog-close]="data.animal" cdkFocusInitial matTooltip="Değişiklikleri iptal et">
 							İptal
 						</button>&nbsp;
-						<button type="button" mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading$ | async" matTooltip="Değişiklikleri kaydet">
+						<button type="button" mat-raised-button color="primary" (click)="onSubmit()" [disabled]="isButtonClicked || (loading$ | async)" matTooltip="Değişiklikleri kaydet">
 							Kaydet
 						</button>
 					</div>
@@ -278,7 +298,7 @@
 							Mükerrer Fatura
 						</button>
 						<span class="mx-2"></span>
-						<button type="button" mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading$ | async" matTooltip="Talimata Dönüştür">
+						<button type="button" mat-raised-button color="primary" (click)="onSubmit()" [disabled]="isButtonClicked || (loading$ | async)" matTooltip="Talimata Dönüştür">
 							Onayla ve Talimata Dönüştür
 						</button>
 					</div>
