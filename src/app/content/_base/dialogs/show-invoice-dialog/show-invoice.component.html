@@ -1,0 +1,61 @@
+<kt-portlet>
+	<kt-portlet-header>
+		<ng-container ktPortletTools>
+			<button mat-icon-button class="btn btn btn-danger kt-margin-l-10" color="warn" matTooltip="Kapat" (click)="onNoClick()">
+				<mat-icon>exit_to_app</mat-icon>
+			</button>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<div class="table table-striped" id="print-section">
+			<p style="text-align: center; font-size: large; font-weight: bold">FATURA DETAYLARI</p>
+			<br/>
+			<div style="
+		overflow-y: hidden;
+		overflow: auto;
+		white-space: nowrap;">
+				<style>
+					table {
+						border-collapse: collapse;
+						text-align: center;
+						table-layout: auto;
+						border: 1px solid #000;
+					}
+
+					table, thead, tr, td, th {
+						border: 1px solid black; /* Tablonun kenarlarını kalın yapar */
+					}
+
+					thead {
+						background-color: #0f695f;
+						color: #d7dbf7;
+						font-weight: bold;
+					}
+				</style>
+					<table>
+						<thead>
+						<tr>
+							<th>Fatura Tarihi</th>
+							<th>Fatura Numarası</th>
+							<th>Ödeme Yapılacak Şirket</th>
+							<th>Fatura Kesilen Şirket</th>
+							<th>Para Birimi</th>
+							<th>Tutar</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>{{formatDate(this.current.invoiceDate)}}</td>
+							<td>{{this.current.invoiceNum}}</td>
+							<td>{{this.current.customer}}</td>
+							<td>{{this.current.sirket}}</td>
+							<td>{{this.current.moneyType}}</td>
+							<td>{{this.current.amount}}</td>
+						</tr>
+						</tbody>
+					</table>
+				<br/>
+			</div>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

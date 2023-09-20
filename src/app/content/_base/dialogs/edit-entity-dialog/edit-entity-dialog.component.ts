@@ -29,6 +29,8 @@ import {formatDate} from "@angular/common";
 import {MatDatepickerInputEvent} from "@angular/material/datepicker";
 import {StoreDialogComponent} from "../store-dialog/store-dialog.component";
 import {startOfHour} from "@fullcalendar/core/datelib/marker";
+import {ShowResignComponent} from "../../detail/show-resign-dialog/show-resign.component";
+import {ShowInvoiceComponent} from "../show-invoice-dialog/show-invoice.component";
 
 @Component({
 	selector: 'kt-edit-entity-dialog',
@@ -129,6 +131,35 @@ export class EditEntityDialogComponent implements OnInit {
 		this.entityForm = this.formBuilder.group(formFields, { validator: this.customValidationFunction.bind(this) });
 	}
 
+	showInvoice() {
+		const values = {
+			invoiceDate : this.entityForm.controls.invoiceDate.value,
+			invoiceNum : this.entityForm.controls.invoiceNum.value,
+			customer : this.entityForm.controls.customer.value.name,
+			sirket : this.baseService.getAttrVal(this.entityForm.controls.sirket.value).label,
+			moneyType : this.baseService.getAttrVal(this.entityForm.controls.moneyType.value).label,
+			amount : this.entityForm.controls.amount.value
+		};
+		const dialogRef = this.dialog.open(ShowInvoiceComponent, {
+			width: '800px',
+			data: {current: values, model: this.model}
+		});
+	}
+
+	addIban() {
+		const values = {
+			invoiceDate : this.entityForm.controls.invoiceDate.value,
+			invoiceNum : this.entityForm.controls.invoiceNum.value,
+			customer : this.entityForm.controls.customer.value.name,
+			sirket : this.baseService.getAttrVal(this.entityForm.controls.sirket.value).label,
+			moneyType : this.baseService.getAttrVal(this.entityForm.controls.moneyType.value).label,
+			amount : this.entityForm.controls.amount.value
+		};
+		const dialogRef = this.dialog.open(EditEntityDialogComponent, {
+			width: '800px',
+			data: {current: null, model: null}
+		});
+	}
 
 	customValidationFunction() {
 		let customerOrOffice = false;

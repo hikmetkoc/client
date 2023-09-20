@@ -357,7 +357,7 @@ export class BaseService {
 	public getMuhUser(): boolean {
 		const user = this.getUser();
 		const unvan = user.unvan.id;
-		if (unvan === 'Unvan_Muh_Uzm') {
+		if (unvan === 'Unvanlar_Muh_Uzm') {
 			return true;
 		} else {
 			return false;

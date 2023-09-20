@@ -54,6 +54,8 @@ import {ChangeGroupComponent} from "../dialogs/change-group-dialog/change-group.
 import {
 	ReportManagerDialogComponent
 } from "../detail/reportmanager/report-manager-dialog/report-manager-dialog.component";
+import {ResignComponent} from "../dialogs/resign-dialog/resign.component";
+import {NewPersonComponent} from "../dialogs/new-person-dialog/new-person.component";
 
 @Component({
 	selector: 'kt-grid',
@@ -200,24 +202,24 @@ export class GridComponent implements AfterViewInit {
 				filters.add({
 					name: 'birim',
 					operator: FilterOperation.IN,
-					value: ['Birim_Loher', 'Birim_Muh']
+					value: ['Unvanlar_Loher', 'Birimler_Muh']
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birim_Fin') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Fin') {
 				filters.add({
 					name: 'birim',
 					operator: FilterOperation.EQUALS,
-					value: 'Birim_Fin'
+					value: 'Birimler_Fin'
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Muh') {
 				filters.add({
 					name: 'id',
 					operator: FilterOperation.EQUALS,
 					value: this.baseService.getUser().id
 				});
 			}
-			if ((this.baseService.getUser().birim.id === 'Birim_Loher' || this.baseService.getUser().birim.id === 'Birim_Avelice') && this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm') {
+			if ((this.baseService.getUser().birim.id === 'Birimler_Loher' || this.baseService.getUser().birim.id === 'Birimler_Avelice') && this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm') {
 				filters.add({
 					name: 'id',
 					operator: FilterOperation.EQUALS,
@@ -226,14 +228,14 @@ export class GridComponent implements AfterViewInit {
 			}
 		}
 		if (this.model.name === 'InvoiceList') {
-			if (this.baseService.getUser().unvan.id === 'Unvan_Gen_Mud') {
+			if (this.baseService.getUser().unvan.id === 'Unvanlar_Gen_Mud') {
 				filters.add({
 					name: 'owner.id',
 					operator: FilterOperation.EQUALS,
 					value: this.baseService.getUserId()
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birim_Fin') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Fin') {
 				filters.add({
 					name: 'owner',
 					operator: FilterOperation.EQUALS,
@@ -258,19 +260,19 @@ export class GridComponent implements AfterViewInit {
 				filters.add({
 					name: 'owner.birim.id',
 					operator: FilterOperation.EQUALS,
-					value: 'Birim_Avelice'
+					value: 'Birimler_Avelice'
 				});
 			}
-			if (this.baseService.getUser().unvan.id === 'Unvan_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvan_San_Bas') {
+			if (this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas') {
 				filters.add({
 					name: 'owner.birim.id',
 					operator: FilterOperation.IN,
-					value: ['Birim_Loher', 'Birim_Avelice']
+					value: ['Birimler_Loher', 'Birimler_Avelice']
 				});
 			}
 		}
 		if (this.model.name === 'PaymentOrder') {
-			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Muh') {
 				filters.add({
 					name: 'muhasebeGoruntusu',
 					operator: FilterOperation.EQUALS,
@@ -282,35 +284,35 @@ export class GridComponent implements AfterViewInit {
 					value: ['Cost_Place_MeteorMerkez' , 'Cost_Place_Terminal' , 'Cost_Place_Mudanya' , 'Cost_Place_Ncc' , 'Cost_Place_Cemcan' , 'Cost_Place_Mudanya' , 'Cost_Place_Simya' , 'Cost_Place_Vitalyum' , 'Cost_Place_Vita' , 'Cost_Place_Tepe' , 'Cost_Place_Samanli' , 'Cost_Place_Ciftlikkoy' , 'Cost_Place_Sarj' , 'Cost_Place_Charge' , 'Cost_Place_Otobil']
 				});
 			}
-			if (this.baseService.getUser().unvan.id === 'Unvan_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvan_San_Bas') {
+			if (this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas') {
 				filters.add({
 					name: 'cost',
 					operator: FilterOperation.IN,
 					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir', 'Cost_Place_MeteorIzmir']
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birim_Loher' && this.baseService.getUser().unvan.id === 'Unvan_Muh_Uzm') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Loher' && this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm') {
 				filters.add({
 					name: 'cost',
 					operator: FilterOperation.EQUALS,
 					value: 'Cost_Place_MeteorIzmir'
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birim_Avelice') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Avelice') {
 				filters.add({
 					name: 'cost',
 					operator: FilterOperation.IN,
 					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir']
 				});
 			}
-			if (this.baseService.getUser().unvan.id === 'Unvan_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvan_San_Bas') {
+			if (this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas') {
 				filters.add({
 					name: 'owner.birim.id',
 					operator: FilterOperation.IN,
-					value: ['Birim_Loher', 'Birim_Avelice']
+					value: ['Birimler_Loher', 'Birimler_Avelice']
 				});
 			}
-			if (this.baseService.getUser().unvan.id === 'Unvan_Gen_Mud') {
+			if (this.baseService.getUser().unvan.id === 'Unvanlar_Gen_Mud') {
 				filters.add({
 					name: 'secondAssigner.id',
 					operator: FilterOperation.EQUALS,
@@ -324,7 +326,7 @@ export class GridComponent implements AfterViewInit {
 			}
 		}
 		if (this.model.name === 'Spend') {
-			if (this.baseService.getUser().birim.id === 'Birim_Fin') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Fin') {
 				await this.odemelerBul();
 				filters.add({
 					name: 'finance',
@@ -337,28 +339,28 @@ export class GridComponent implements AfterViewInit {
 					value: ['Onaylandı', 'Kısmi Ödendi', 'Ödendi', 'Reddedildi']
 				});*/
 			}
-			if (this.baseService.getUser().birim.id === 'Birim_Avelice') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Avelice') {
 				filters.add({
 					name: 'paymentorder.cost',
 					operator: FilterOperation.IN,
 					value: ['Cost_Place_MeteorIgdir', 'Cost_Place_Avelice']
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birim_Loher' && this.baseService.getUser().unvan.id !== 'Unvan_San_Bas_Yrd') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Loher' && this.baseService.getUser().unvan.id !== 'Unvanlar_San_Bas_Yrd') {
 				filters.add({
 					name: 'paymentorder.cost',
 					operator: FilterOperation.EQUALS,
 					value: 'Cost_Place_MeteorIzmir'
 				});
 			}
-			if (this.baseService.getUser().unvan.id === 'Unvan_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvan_San_Bas') {
+			if (this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas') {
 				filters.add({
 					name: 'paymentorder.cost',
 					operator: FilterOperation.IN,
 					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir', 'Cost_Place_MeteorIzmir']
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birim_Muh') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Muh') {
 				filters.add({
 					name: 'createdBy',
 					operator: FilterOperation.EQUALS,
@@ -377,62 +379,62 @@ export class GridComponent implements AfterViewInit {
 			}
 			if (this.baseService.getUserId() === 2001) {
 				filters.add({
-					name: 'user.birim',
+					name: 'owner.birim',
 					operator: FilterOperation.IN,
-					value: ['Birim_Loher', 'Birim_Muh']
+					value: ['Birimler_Loher', 'Birimler_Muh']
 				});
 			}
-			if (this.baseService.getUser().unvan.id === 'Unvan_Ic_Uzm') {
+			if (this.baseService.getUser().unvan.id === 'Unvanlar_Ic_Uzm') {
 				filters.add({
-					name: 'user',
+					name: 'user.id',
 					operator: FilterOperation.EQUALS,
-					value: this.baseService.getUser()
+					value: this.baseService.getUserId()
 				});
 			}
 		}
 		if (this.model.name === 'Document') {
-			if (this.baseService.getUser().unvan.id !== 'Unvan_Idr_Mud' && this.baseService.getUserId() !== 2000 && this.baseService.getUserId() !== 2) {
-				if (this.baseService.getUser().birim.id === 'Birim_Satin' && this.baseService.getUser().unvan.id === 'Unvan_Ope_Sat_Mud') {
+			if (this.baseService.getUser().unvan.id !== 'Unvanlar_Idr_Mud' && this.baseService.getUserId() !== 2000 && this.baseService.getUserId() !== 2) {
+				if (this.baseService.getUser().birim.id === 'Birimler_Satin' && this.baseService.getUser().unvan.id === 'Unvanlar_Ope_Sat_Mud') {
 					filters.add({
 						name: 'sirket',
 						operator: FilterOperation.IN,
-						value: ['Sirket_Doc_Meteor', 'Sirket_Doc_Cemcan', 'Sirket_Doc_Ncc', 'Sirket_Doc_Simya', 'Sirket_Doc_Genel']
+						value: ['Dokuman_Sirketleri_Meteor', 'Dokuman_Sirketleri_Cemcan', 'Dokuman_Sirketleri_Ncc', 'Dokuman_Sirketleri_Simya', 'Dokuman_Sirketleri_Genel']
 					});
-				} else if (this.baseService.getUser().sirket.id === 'Sirket_Cemcan' && this.baseService.getUser().unvan.id === 'Unvan_Ist_Amr') {
+				} else if (this.baseService.getUser().sirket.id === 'Sirketler_Cemcan' && this.baseService.getUser().unvan.id === 'Unvanlar_Ist_Amr') {
 					filters.add({
 						name: 'sirket',
 						operator: FilterOperation.IN,
-						value: ['Sirket_Doc_Cemcan', 'Sirket_Doc_Genel']
+						value: ['Dokuman_Sirketleri_Cemcan', 'Dokuman_Sirketleri_Genel']
 					});
-				} else if (this.baseService.getUser().sirket.id === 'Sirket_Ncc' && this.baseService.getUser().unvan.id === 'Unvan_Ist_On') {
+				} else if (this.baseService.getUser().sirket.id === 'Sirketler_Ncc' && this.baseService.getUser().unvan.id === 'Unvanlar_Ist_On') {
 					filters.add({
 						name: 'sirket',
 						operator: FilterOperation.IN,
-						value: ['Sirket_Doc_Ncc', 'Sirket_Doc_Genel']
+						value: ['Dokuman_Sirketleri_Ncc', 'Dokuman_Sirketleri_Genel']
 					});
-				} else if (this.baseService.getUser().birim.id === 'Birim_Ter' && this.baseService.getUser().unvan.id === 'Unvan_Ist_Amr') {
+				} else if (this.baseService.getUser().birim.id === 'Birimler_Ter' && this.baseService.getUser().unvan.id === 'Unvanlar_Ist_Amr') {
 					filters.add({
 						name: 'sirket',
 						operator: FilterOperation.IN,
-						value: ['Sirket_Doc_Meteor', 'Sirket_Doc_Genel']
+						value: ['Dokuman_Sirketleri_Meteor', 'Dokuman_Sirketleri_Genel']
 					});
-				} else if (this.baseService.getUser().birim.id === 'Birim_Kafe' && this.baseService.getUser().unvan.id === 'Unvan_Isl_Mud') {
+				} else if (this.baseService.getUser().birim.id === 'Birimler_Kafe' && this.baseService.getUser().unvan.id === 'Unvanlar_Isl_Mud') {
 					filters.add({
 						name: 'sirket',
 						operator: FilterOperation.IN,
-						value: ['Sirket_Doc_Simya', 'Sirket_Doc_Genel']
+						value: ['Dokuman_Sirketleri_Simya', 'Dokuman_Sirketleri_Genel']
 					});
 				} else if (this.baseService.getUserId() === 9 || this.baseService.getUserId() === 14 || this.baseService.getUserId() === 18 || this.baseService.getUserId() === 94) {
 					filters.add({
 						name: 'sirket',
 						operator: FilterOperation.IN,
-						value: ['Sirket_Doc_MeteorIns', 'Sirket_Doc_Genel']
+						value: ['Dokuman_Sirketleri_MeteorIns', 'Dokuman_Sirketleri_Genel']
 					});
 				} else {
 					filters.add({
 						name: 'sirket',
 						operator: FilterOperation.EQUALS,
-						value: 'Sirket_Doc_Genel'
+						value: 'Dokuman_Sirketleri_Genel'
 					});
 				}
 			}
@@ -870,6 +872,22 @@ export class GridComponent implements AfterViewInit {
 		if (this.model.apiName === 'stores' && entity.buyowner === null) {
 			this.dialog.open(StoreDialogComponent, {width: '440px'});
 		}
+	}
+
+	newPerson(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const dialogRef = this.dialog.open(NewPersonComponent, {
+			width: '800px',
+			data: {current: entity, model: this.model}
+		});
 	}
 
 	okey(entity, e?, presetValues = []) {

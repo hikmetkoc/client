@@ -135,6 +135,8 @@ import { SendSpendComponent} from './_base/dialogs/send-spend-dialog/send-spend.
 import { SpendToTlComponent} from './_base/dialogs/spend-to-tl-dialog/spend-to-tl.component';
 import { PaymentOrderFileDialogComponent} from './_base/dialogs/payment-order-file-dialog/payment-order-file-dialog.component';
 import { ShowResignComponent} from './_base/detail/show-resign-dialog/show-resign.component';
+import { NewPersonComponent} from './_base/dialogs/new-person-dialog/new-person.component';
+import { ShowInvoiceComponent} from './_base/dialogs/show-invoice-dialog/show-invoice.component';
 import { PaymentOrderInfoDialogComponent} from './_base/dialogs/payment-order-info-dialog/payment-order-info-dialog.component';
 import { ContinueConfirmComponent } from './_base/dialogs/continue-confirm/continue-confirm.component';
 import { LeadComponent } from './standard/lead/lead.component';
@@ -408,11 +410,13 @@ const routes: Routes = [
 		ConnectStoreDialogComponent,
 		SpendOkeyComponent,
 		ResignComponent,
+		NewPersonComponent,
 		PaymentOkeyComponent,
 		LoadInvoiceComponent,
 		SendSpendComponent,
 		SpendToTlComponent,
 		PaymentOrderFileDialogComponent,
+		ShowInvoiceComponent,
 		ShowResignComponent,
 		PaymentOrderInfoDialogComponent,
 		ContinueConfirmComponent,
@@ -445,11 +449,13 @@ const routes: Routes = [
 		ConnectStoreDialogComponent,
 		SpendOkeyComponent,
 		ResignComponent,
+		NewPersonComponent,
 		PaymentOkeyComponent,
 		LoadInvoiceComponent,
 		SendSpendComponent,
 		SpendToTlComponent,
 		PaymentOrderFileDialogComponent,
+		ShowInvoiceComponent,
 		ShowResignComponent,
 		PaymentOrderInfoDialogComponent,
 		ContinueConfirmComponent

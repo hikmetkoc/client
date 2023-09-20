@@ -110,7 +110,7 @@ export class SpendComponent extends BaseComponent implements OnInit, AfterViewIn
 			icon: 'cloud_download',
 			click: this.getReport.bind(this)
 		},*/ {
-			display: this.baseService.getPermissionRule(this.model.name, 'update') && this.baseService.getUser().birim.id === 'Birim_Fin',
+			display: this.baseService.getPermissionRule(this.model.name, 'update') && this.baseService.getUser().birim.id === 'Birimler_Fin',
 				title: 'Seçili Excel Raporu',
 				icon: 'insert_drive_file',
 				click: this.mainGrid.selectedRowExcelSpendReport.bind(this.mainGrid)

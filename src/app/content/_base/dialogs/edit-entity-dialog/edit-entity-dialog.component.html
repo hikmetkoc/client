@@ -11,6 +11,12 @@
 		</ng-container>
 		<ng-container ktPortletTools>
 			<div>
+				<!--<button mat-button matTooltip="IBAN Ekle" *ngIf="model.name === 'InvoiceList'" (click)="addIban()">
+					<i class="fas fa-credit-card" style="margin-top:-2px;"></i>&nbsp;IBAN Ekle
+				</button> -->
+				<button class="btn btn-success" mat-button matTooltip="Fatura Detayları" *ngIf="model.name === 'InvoiceList'" (click)="showInvoice()">
+					<i class="fas fa-glasses" style="margin-top:-2px;"></i>&nbsp;Fatura Detayları
+				</button>
 				<button mat-button matTooltip="Haritada Bul" *ngIf="model.apiName == 'Customer'" (click)="leafletLocateOnMap(customerMapModal)">
 					<i class="fa fa-map-marker" style="margin-top:-2px;"></i>&nbsp;Haritada Bul
 				</button>

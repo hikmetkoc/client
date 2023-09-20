@@ -104,7 +104,7 @@ export class PaymentOrderComponent extends BaseComponent implements OnInit, Afte
 		this.buttons = [];
 
 		this.buttons.push({
-			display: this.baseService.getPermissionRule('user', 'update') && (this.baseService.getUser().birim.id !== 'Birim_Muh'),
+			display: this.baseService.getPermissionRule('user', 'update') && (this.baseService.getUser().birim.id !== 'Birimler_Muh'),
 			title: 'Ödeme Talimatı Raporu',
 			icon: 'cloud_download',
 			click: this.getReport.bind(this)

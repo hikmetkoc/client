@@ -1,0 +1,107 @@
+<kt-portlet>
+	<kt-portlet-body>
+		<div id = "print-section">
+		<p style="text-align: center; font-size: large; font-weight: bold">YENİ ÇALIŞAN ÖN KAYIT</p>
+		<br/>
+		<div style="
+		overflow-y: hidden;
+		overflow: auto;
+		white-space: nowrap;">
+			<style>
+				table {
+					border-collapse: collapse;
+					width: 100%;
+				}
+
+				table, th, td {
+					border: 0px solid black; /* Tablonun kenarlarını kalın yapar */
+				}
+
+				.form-check {
+					text-align: center;
+				}
+			</style>
+			<table>
+				<tr>
+					<td>
+						<mat-form-field>
+							<mat-label>Adı:</mat-label>
+							<input matInput [(ngModel)]="ad">
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Soyadı:</mat-label>
+							<input matInput [(ngModel)]="soyad">
+						</mat-form-field>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<mat-form-field>
+							<mat-label>T.C. Kimlik Nu:</mat-label>
+							<input matInput class="tc-input" (keydown)="onKeyDown($event)" (input)="onInput($event)" maxlength="11" [(ngModel)]="tc">
+							<mat-icon matSuffix>person</mat-icon>
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Cep Telefonu:</mat-label>
+							<input matInput [textMask]="{mask: utils.phoneMask}" [(ngModel)]="cep">
+							<mat-icon matSuffix>phone</mat-icon>
+						</mat-form-field>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<mat-form-field class="mat-form-field-fluid">
+							<input matInput [(ngModel)]="birthDate" [matDatepicker]="picker1" placeholder="Doğum Tarihi">
+							<mat-datepicker-toggle matSuffix [for]="picker1" tabIndex="-1"></mat-datepicker-toggle>
+							<mat-datepicker touchUi="false" #picker1></mat-datepicker>
+							<mat-error>Doğum tarihi
+								<strong>zorunludur</strong>
+							</mat-error>
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field class="mat-form-field-fluid">
+							<input matInput [(ngModel)]="startDate" [matDatepicker]="picker2" placeholder="İşe Başlangıç Tarihi">
+							<mat-datepicker-toggle matSuffix [for]="picker2" tabIndex="-1"></mat-datepicker-toggle>
+							<mat-datepicker touchUi="false" #picker2></mat-datepicker>
+							<mat-error>İşe Başlangıç tarihi
+								<strong>zorunludur</strong>
+							</mat-error>
+						</mat-form-field>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<mat-form-field>
+							<mat-label>Sigortalı Olduğu Şirket</mat-label>
+							<mat-select [(value)]="selectedSirketId">
+								<mat-option *ngFor="let attr of sirketList" [value]="attr.id">{{attr.label}}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Sigortalı Olduğu Unvan</mat-label>
+							<mat-select [(value)]="selectedUnvanId">>
+								<mat-option *ngFor="let attr of unvanList" [value]="attr.id">{{attr.label}}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</td>
+				</tr>
+			</table>
+		</div>
+		</div>
+		<div class="button-container" style="display: flex; justify-content: center; gap: 10px;">
+			<button type="button" mat-raised-button color="primary" (click)="onYesClick()" matTooltip="Tamam">
+				Onayla
+			</button>
+			<button type="button" mat-raised-button color="warn" (click)="onNoClick()" matTooltip="Vazgeç">
+				Vazgeç
+			</button>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

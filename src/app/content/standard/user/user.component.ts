@@ -135,6 +135,13 @@ export class UserComponent extends BaseComponent implements OnInit, AfterViewIni
 				icon: 'cloud_download',
 				click: this.getReport.bind(this)
 			});
+		} if (this.baseService.getUser().birim.id === 'Birimler_IT') {
+			this.buttons.push({
+					display: true,
+					title: 'Yeni Personel',
+					icon: 'person',
+					click: this.mainGrid.newPerson.bind(this)
+				});
 		}
 	}
 
