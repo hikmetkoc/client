@@ -135,6 +135,7 @@ import { SendSpendComponent} from './_base/dialogs/send-spend-dialog/send-spend.
 import { SpendToTlComponent} from './_base/dialogs/spend-to-tl-dialog/spend-to-tl.component';
 import { PaymentOrderFileDialogComponent} from './_base/dialogs/payment-order-file-dialog/payment-order-file-dialog.component';
 import { ShowResignComponent} from './_base/detail/show-resign-dialog/show-resign.component';
+import { ShowPersonelContractComponent} from './_base/detail/show-personel-contract-dialog/show-personel-contract.component';
 import { NewPersonComponent} from './_base/dialogs/new-person-dialog/new-person.component';
 import { ShowInvoiceComponent} from './_base/dialogs/show-invoice-dialog/show-invoice.component';
 import { PaymentOrderInfoDialogComponent} from './_base/dialogs/payment-order-info-dialog/payment-order-info-dialog.component';
@@ -418,6 +419,7 @@ const routes: Routes = [
 		PaymentOrderFileDialogComponent,
 		ShowInvoiceComponent,
 		ShowResignComponent,
+		ShowPersonelContractComponent,
 		PaymentOrderInfoDialogComponent,
 		ContinueConfirmComponent,
 		LeadComponent,
@@ -457,6 +459,7 @@ const routes: Routes = [
 		PaymentOrderFileDialogComponent,
 		ShowInvoiceComponent,
 		ShowResignComponent,
+		ShowPersonelContractComponent,
 		PaymentOrderInfoDialogComponent,
 		ContinueConfirmComponent
 	],

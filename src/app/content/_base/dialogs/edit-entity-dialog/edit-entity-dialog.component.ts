@@ -553,13 +553,11 @@ export class EditEntityDialogComponent implements OnInit {
 				0,
 				100
 			);
-
 			this.baseService.find(queryParams, field.objectApiName).subscribe(res => {
 				this.filteredOptionss[field.name] = res.body;
-				console.log(this.filteredOptionss);
 			});
 		}.bind(this), 500);
-		if (field.name === 'type' && value !== 'Iz_Tur_Maz' && this.model.apiName === 'holidays') {
+		if (field.name === 'type' && value !== 'Izin_Turu_Maz' && this.model.apiName === 'holidays') {
 			// Time nesnelerini kaldır veya gizle
 			this.entityForm.get('startDate' + 'Hour').disable();
 			this.entityForm.get('startDate' + 'Hour').setValue('8');
@@ -583,7 +581,7 @@ export class EditEntityDialogComponent implements OnInit {
 			this.gizlilik = false;
 			this.gizlilik2 = false;
 		}
-		if (field.name === 'type' && value !== 'Iz_Tur_Maz' && this.model.apiName === 'holidays') {
+		if (field.name === 'type' && value !== 'Izin_Turu_Maz' && this.model.apiName === 'holidays') {
 			// Time nesnelerini kaldır veya gizle
 			this.entityForm.get('startDate' + 'Hour').disable();
 			this.entityForm.get('startDate' + 'Hour').setValue('8');
@@ -600,7 +598,7 @@ export class EditEntityDialogComponent implements OnInit {
 			this.entityForm.get('comeDate' + 'Minute').disable();
 			this.entityForm.get('comeDate' + 'Hour').setValue('30');*/
 			return;
-		} else if (field.name === 'type' && value === 'Iz_Tur_Maz' && this.model.apiName === 'holidays') {
+		} else if (field.name === 'type' && value === 'Izin_Turu_Maz' && this.model.apiName === 'holidays') {
 			this.entityForm.get('startDate' + 'Hour').enable();
 			this.entityForm.get('startDate' + 'Minute').enable();
 

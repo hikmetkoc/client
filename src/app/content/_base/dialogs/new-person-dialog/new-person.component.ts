@@ -18,6 +18,11 @@ import {HttpClient} from '@angular/common/http';
 import {HttpUtilsService} from '../../http-utils.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {ShowResignComponent} from "../../detail/show-resign-dialog/show-resign.component";
+import {MatDialog} from "@angular/material/dialog";
+import {
+	ShowPersonelContractComponent
+} from "../../detail/show-personel-contract-dialog/show-personel-contract.component";
 
 
 @Component({
@@ -43,6 +48,7 @@ export class NewPersonComponent implements OnInit {
 		private cdr: ChangeDetectorRef,
 		private elRef: ElementRef,
 		public baseService: BaseService,
+		public dialog: MatDialog,
 		public dialogRef: MatDialogRef<any>,
 		private http: HttpClient,
 		private httpUtils: HttpUtilsService,
@@ -78,7 +84,11 @@ export class NewPersonComponent implements OnInit {
 		&cep=${this.cep}&ad=${this.ad}&soyad=${this.soyad}
 		&unvan=${this.selectedUnvanId}&sgkSirket=${this.selectedSirketId}` , assigner, {headers: httpHeaders, responseType: 'text'}).subscribe(
 				(res: any) => {
-						this.dialogRef.close();
+						//this.dialogRef.close();
+						const dialogRef = this.dialog.open(ShowPersonelContractComponent, {
+							width: '1200px',
+							data: {current: this.ad + ' ' + this.soyad, model: this.model}
+						});
 						Utils.showActionNotification('Kayıt Başarılı!', 'success', 10000, true, false, 3000, this.snackBar);
 				},
 				(error) => {

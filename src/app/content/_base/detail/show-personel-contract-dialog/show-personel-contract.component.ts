@@ -11,9 +11,9 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
 	selector: 'kt-resign',
-	templateUrl: 'show-resign.component.html',
+	templateUrl: 'show-personel-contract.component.html',
 })
-export class ShowResignComponent implements OnInit {
+export class ShowPersonelContractComponent implements OnInit {
 	@Input() current: any;
 	@Input() model: any;
 	resignList = [];
@@ -40,7 +40,7 @@ export class ShowResignComponent implements OnInit {
 	ngOnInit() {
 		this.model = this.data.model;
 		this.current = this.data.current;
-		this.getResign();
+		//this.getResign();
 	}
 
 	onNoClick() {
@@ -74,47 +74,38 @@ export class ShowResignComponent implements OnInit {
 		});
 	}
 
-	print() {
-		const printContent = document.getElementById('print-section');
-		const windowPrt = window.open('', '', 'left=0,top=0,width=1200,height=1200,toolbar=0,scrollbars=0,status=0');
-		const style = `
-<style>
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    table-layout: auto;
-    border: 1px solid #000;
-    text-align: center;
-  }
+	print(adsoyad: string) {
+		const apiUrl = `api/personal_contracts/download-degistirilmis-belge?adsoyad=${this.current}`;
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
 
-  table, thead, tr, td, th {
-    border: 1px solid black;
-    vertical-align: middle;
-    text-align: center;
-  }
+		this.http.get(apiUrl, {
+			headers: httpHeaders,
+			responseType: 'blob' as 'json', // Blob türünü kullan
+		}).subscribe(
+			(blob: Blob) => {
+				const fileUrl = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.style.display = 'none';
+				a.href = fileUrl;
 
-  thead {
-    background-color: #0f695f;
-    color: #d7dbf7;
-    font-weight: bold;
-  }
+				// Dosya adını belirlemek için response headers'ından alabilirsiniz
+				const contentDispositionHeader = blob.type;
+				const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDispositionHeader);
+				const fileName = matches != null && matches[1] ? matches[1].replace(/['"]/g, '') : 'document.docx';
 
-  tr:nth-child(even) {
-    background-color: #f2f2f2;
-    text-align: center;
-  }
+				a.download = fileName;
 
-  .question {
-    text-align: left;
-  }
-</style>
-`;
+				document.body.appendChild(a);
+				a.click();
 
-		windowPrt.document.write(style);
-		windowPrt.document.write(printContent.innerHTML);
-		windowPrt.document.close();
-		windowPrt.focus();
-		windowPrt.print();
-		windowPrt.close();
+				// Temizlik
+				window.URL.revokeObjectURL(fileUrl);
+				document.body.removeChild(a);
+			},
+			error => {
+				Utils.showActionNotification('Dosya bulunamadı!', 'warning', 10000, true, false, 3000, this.snackBar);
+			}
+		);
 	}
+
 }

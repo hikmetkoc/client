@@ -11,6 +11,8 @@ export enum FilterOperation {
     LESS_OR_EQUAL_THAN = 'LESS_OR_EQUAL_THAN',
     BETWEEN = 'BETWEEN',
     IN = 'IN',
+	/*LIKE = 'LIKE',
+	ILIKE = 'ILIKE',*/
     SPECIFIED = 'SPECIFIED'
 }
 
