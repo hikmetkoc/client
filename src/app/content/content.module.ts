@@ -134,11 +134,14 @@ import { LoadInvoiceComponent} from './_base/dialogs/load-invoice-dialog/load-in
 import { SendSpendComponent} from './_base/dialogs/send-spend-dialog/send-spend.component';
 import { SpendToTlComponent} from './_base/dialogs/spend-to-tl-dialog/spend-to-tl.component';
 import { PaymentOrderFileDialogComponent} from './_base/dialogs/payment-order-file-dialog/payment-order-file-dialog.component';
+import { ShowFuelLimitRiskDialogComponent} from './_base/dialogs/show-fuel-limit-risk-dialog/show-fuel-limit-risk-dialog.component';
 import { ShowResignComponent} from './_base/detail/show-resign-dialog/show-resign.component';
 import { ShowPersonelContractComponent} from './_base/detail/show-personel-contract-dialog/show-personel-contract.component';
 import { NewPersonComponent} from './_base/dialogs/new-person-dialog/new-person.component';
+import { AreYouOkeyComponent} from './_base/dialogs/are-you-okey-dialog/are-you-okey.component';
 import { ShowInvoiceComponent} from './_base/dialogs/show-invoice-dialog/show-invoice.component';
 import { PaymentOrderInfoDialogComponent} from './_base/dialogs/payment-order-info-dialog/payment-order-info-dialog.component';
+import { SpendInfoDialogComponent} from './_base/dialogs/spend-info-dialog/spend-info-dialog.component';
 import { ContinueConfirmComponent } from './_base/dialogs/continue-confirm/continue-confirm.component';
 import { LeadComponent } from './standard/lead/lead.component';
 import { UserGuideComponent } from './standard/user-guide/user-guide.component';
@@ -412,15 +415,18 @@ const routes: Routes = [
 		SpendOkeyComponent,
 		ResignComponent,
 		NewPersonComponent,
+		AreYouOkeyComponent,
 		PaymentOkeyComponent,
 		LoadInvoiceComponent,
 		SendSpendComponent,
 		SpendToTlComponent,
 		PaymentOrderFileDialogComponent,
+		ShowFuelLimitRiskDialogComponent,
 		ShowInvoiceComponent,
 		ShowResignComponent,
 		ShowPersonelContractComponent,
 		PaymentOrderInfoDialogComponent,
+		SpendInfoDialogComponent,
 		ContinueConfirmComponent,
 		LeadComponent,
 		UserGuideComponent
@@ -452,15 +458,18 @@ const routes: Routes = [
 		SpendOkeyComponent,
 		ResignComponent,
 		NewPersonComponent,
+		AreYouOkeyComponent,
 		PaymentOkeyComponent,
 		LoadInvoiceComponent,
 		SendSpendComponent,
 		SpendToTlComponent,
 		PaymentOrderFileDialogComponent,
+		ShowFuelLimitRiskDialogComponent,
 		ShowInvoiceComponent,
 		ShowResignComponent,
 		ShowPersonelContractComponent,
 		PaymentOrderInfoDialogComponent,
+		SpendInfoDialogComponent,
 		ContinueConfirmComponent
 	],
 	exports: [

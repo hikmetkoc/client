@@ -1,27 +1,24 @@
 <kt-portlet>
 	<kt-portlet-body>
-		<div id = "print-section">
-		<p style="text-align: center; font-size: large; font-weight: bold">YENİ ÇALIŞAN ÖN KAYIT</p>
-		<br/>
-		<div style="
-		overflow-y: hidden;
-		overflow: auto;
-		white-space: nowrap;">
-			<style>
-				table {
-					border-collapse: collapse;
-					width: 100%;
-				}
+		<div id="print-section">
+			<p style="text-align: center; font-size: large; font-weight: bold">YENİ ÇALIŞAN ÖN KAYIT</p>
+			<br />
+			<div style="overflow-y: hidden; overflow: auto; white-space: nowrap;">
+				<style>
+					table {
+						border-collapse: collapse;
+						width: 100%;
+					}
 
-				table, th, td {
-					border: 0px solid black; /* Tablonun kenarlarını kalın yapar */
-				}
+					table, th, td {
+						border: 0px solid black; /* Tablonun kenarlarını kalın yapar */
+					}
 
-				.form-check {
-					text-align: center;
-				}
-			</style>
-			<table>
+					.form-check {
+						text-align: center;
+					}
+				</style>
+				<table>
 				<tr>
 					<td>
 						<mat-form-field>
@@ -35,8 +32,6 @@
 							<input matInput [(ngModel)]="soyad">
 						</mat-form-field>
 					</td>
-				</tr>
-				<tr>
 					<td>
 						<mat-form-field>
 							<mat-label>T.C. Kimlik Nu:</mat-label>
@@ -73,8 +68,6 @@
 							</mat-error>
 						</mat-form-field>
 					</td>
-				</tr>
-				<tr>
 					<td>
 						<mat-form-field>
 							<mat-label>Sigortalı Olduğu Şirket</mat-label>
@@ -92,6 +85,164 @@
 						</mat-form-field>
 					</td>
 				</tr>
+				<tr>
+					<td>
+						<mat-form-field>
+							<mat-label>Eğitim Durumu</mat-label>
+							<mat-select [(value)]="selectedEgitimId">>
+								<mat-option *ngFor="let attr of egitimList" [value]="attr.id">{{attr.label}}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Askerlik Durumu</mat-label>
+							<mat-select [(value)]="selectedAskerlikId">>
+								<mat-option *ngFor="let attr of askerlikList" [value]="attr.id">{{attr.label}}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Cinsiyet</mat-label>
+							<mat-select [(value)]="selectedCinsiyetId">>
+								<mat-option *ngFor="let attr of cinsiyetList" [value]="attr.id">{{attr.label}}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Ehliyet Sınıfı</mat-label>
+							<mat-select [(value)]="selectedEhliyetId">>
+								<mat-option *ngFor="let attr of ehliyetList" [value]="attr.id">{{attr.label}}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<mat-form-field>
+						<mat-label>Mezun Olduğu Kurum </mat-label>
+						<input matInput [(ngModel)]="mezunKurum">
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+						<mat-label>Mezun Olduğu Bölüm </mat-label>
+						<input matInput [(ngModel)]="mezunBolum">
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>IBAN </mat-label>
+							<input matInput [textMask]="{mask: utils.ibanMask}" [(ngModel)]="iban">
+							<mat-icon matSuffix>bank</mat-icon>
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Kan Grubu </mat-label>
+							<input matInput [(ngModel)]="kangrubu">
+						</mat-form-field>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<mat-form-field>
+							<mat-label>Acil Durumda Ulaşılacak Kişi (Ad Soyad)</mat-label>
+							<input matInput [(ngModel)]="acilAdSoyad">
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Acil Durumda Ulaşılacak Kişi (Yakınlık Derecesi)</mat-label>
+							<input matInput [(ngModel)]="acilYakinlik">
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Acil Durumda Ulaşılacak Kişi (Tel Nu.)</mat-label>
+							<input matInput [textMask]="{mask: utils.phoneMask}" [(ngModel)]="acilNo">
+							<mat-icon matSuffix>phone</mat-icon>
+						</mat-form-field>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<mat-form-field>
+							<mat-label>Doğduğu İl </mat-label>
+							<input matInput [(ngModel)]="dogIl">
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Doğduğu İlçe </mat-label>
+							<input matInput [(ngModel)]="dogIlce">
+						</mat-form-field>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<mat-label>Adres</mat-label>
+					</td>
+					<td>
+						<mat-label>Askerlik Muafiyet Sebebi (Muaf ise) </mat-label>
+					</td>
+					<td>
+						<mat-label>Açıklama </mat-label>
+					</td>
+				</tr>
+					<tr>
+					<td>
+						<textarea [(ngModel)]="acikAdres"></textarea>
+					</td>
+					<td>
+						<textarea [(ngModel)]="muaf"></textarea>
+					</td>
+					<td>
+						<textarea [(ngModel)]="aciklamaAlani"></textarea>
+					</td>
+				</tr>
+					<tr>
+						<td>
+							<mat-label>Mesleki Yeterlilik Belgesi </mat-label>
+						</td>
+						<td>
+							<mat-checkbox [(ngModel)]="mybelgesi"></mat-checkbox>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<mat-label>Emekli </mat-label>
+						</td>
+						<td>
+							<mat-checkbox [(ngModel)]="emekli"></mat-checkbox>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<mat-label>Engelli </mat-label>
+						</td>
+						<td>
+							<mat-checkbox [(ngModel)]="engelli"></mat-checkbox>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<mat-label>Eş Çalışma </mat-label>
+						</td>
+						<td>
+							<mat-checkbox [(ngModel)]="escalisma"></mat-checkbox>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<mat-label>Türkiye Cumhuriyeti Vatandaşlığı </mat-label>
+						</td>
+						<td>
+							<mat-checkbox [(ngModel)]="tcv"></mat-checkbox>
+						</td>
+					</tr>
 			</table>
 		</div>
 		</div>

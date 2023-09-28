@@ -104,12 +104,12 @@ export class SpendComponent extends BaseComponent implements OnInit, AfterViewIn
 	evaluateButtons() {
 		this.buttons = [];
 
-		this.buttons.push(/*{
+		this.buttons.push({
 			display: this.baseService.getPermissionRule('user', 'update'),
 			title: 'Ödemeler Raporu',
 			icon: 'cloud_download',
-			click: this.getReport.bind(this)
-		},*/ {
+			click: this.mainGrid.spendExcelReport.bind(this.mainGrid)
+		}, {
 			display: this.baseService.getPermissionRule(this.model.name, 'update') && this.baseService.getUser().birim.id === 'Birimler_Fin',
 				title: 'Seçili Excel Raporu',
 				icon: 'insert_drive_file',

@@ -12,11 +12,11 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 @Component({
 	selector: 'kt-resign',
 	templateUrl: 'show-personel-contract.component.html',
+	styleUrls: ['./personal-contact.component.scss']
 })
 export class ShowPersonelContractComponent implements OnInit {
 	@Input() current: any;
 	@Input() model: any;
-	resignList = [];
 
 	constructor(
 		private cdr: ChangeDetectorRef,
@@ -40,45 +40,13 @@ export class ShowPersonelContractComponent implements OnInit {
 	ngOnInit() {
 		this.model = this.data.model;
 		this.current = this.data.current;
-		//this.getResign();
+		//this.print();
 	}
-
-	onNoClick() {
-		this.dialogRef.close();
-	}
-
-	formatDate(date: string): string {
-		if (!date) {
-			return '';
-		}
-		const formattedDate = new Date(date);
-		const day = ('0' + formattedDate.getDate()).slice(-2);
-		const month = ('0' + (formattedDate.getMonth() + 1)).slice(-2);
-		const year = formattedDate.getFullYear();
-		const hour = ('0' + formattedDate.getHours()).slice(-2);
-		const minute = ('0' + formattedDate.getMinutes()).slice(-2);
-		return `${day}-${month}-${year}`;
-	}
-
-	getResign() {
-		const filters = new Set();
-		const queryParams = new QueryParamsModel(
-			Utils.makeFilter(filters),
-			[{sortBy: 'createdDate', sortOrder: 'DESC'}],
-			0,
-			1000
-		);
-		this.baseService.find(queryParams, 'resigns').subscribe(res => {
-			this.resignList = res.body.filter(flt => flt.owner.id === this.current.id);
-			this.cdr.markForCheck();
-		});
-	}
-
-	print(adsoyad: string) {
-		const apiUrl = `api/personal_contracts/download-degistirilmis-belge?adsoyad=${this.current}`;
+	print(sozlesme) {
+		const apiUrl = `api/personal_contracts/download-degistirilmis-belge?sozlesme=${sozlesme}`;
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
 
-		this.http.get(apiUrl, {
+		this.http.post(apiUrl, this.current, {
 			headers: httpHeaders,
 			responseType: 'blob' as 'json', // Blob türünü kullan
 		}).subscribe(
@@ -106,6 +74,7 @@ export class ShowPersonelContractComponent implements OnInit {
 				Utils.showActionNotification('Dosya bulunamadı!', 'warning', 10000, true, false, 3000, this.snackBar);
 			}
 		);
+		this.dialogRef.close();
 	}
 
 }

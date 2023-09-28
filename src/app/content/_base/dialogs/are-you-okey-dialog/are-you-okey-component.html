@@ -1,0 +1,14 @@
+<kt-portlet>
+	<kt-portlet-body>
+		<p>YAPMIŞ OLDUĞUNUZ DEĞİŞİKLİKLER KAYDEDİLECEKTİR VE DAHA SONRA DÜZENLEME YAPAMAYACAKSINIZ! EMİN MİSİNİZ?</p>
+		<br/>
+		<div class="button-container" style="display: flex; justify-content: center; gap: 10px;">
+			<button type="button" mat-raised-button color="primary" (click)="onYesClick()" matTooltip="Onayla">
+				Onayla
+			</button>
+			<button type="button" mat-raised-button color="warn" (click)="onNoClick()" matTooltip="Vazgeç">
+				Vazgeç
+			</button>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

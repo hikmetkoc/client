@@ -1,14 +1,73 @@
 <kt-portlet>
 	<kt-portlet-header>
-		<ng-container ktPortletTools>
-			<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Yazdır" (click)="print()">
-				<mat-icon>print</mat-icon>
-			</button>
-			<button mat-icon-button class="btn btn btn-danger kt-margin-l-10" color="warn" matTooltip="Kapat" (click)="onNoClick()">
-				<mat-icon>exit_to_app</mat-icon>
-			</button>
-		</ng-container>
 	</kt-portlet-header>
+	<h3 class="kt-portlet__head-title" style="text-align: center">Sözleşme Listesi</h3>
 	<kt-portlet-body>
+		<table class="contacts-table">
+			<thead>
+			<tr>
+				<th>Sözleşme Adı</th>
+				<th>Açıklama</th>
+				<th>İndir</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td>Personel İş Sözleşmesi</td>
+				<td>İşe yeni giren personellerin imzalaması gereken ilk evraklar</td>
+				<td><button class="download-button" (click)="print('isSozlesme')">İndir</button></td>
+			</tr>
+			<tr>
+				<td>Bilgisayar Teslim ve Zimmet Formu</td>
+				<td>İşe yeni giren personellerin imzalaması gereken ilk evraklar</td>
+				<td><button class="download-button" (click)="print('bilgisayarTeslim')">İndir</button></td>
+			</tr>
+			<tr>
+				<td>Cihaz Teslim Formu</td>
+				<td>İşe yeni giren personellerin imzalaması gereken ilk evraklar</td>
+				<td><button class="download-button" (click)="print('cihazTeslim')">İndir</button></td>
+			</tr>
+			<tr>
+				<td>Demirbaş Teslim ve Zimmet Formu</td>
+				<td>İşe yeni giren personellerin imzalaması gereken ilk evraklar</td>
+				<td><button class="download-button" (click)="print('demirbasZimmet')">İndir</button></td>
+			</tr>
+			<tr>
+				<td>İstifa Dilekçesi</td>
+				<td>İşe yeni giren personellerin imzalaması gereken ilk evraklar</td>
+				<td><button class="download-button" (click)="print('istifaDilekce')">İndir</button></td>
+			</tr>
+			<tr>
+				<td>Çalışma Belgesi</td>
+				<td>İşe yeni giren personellerin imzalaması gereken ilk evraklar</td>
+				<td><button class="download-button" (click)="print('calismaBelgesi')">İndir</button></td>
+			</tr>
+			<tr>
+				<td>Fesih Bildirimi</td>
+				<td>İşe yeni giren personellerin imzalaması gereken ilk evraklar</td>
+				<td><button class="download-button" (click)="print('fesihBildirimi')">İndir</button></td>
+			</tr>
+			<tr>
+				<td>Geçici İş Yeri Değişikliği ile İşgören Rıza Beyan Formu</td>
+				<td>İşe yeni giren personellerin imzalaması gereken ilk evraklar</td>
+				<td><button class="download-button" (click)="print('geciciİsYeri')">İndir</button></td>
+			</tr>
+			<tr>
+				<td>İş Kazası Tutanağı</td>
+				<td>İşe yeni giren personellerin imzalaması gereken ilk evraklar</td>
+				<td><button class="download-button" (click)="print('isKazasi')">İndir</button></td>
+			</tr>
+			<tr>
+				<td>İşe Geç Gelme / Gelmeme Tutanağı</td>
+				<td>İşe yeni giren personellerin imzalaması gereken ilk evraklar</td>
+				<td><button class="download-button" (click)="print('iseGecGelme')">İndir</button></td>
+			</tr>
+			<tr>
+				<td>Savunma İsteme Yazısı</td>
+				<td>İşe yeni giren personellerin imzalaması gereken ilk evraklar</td>
+				<td><button class="download-button" (click)="print('savunmaIsteme')">İndir</button></td>
+			</tr>
+			</tbody>
+		</table>
 	</kt-portlet-body>
 </kt-portlet>

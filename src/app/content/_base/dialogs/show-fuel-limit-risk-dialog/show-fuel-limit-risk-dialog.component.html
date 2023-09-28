@@ -1,0 +1,46 @@
+<kt-portlet>
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title">
+				Ek Limit Talebi Risk Detayları
+			</h3>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body style="font-size: 15px">
+		<br/>
+		<div style="text-align: center; background-color: #222; padding: 10px;">
+			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">RİSK BİLGİLERİ</h4>
+		</div>
+		<table class="table table-striped" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000;">
+			<thead>
+			<tr>
+				<th>Cari Unvanı</th>
+				<th>Banka Adı</th>
+				<th>Dbs Limit</th>
+				<th>Onaylı Fatura</th>
+				<th>Nakit Risk</th>
+				<th>Kullanılabilir Limit</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr *ngFor="let risk of riskDetay">
+				<td>{{ risk.cariUnvan }}</td>
+				<td>{{ risk.bankaAdi }}</td>
+				<td>{{ formatAmount(risk.dbsLimit) + ' TL' }}</td>
+				<td>{{ formatAmount(risk.onayliFatura) + ' TL' }}</td>
+				<td>{{ formatAmount(risk.nakitRisk) + ' TL' }}</td>
+				<td>{{ formatAmount(risk.limit) + ' TL' }}</td>
+			</tr>
+			</tbody>
+		</table>
+		<br/>
+		<div style="text-align: center; background-color: #222; padding: 10px;">
+			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">TOPLAM KULLANILABİLİR LİMİT</h4>
+		</div>
+		<table class="table table-striped" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000;">
+			<tr>
+				<td style="font-weight: bold; font-size: 18px">{{ formatAmount(this.toplamLimit) + ' TL' }}</td>
+			</tr>
+		</table>
+	</kt-portlet-body>
+</kt-portlet>

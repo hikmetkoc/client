@@ -56,6 +56,11 @@ import {
 } from "../detail/reportmanager/report-manager-dialog/report-manager-dialog.component";
 import {ResignComponent} from "../dialogs/resign-dialog/resign.component";
 import {NewPersonComponent} from "../dialogs/new-person-dialog/new-person.component";
+import {ShowPersonelContractComponent} from "../detail/show-personel-contract-dialog/show-personel-contract.component";
+import {SpendInfoDialogComponent} from "../dialogs/spend-info-dialog/spend-info-dialog.component";
+import {
+	ShowFuelLimitRiskDialogComponent
+} from "../dialogs/show-fuel-limit-risk-dialog/show-fuel-limit-risk-dialog.component";
 
 @Component({
 	selector: 'kt-grid',
@@ -120,6 +125,30 @@ export class GridComponent implements AfterViewInit {
 	kullanilanizin: any;
 	toplamtlodeme: any;
 	toplamdlodeme: any;
+	mpetroltlodeme: any;
+	mpetroldlodeme: any;
+	minsaattlodeme: any;
+	minsaatdlodeme: any;
+	cpetroltlodeme: any;
+	cpetroldlodeme: any;
+	npetroltlodeme: any;
+	npetroldlodeme: any;
+	izmirsubetlodeme: any;
+	izmirsubedlodeme: any;
+	igdirsubetlodeme: any;
+	igdirsubedlodeme: any;
+	simyatlodeme: any;
+	simyadlodeme: any;
+	bircetlodeme: any;
+	bircedlodeme: any;
+	mudanyatlodeme: any;
+	mudanyadlodeme: any;
+	startlodeme: any;
+	stardlodeme: any;
+	chargetlodeme: any;
+	chargedlodeme: any;
+	avelicetlodeme: any;
+	avelicedlodeme: any;
 	izinbul = [];
 	loading: boolean;
 
@@ -202,7 +231,7 @@ export class GridComponent implements AfterViewInit {
 				filters.add({
 					name: 'birim',
 					operator: FilterOperation.IN,
-					value: ['Unvanlar_Loher', 'Birimler_Muh']
+					value: ['Birimler_Loher', 'Birimler_Muh']
 				});
 			}
 			if (this.baseService.getUser().birim.id === 'Birimler_Fin') {
@@ -488,9 +517,42 @@ export class GridComponent implements AfterViewInit {
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
 		this.http.post(apiUrl, null, { headers: httpHeaders, responseType: 'text' }).subscribe(
 			response => {
-					const parts = response.split('-');
-					this.toplamtlodeme = parseFloat(parts[0].replace(',', '.'));
-					this.toplamdlodeme = parseFloat(parts[1].replace(',', '.'));
+				const parts = response.split('&');
+				this.mpetroltlodeme = parseFloat(parts[0].split('-')[0].replace(',', '.'));
+				this.mpetroldlodeme = parseFloat(parts[0].split('-')[1].replace(',', '.'));
+
+				this.minsaattlodeme = parseFloat(parts[1].split('-')[0].replace(',', '.'));
+				this.minsaatdlodeme = parseFloat(parts[1].split('-')[1].replace(',', '.'));
+
+				this.cpetroltlodeme = parseFloat(parts[2].split('-')[0].replace(',', '.'));
+				this.cpetroldlodeme = parseFloat(parts[2].split('-')[1].replace(',', '.'));
+
+				this.npetroltlodeme = parseFloat(parts[3].split('-')[0].replace(',', '.'));
+				this.npetroldlodeme = parseFloat(parts[3].split('-')[1].replace(',', '.'));
+
+				this.izmirsubetlodeme = parseFloat(parts[4].split('-')[0].replace(',', '.'));
+				this.izmirsubedlodeme = parseFloat(parts[4].split('-')[1].replace(',', '.'));
+
+				this.igdirsubetlodeme = parseFloat(parts[5].split('-')[0].replace(',', '.'));
+				this.igdirsubedlodeme = parseFloat(parts[5].split('-')[1].replace(',', '.'));
+
+				this.simyatlodeme = parseFloat(parts[6].split('-')[0].replace(',', '.'));
+				this.simyadlodeme = parseFloat(parts[6].split('-')[1].replace(',', '.'));
+
+				this.bircetlodeme = parseFloat(parts[7].split('-')[0].replace(',', '.'));
+				this.bircedlodeme = parseFloat(parts[7].split('-')[1].replace(',', '.'));
+
+				this.mudanyatlodeme = parseFloat(parts[8].split('-')[0].replace(',', '.'));
+				this.mudanyadlodeme = parseFloat(parts[8].split('-')[1].replace(',', '.'));
+
+				this.startlodeme = parseFloat(parts[9].split('-')[0].replace(',', '.'));
+				this.stardlodeme = parseFloat(parts[9].split('-')[1].replace(',', '.'));
+
+				this.chargetlodeme = parseFloat(parts[10].split('-')[0].replace(',', '.'));
+				this.chargedlodeme = parseFloat(parts[11].split('-')[1].replace(',', '.'));
+
+				this.avelicetlodeme = parseFloat(parts[12].split('-')[0].replace(',', '.'));
+				this.avelicedlodeme = parseFloat(parts[12].split('-')[1].replace(',', '.'));
 				},
 			error => {
 				Utils.showActionNotification('Toplama Hatası', 'warning', 10000, true, false, 3000, this.snackBar);
@@ -694,11 +756,11 @@ export class GridComponent implements AfterViewInit {
 	displayColumns() {
 		this.displayedColumns.push('select');
 		if (this.model.name === 'Spend') {
-			this.displayedColumns.push('paymentorder1');
+			/*this.displayedColumns.push('paymentorder1');
 			this.displayedColumns.push('paymentorder2');
 			this.displayedColumns.push('paymentorder3');
 			this.displayedColumns.push('paymentorder4');
-			this.displayedColumns.push('paymentorder5');
+			this.displayedColumns.push('paymentorder5');*/
 			this.displayedColumns.push('paymentorder6');
 			this.displayedColumns.push('paymentorder7');
 			this.displayedColumns.push('paymentorder8');
@@ -774,6 +836,22 @@ export class GridComponent implements AfterViewInit {
 				width: '800px'
 			});
 		}
+	}
+
+	spendExcelReport() {
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		const url = `api/spends/excelReport`;
+		this.http.post(url, null, { headers: httpHeaders, responseType: 'blob' })
+			.pipe(
+				tap(res => {
+					if (res) {
+						Utils.downloadFile(res, 'Excel', 'Ödemeler Raporu');
+					}
+				}),
+				catchError(err => {
+					return err;
+				})
+			).subscribe();
 	}
 
 	removeFilter(item) {
@@ -884,8 +962,12 @@ export class GridComponent implements AfterViewInit {
 		for (const p of presetValues) {
 			entity[p.field] = p.value;
 		}
+		/*const dialogRef = this.dialog.open(ShowPersonelContractComponent, {
+			width: '1200px',
+			data: {current: entity, model: this.model}
+		});*/
 		const dialogRef = this.dialog.open(NewPersonComponent, {
-			width: '800px',
+			width: '1200px',
 			data: {current: entity, model: this.model}
 		});
 	}
@@ -967,12 +1049,16 @@ export class GridComponent implements AfterViewInit {
 			this.loadList();
 			}
 		if (this.model.apiName === 'spends') {
-			const dialogRef = this.dialog.open(SpendOkeyComponent, {data: {current: entity.id, model: this.model, durum: 'Spend_Status_Yes'}, disableClose: true });
-			dialogRef.afterClosed().subscribe(res => {
-				Utils.showActionNotification('Onaylandı', 'success', 3000, true, false, 3000, this.snackBar);
-				this.loadList();
-				this.change.emit(this.result);
-			});
+			if (entity.paymentorder.moneyType.id === 'Par_Bir_Dl' && entity.paymentorder.paymentStyle.id === 'Payment_Style_Tl' && entity.payTl === 0) {
+				Utils.showActionNotification('Lütfen Kur Tutarını girip Ödenen Tl Tutarını bildiriniz!', 'warning', 3000, true, false, 3000, this.snackBar);
+			} else {
+				const dialogRef = this.dialog.open(SpendOkeyComponent, {data: {current: entity.id, model: this.model, durum: 'Spend_Status_Yes'}, disableClose: true });
+				dialogRef.afterClosed().subscribe(res => {
+					Utils.showActionNotification('Onaylandı', 'success', 3000, true, false, 3000, this.snackBar);
+					this.loadList();
+					this.change.emit(this.result);
+				});
+			}
 		}
 		if (this.model.name === 'FuelLimit') {
 
@@ -993,7 +1079,7 @@ export class GridComponent implements AfterViewInit {
 			const servisSifre = '14ADa23.';
 			const firmaKodu = 875257;
 			const cariKodu = curcode;
-			const apiUrl = `https://srv.meteorpetrol.com/DisServis/riskdetayget?ServisSifre=${servisSifre}&CariKodu=${cariKodu}&FirmaKodu=${firmaKodu}`;
+			const apiUrl = `https://srv.nccpetrol.com/DisServis/riskdetayget?ServisSifre=${servisSifre}&CariKodu=${cariKodu}&FirmaKodu=${firmaKodu}`;
 
 			/*const requestBody = {
 				ServisSifre : '14ADa23.',
@@ -1010,11 +1096,15 @@ export class GridComponent implements AfterViewInit {
 			this.http.get(apiUrl, { headers: httpHeaders, responseType: 'json' })
 				.subscribe(
 					(response) => {
+						const responseLen =  Object.keys(response).length;
 						console.log('API Cevabı:', response);
-						const cariKoduRes = response[0].CariUnvan + ' - ' + response[0].KullanilabilirLimit + ' - ' + response[0].NakitRisk;
-						console.log('RES Cevabı:', cariKoduRes);
-						const apidescription = cariKoduRes || 'Bir sorun ile karşılaşıldı, lütfen girdiğiniz Cari Kodunu kontrol edin veya Ferit Bey ile iletişime geçiniz!';
-						Utils.showActionNotification(apidescription, 'success', 10000, true, false, 3000, this.snackBar);
+						for ( let i = 0; i < responseLen; i++) {
+							console.log('RES Cevabı:', response[i].CariUnvan + ' - ' + response[i].KullanilabilirLimit + ' - ' + response[i].BankaAdi + ' - ' + response[i].NakitRisk);
+						}
+						/*const cariKoduRes = response[0].CariUnvan + ' - ' + response[0].KullanilabilirLimit + ' - ' + response[0].BankaAdi + ' - ' + response[0].NakitRisk;
+						console.log('RES Cevabı:', cariKoduRes);*/
+						//const apidescription = 'cariKoduRes' || 'Bir sorun ile karşılaşıldı, lütfen girdiğiniz Cari Kodunu kontrol edin veya Ferit Bey ile iletişime geçiniz!';
+						//Utils.showActionNotification(apidescription, 'success', 10000, true, false, 3000, this.snackBar);
 					},
 					(error) => {
 						Utils.showActionNotification(error.toString(), 'success', 10000, true, false, 3000, this.snackBar);
@@ -1086,12 +1176,22 @@ export class GridComponent implements AfterViewInit {
 			});
 		}
 		if (this.model.apiName === 'spends') {
-			const dialogRef = this.dialog.open(SpendOkeyComponent, {data: {current: entity.id, model: this.model, durum: 'Spend_Status_Red'}, disableClose: true });
-			dialogRef.afterClosed().subscribe(res => {
-				//Utils.showActionNotification('Reddedildi', 'success', 3000, true, false, 3000, this.snackBar);
-				this.loadList();
-				this.change.emit(this.result);
-			});
+			if (entity.paymentorder.moneyType.id === 'Par_Bir_Dl' && entity.paymentorder.paymentStyle.id === 'Payment_Style_Tl' && entity.payTl === 0) {
+				Utils.showActionNotification('Lütfen Kur Tutarını girip Ödenen Tl Tutarını bildiriniz!', 'warning', 3000, true, false, 3000, this.snackBar);
+			} else {
+				const dialogRef = this.dialog.open(SpendOkeyComponent, {
+					data: {
+						current: entity.id,
+						model: this.model,
+						durum: 'Spend_Status_Red'
+					}, disableClose: true
+				});
+				dialogRef.afterClosed().subscribe(res => {
+					//Utils.showActionNotification('Reddedildi', 'success', 3000, true, false, 3000, this.snackBar);
+					this.loadList();
+					this.change.emit(this.result);
+				});
+			}
 		}
 		if (this.model.apiName === 'fuellimits') {
 			entity.status = this.baseService.getAttrVal('Fuel_Dur_Red');
@@ -1103,6 +1203,20 @@ export class GridComponent implements AfterViewInit {
 		this.loadList();
 	}
 
+	showFuelLimit(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const dialogRef = this.dialog.open(ShowFuelLimitRiskDialogComponent, { data: {current: entity, model: this.model},
+			width: '1200px'
+		});
+	}
 	okey2(entity, e?, presetValues = []) {
 		if (e) {
 			e.stopPropagation();
@@ -1120,6 +1234,20 @@ export class GridComponent implements AfterViewInit {
 		});
 
 		//this.loadList();
+	}
+	createPersonelContract(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const dialogRef = this.dialog.open(ShowPersonelContractComponent, { data: {current: entity},
+			width: '1200px'
+		});
 	}
 
 	toPay(entity, e?, presetValues = []) {
@@ -1357,6 +1485,23 @@ export class GridComponent implements AfterViewInit {
 			entity[p.field] = p.value;
 		}
 		const dialogRef = this.dialog.open(PaymentOrderInfoDialogComponent, {
+			width: '1500px',
+			data: {current: entity, model: this.model}
+		});
+		dialogRef.afterClosed().subscribe(() => {
+		});
+	}
+	infoSpend(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const dialogRef = this.dialog.open(SpendInfoDialogComponent, {
 			width: '1500px',
 			data: {current: entity, model: this.model}
 		});

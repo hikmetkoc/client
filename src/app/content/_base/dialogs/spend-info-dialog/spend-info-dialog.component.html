@@ -1,0 +1,54 @@
+<kt-portlet>
+	<kt-portlet-header>
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title">
+				Ödeme Bilgi Formu
+			</h3>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body style="font-size: 15px">
+		<br/>
+		<div style="text-align: center; background-color: #222; padding: 10px;">
+			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">GENEL BİLGİLER</h4>
+		</div>
+		<table class="table table-striped" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000;">
+			<thead>
+			<tr style ="background-color: #333; color: #fff; font-weight: bold;">
+				<th>Ödeme Sırası</th>
+				<th>İşlem Tarihi</th>
+				<th>Oluşturan</th>
+				<th>Açıklama</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr style="background-color: #f2f2f2; font-weight: bold">
+				<td>{{current.paymentNum ? current.paymentNum : ' '}}</td>
+				<td>{{current.spendDate ? (current.spendDate | date:'dd.MM.yyyy') : ' '}}</td>
+				<td>{{current.createdBy ? current.createdBy.firstName + ' ' + current.createdBy.lastName : ' '}}</td>
+				<td>{{current.description ? current.description : ' '}}</td>
+			</tr>
+			</tbody>
+		</table>
+		<div style="text-align: center; background-color: #222; padding: 10px;">
+			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">FATURA ÖDEME BİLGİLERİ</h4>
+		</div>
+		<table class="table table-striped" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000;">
+			<thead>
+			<tr style ="background-color: #333; color: #fff; font-weight: bold;">
+				<th>Faturadaki Para Birimi</th>
+				<th>Faturadaki Toplam Tutar</th>
+				<th>Ödenen Tutar</th>
+				<th>Kalan Tutar</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr style="background-color: #f2f2f2; font-weight: bold">
+				<td>{{current.paymentorder ? current.paymentorder.moneyType.label : ' '}}</td>
+				<td>{{current.paymentorder ? formatAmount(current.paymentorder.amount) : ' '}}</td>
+				<td>{{current.paymentorder ? formatAmount(current.paymentorder.payamount) : ' '}}</td>
+				<td>{{current.paymentorder ? formatAmount(current.paymentorder.nextamount) : ' '}}</td>
+			</tr>
+			</tbody>
+		</table>
+	</kt-portlet-body>
+</kt-portlet>

@@ -21,14 +21,123 @@
 						  style="display: inline-block; color: darkgreen; border: 1px solid darkgreen; padding: 5px; margin-left: 10px;">
 					Kalan Yıllık İzniniz: {{ this.kalanizin }} <span style="font-size: 16px;">GÜN</span>
 				  </span>
-					<span *ngIf="this.tablo === 'spends' && this.baseService.getUser().birim.id === 'Birimler_Fin'"
+					<!--<span *ngIf="this.tablo === 'spends' && this.baseService.getUser().birim.id === 'Birimler_Fin'"
 						  style="display: inline-block; color: darkred; border: 1px solid darkred; padding: 5px; margin-bottom: 10px; white-space: nowrap;">
 					Ödeme Yapılacak TL Tutarı: {{ formatCurrency(this.toplamtlodeme) }} <span style="font-size: 16px;"> TL (GÜNCELLEME YAPILACAK)</span>
 				  </span>
 					<span *ngIf="this.tablo === 'spends' && this.baseService.getUser().birim.id === 'Birimler_Fin'"
 						  style="display: inline-block; color: darkgreen; border: 1px solid darkgreen; padding: 5px; margin-left: 10px;">
 					Ödeme Yapılacak Dolar Tutarı: {{ formatCurrency(this.toplamdlodeme) }} <span style="font-size: 16px;"> DOLAR (GÜNCELLEME YAPILACAK)</span>
-				  </span>
+				  </span> -->
+					<table *ngIf="this.tablo === 'spends' && this.baseService.getUser().birim.id === 'Birimler_Fin'" class = "my-custom-table">
+						<style>
+							/* Tablo başlık stilleri */
+							table.my-custom-table {
+								overflow-x: auto;
+								border-collapse: collapse;
+								margin: 20px 0;
+							}
+
+							table.my-custom-table thead {
+								background-color: #f0f0f0;
+							}
+
+							table.my-custom-table th {
+								padding: 10px;
+								text-align: left;
+								border-bottom: 1px solid #ddd;
+							}
+
+							/* Tablo içeriği stilleri */
+							table.my-custom-table tbody {
+								font-size: 14px;
+							}
+
+							table.my-custom-table tr {
+								border-bottom: 1px solid #ddd;
+							}
+
+							table.my-custom-table td {
+								padding: 10px;
+							}
+
+							/* Alternatif satır renklendirme */
+							table.my-custom-table tr:nth-child(even) {
+								background-color: #f2f2f2;
+							}
+
+							/* Hücre içeriğini ortala */
+							table.my-custom-table td {
+								text-align: center;
+							}
+
+							/* Tablo başlıklarını ortala */
+							table.my-custom-table th {
+								text-align: center;
+							}
+
+							@media (max-width: 768px) {
+								table.my-custom-table {
+									overflow-x: auto;
+								}
+								table.my-custom-table th, table.my-custom-table td {
+									display: block;
+								}
+								table.my-custom-table th {
+									text-align: left;
+								}
+							}
+						</style>
+						<thead>
+						<tr>
+							<th>Ödeme Yapan Şirket</th>
+							<th>Meteor Petrol</th>
+							<th>Meteor İnşaat</th>
+							<th>Cemcan Petrol</th>
+							<th>Ncc Petrol</th>
+							<th>İzmir Şube</th>
+							<th>Iğdır Şube</th>
+							<th>Simya Kitap Kafe</th>
+							<th>Birce Petrol</th>
+							<th>Mudanya Petrol</th>
+							<th>Star Şarz</th>
+							<th>Star Charge</th>
+							<th>Avelice Asansör</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>Ödeme Yapılacak TL Tutarı</td>
+							<td>{{formatCurrency(this.mpetroltlodeme)}}</td>
+							<td>{{formatCurrency(this.minsaattlodeme)}}</td>
+							<td>{{formatCurrency(this.cpetroltlodeme)}}</td>
+							<td>{{formatCurrency(this.npetroltlodeme)}}</td>
+							<td>{{formatCurrency(this.izmirsubetlodeme)}}</td>
+							<td>{{formatCurrency(this.igdirsubetlodeme)}}</td>
+							<td>{{formatCurrency(this.simyatlodeme)}}</td>
+							<td>{{formatCurrency(this.bircetlodeme)}}</td>
+							<td>{{formatCurrency(this.mudanyatlodeme)}}</td>
+							<td>{{formatCurrency(this.startlodeme)}}</td>
+							<td>{{formatCurrency(this.chargetlodeme)}}</td>
+							<td>{{formatCurrency(this.avelicetlodeme)}}</td>
+						</tr>
+						<tr>
+							<td>Ödeme Yapılacak Dolar Tutarı</td>
+							<td>{{formatCurrency(this.mpetroldlodeme)}}</td>
+							<td>{{formatCurrency(this.minsaatdlodeme)}}</td>
+							<td>{{formatCurrency(this.cpetroldlodeme)}}</td>
+							<td>{{formatCurrency(this.npetroldlodeme)}}</td>
+							<td>{{formatCurrency(this.izmirsubedlodeme)}}</td>
+							<td>{{formatCurrency(this.igdirsubedlodeme)}}</td>
+							<td>{{formatCurrency(this.simyadlodeme)}}</td>
+							<td>{{formatCurrency(this.bircedlodeme)}}</td>
+							<td>{{formatCurrency(this.mudanyadlodeme)}}</td>
+							<td>{{formatCurrency(this.stardlodeme)}}</td>
+							<td>{{formatCurrency(this.chargedlodeme)}}</td>
+							<td>{{formatCurrency(this.avelicedlodeme)}}</td>
+						</tr>
+						</tbody>
+					</table>
 					<span *ngIf="this.tablo === 'spends' && this.baseService.getUser().birim.id !== 'Birimler_Fin'"
 						  style="display: inline-block; color: darkgreen; border: 1px solid darkgreen; padding: 5px; margin-left: 10px;">
 					ÖDEMELER
@@ -275,7 +384,7 @@
 					</button> -->
 				</mat-cell>
 			</ng-container>
-			<ng-container matColumnDef="paymentorder1">
+			<!--<ng-container matColumnDef="paymentorder1">
 				<mat-header-cell *matHeaderCellDef mat-sort-header>Ödeme Yapan Şirket</mat-header-cell>
 				<mat-cell *matCellDef="let row">{{row.paymentorder.odemeYapanSirket.label ? row.paymentorder.odemeYapanSirket.label : ''}}</mat-cell>
 			</ng-container>
@@ -294,17 +403,17 @@
 			<ng-container matColumnDef="paymentorder5">
 				<mat-header-cell *matHeaderCellDef mat-sort-header>Kalan Tutar</mat-header-cell>
 				<mat-cell *matCellDef="let row">{{formatCurrency(row.paymentorder.nextamount) ? formatCurrency(row.paymentorder.nextamount) : ''}}</mat-cell>
-			</ng-container>
+			</ng-container> -->
 			<ng-container matColumnDef="paymentorder6">
-				<mat-header-cell *matHeaderCellDef mat-sort-header>Ödenen Para Birimi</mat-header-cell>
+				<mat-header-cell *matHeaderCellDef>Ödenen Para Birimi</mat-header-cell>
 				<mat-cell *matCellDef="let row">{{row.paymentorder.paymentStyle.label.toString() ? row.paymentorder.paymentStyle.label.toString() : ''}}</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="paymentorder7">
-				<mat-header-cell *matHeaderCellDef mat-sort-header>Kur Tarihi</mat-header-cell>
+				<mat-header-cell *matHeaderCellDef>Kur Tarihi</mat-header-cell>
 				<mat-cell *matCellDef="let row">{{row.paymentorder.exchange ? row.paymentorder.exchange.label : ' '}}</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="paymentorder8">
-				<mat-header-cell *matHeaderCellDef mat-sort-header>Ödeme Tipi</mat-header-cell>
+				<mat-header-cell *matHeaderCellDef>Ödeme Tipi</mat-header-cell>
 				<mat-cell *matCellDef="let row">{{row.paymentorder.paymentType.label.toString()? row.paymentorder.paymentType.label.toString() : ' '}}</mat-cell>
 			</ng-container>
 			<ng-container *ngFor="let field of model?.fields">
@@ -449,13 +558,16 @@
 						</button>
 					</div>
 					<div *ngIf="model.apiName == 'spends'"> <!-- ÖDEMELER BUTONLARI -->
+						<button mat-icon-button color="secondary" matTooltip="Bilgi" type="button" (click)="infoSpend(row, $event)">
+							<mat-icon>information</mat-icon>
+						</button>
 						<button *ngIf="this.baseService.getUser().birim.id === 'Birimler_Fin' && row.status.label === 'Ödenmedi' && (row.paymentStatus === 'Onaylandı' || row.paymentStatus === 'Kısmi Ödendi')" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
 							<mat-icon>check</mat-icon>
 						</button>
 						<button *ngIf="this.baseService.getUser().birim.id === 'Birimler_Fin' && row.status.label === 'Ödenmedi' && (row.paymentStatus === 'Onaylandı' || row.paymentStatus === 'Kısmi Ödendi')" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
 							<mat-icon>cancel</mat-icon>
 						</button>
-						<button *ngIf="this.baseService.getUser().birim.id === 'Birimler_Fin' && row.status.label === 'Ödenmedi' && (row.paymentStatus === 'Onaylandı' || row.paymentStatus === 'Kısmi Ödendi') && row.paymentorder.moneyType.label === 'Dolar' && row.paymentorder.paymentStyle.label === 'Türk Lirası'" mat-icon-button color="success" matTooltip="Ödeme Yap" type="button" (click)="toPay(row, $event)">
+						<button *ngIf="this.baseService.getUser().birim.id === 'Birimler_Fin' && row.status.label === 'Ödenmedi' && (row.paymentStatus === 'Onaylandı' || row.paymentStatus === 'Kısmi Ödendi') && row.paymentorder.moneyType.label === 'Dolar' && row.paymentorder.paymentStyle.label === 'Türk Lirası'" mat-icon-button color="success" matTooltip="Kur Tutarı Gir" type="button" (click)="toPay(row, $event)">
 							<mat-icon>payment</mat-icon>
 						</button>
 						<button *ngIf="this.baseService.getUser().birim.id === 'Birimler_Fin' && row.status.label === 'Ödendi' && row.paymentorder.dekont === true && row.dekont === null" mat-icon-button color="success" matTooltip="Dekont Yükle" type="button" (click)="toUploadDekont(row, $event)">
@@ -466,6 +578,9 @@
 						</button>
 					</div>
 					<div *ngIf="model.apiName === 'fuellimits'"> <!-- EK LİMİT TALEBİ BUTONLARI -->
+						<button *ngIf="row.assigner.id === this.baseService.getUserId()" mat-icon-button color="warn" matTooltip="Risk Görüntüle" type="button" (click)="showFuelLimit(row, $event)">
+							<mat-icon>remove_red_eye</mat-icon>
+						</button>
 						<button *ngIf="this.baseService.getUserId() === 93 && row.status.label === 'Onay Bekliyor'" mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
 							<mat-icon>check</mat-icon>
 						</button>
@@ -476,6 +591,9 @@
 					<div *ngIf="model.apiName === 'stores'"> <!-- SATIN ALMA BUTONLARI -->
 						<button *ngIf="row.status.label === 'Onaylandı' && row.buyowner.id === this.baseService.getUserId() && row.buyStatus.label === 'Onay Bekliyor'" mat-icon-button color="success" matTooltip="Merkezden Tedarik Edildi" type="button" (click)="changecenter(row, $event)">
 							<mat-icon>shop</mat-icon>
+						</button>
+						<button *ngIf="row.owner.id === this.baseService.getUserId()" mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
+							<mat-icon>create</mat-icon>
 						</button>
 					</div>
 					<div *ngIf="model.apiName == 'invoice_lists'"> <!-- FATURA LİSTESİ BUTONLARI -->
@@ -490,6 +608,9 @@
 						</button>
 					</div>
 					<div *ngIf="model.apiName == 'users' && baseService.getUserId() === 2"> <!-- PERSONELLER ADMIN BUTONLARI -->
+						<button mat-icon-button color="success" matTooltip="Sözleşme Oluştur" type="button" (click)="createPersonelContract(row, $event)">
+							<mat-icon>description</mat-icon>
+						</button>
 						<button mat-icon-button color="success" matTooltip="Rol Düzenle" type="button" (click)="changeUserRole(row, $event)">
 							<mat-icon>settings</mat-icon>
 						</button>
