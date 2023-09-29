@@ -592,7 +592,17 @@
 						<button *ngIf="row.status.label === 'Onaylandı' && row.buyowner.id === this.baseService.getUserId() && row.buyStatus.label === 'Onay Bekliyor'" mat-icon-button color="success" matTooltip="Merkezden Tedarik Edildi" type="button" (click)="changecenter(row, $event)">
 							<mat-icon>shop</mat-icon>
 						</button>
-						<button *ngIf="row.owner.id === this.baseService.getUserId()" mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
+						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.status.label === 'Onay Bekliyor'" mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
+							<mat-icon>create</mat-icon>
+						</button>
+					</div>
+					<div *ngIf="model.apiName === 'tasks'"> <!-- TALEP VE İŞLEMLER -->
+						<button *ngIf="(row.status.label === 'Yeni' || row.status.label === 'Devam Ediyor') && row.birim.ilgilibirim === this.baseService.getUserId().toString()" mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
+							<mat-icon>create</mat-icon>
+						</button>
+					</div>
+					<div *ngIf="model.apiName === 'activities'"> <!-- TALEP VE İŞLEMLER -->
+						<button *ngIf="(row.task.status.label === 'Yeni' || row.task.status.label === 'Devam Ediyor') && row.owner.id === this.baseService.getUserId()" mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
 							<mat-icon>create</mat-icon>
 						</button>
 					</div>

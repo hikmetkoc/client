@@ -153,7 +153,7 @@ export class DashboardComponent implements OnInit {
 		this.baseService.find(queryParams, 'tasks').subscribe(res => {
 			this.tasks = [];
 			for (const tsk of res.body) {
-				if (tsk.type === null) { continue; }
+				if (tsk.taskType === null) { continue; }
 				this.tasks.push({
 					time: formatDate(tsk.dueTime, 'HH:mm', 'tr-TR'),
 					icon: 'fa fa-genderless' + (tsk.status && this.baseService.getAttrVal(tsk.status.id).label === 'Reddedildi' ? ' kt-font-danger' : (tsk.status && this.baseService.getAttrVal(tsk.status.id).label === 'Tamamlandı' ? ' ' : ' kt-font-success')),
@@ -375,7 +375,7 @@ export class DashboardComponent implements OnInit {
 			this.taskred = 0;
 			this.tasktamam = 0;
 			for (const tsk of res.body) {
-				if (tsk.type === null) {
+				if (tsk.taskType === null) {
 					continue;
 				}
 				if (this.baseService.getAttrVal(tsk.status.id).label === 'Yeni') {

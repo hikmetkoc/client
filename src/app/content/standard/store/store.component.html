@@ -43,20 +43,10 @@
 			</ng-container>
 			<ng-container ktPortletTools>
 				<div class="page-header-buttons">
-					<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Düzenle" (click)="mainGrid.edit(current)">
-						<mat-icon>create</mat-icon>
-					</button>
-					<button *ngIf="baseService.getPermissionRule(model.name,'delete')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="warn" matTooltip="Sil" (click)="delete(current)" [disabled]="loading$ | async">
-						<mat-icon>delete</mat-icon>
-					</button>
 					<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Satın Alma Dosyasını İndir" (click)="showFiles()">
 						<mat-icon>file_download</mat-icon>
 					</button>
 					<kt-filemanager [(current)]="current" [model]="model"></kt-filemanager>
-
-					<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Yeni Talep Oluştur" (click)="mainGrid.add(current)">
-						<mat-icon>add_box</mat-icon>
-					</button>
 				</div>
 			</ng-container>
 		</kt-portlet-header>

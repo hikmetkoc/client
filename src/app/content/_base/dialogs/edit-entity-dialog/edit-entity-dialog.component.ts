@@ -83,6 +83,7 @@ export class EditEntityDialogComponent implements OnInit {
 	gizlilik2: boolean;
 	isButtonClicked = false;
 	dialog2: any;
+	konularList = [];
 
 	constructor(
 		private cdr: ChangeDetectorRef,
@@ -496,7 +497,19 @@ export class EditEntityDialogComponent implements OnInit {
 			if (this.entityForm.controls.city.value && this.entityForm.controls.city.value.id) { this.entityForm.controls.district.reset(); }
 		}
 	}
-
+	getAttributeValues(birimid: any) {
+		const filters = new Set();
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{sortBy: 'weight', sortOrder: 'ASC'}],
+			0,
+			10000
+		);
+		this.baseService.find(queryParams, 'attribute-values').subscribe(res => {
+			this.konularList = res.body.filter(hld => hld.attribute.id === 'Konular' && hld.ilgilibirim === birimid);
+			this.cdr.markForCheck();
+		});
+	}
 	filterOptions(field: any, value: any) {
 		this.filteredOptionss[field.name] = [];
 		if (this.timer) {
@@ -530,6 +543,10 @@ export class EditEntityDialogComponent implements OnInit {
 				this.filteredOptionss[field.name] = res.body;
 				console.log(this.filteredOptionss);
 			});*/
+		if (field.name === 'birim' && this.model.name === 'Task') {
+			this.getAttributeValues(value);
+			//this.baseService.getAttr('Konular').values = this.konularList;
+		}
 		if (field.name !== 'iban' && field.name !== 'customer' && !(value.length > 0)) { return; }
 		this.timer = setTimeout(function () {
 			const filters = new Set();

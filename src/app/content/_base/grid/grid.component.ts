@@ -334,13 +334,13 @@ export class GridComponent implements AfterViewInit {
 					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir']
 				});
 			}
-			if (this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas') {
+			/*if (this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas') {
 				filters.add({
 					name: 'owner.birim.id',
 					operator: FilterOperation.IN,
 					value: ['Birimler_Loher', 'Birimler_Avelice']
 				});
-			}
+			}*/
 			if (this.baseService.getUser().unvan.id === 'Unvanlar_Gen_Mud') {
 				filters.add({
 					name: 'secondAssigner.id',
@@ -1133,7 +1133,7 @@ export class GridComponent implements AfterViewInit {
 					}
 				);*/
 		}
-		this.loadList();
+		//this.loadList();
 	}
 	cancel(entity, e?, presetValues = []) {
 		if (e) {
@@ -1200,7 +1200,7 @@ export class GridComponent implements AfterViewInit {
 				this.change.emit(this.result);
 			});
 		}
-		this.loadList();
+		//this.loadList();
 	}
 
 	showFuelLimit(entity, e?, presetValues = []) {

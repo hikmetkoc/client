@@ -137,10 +137,18 @@
 							</mat-error>
 						</mat-form-field>
 					</div>
-					<div *ngIf="['select'].indexOf(field.fieldType) > -1 && !((field.readOnly || !field.active || ( field.name === 'exchange' && this.gizlilik === false) ) || (field.name === 'haftalikGun' && (this.baseService.getIzinCheck() === false && !(this.baseService.getRoleId() === 'ROLE_MAVI' || this.baseService.getRoleId() === 'ROLE_BEYAZ_MAVI')) || (this.baseService.getIzinCheck() === true && (this.baseService.getRoleId() === 'ROLE_MAVI' || this.baseService.getRoleId() === 'ROLE_BEYAZ_MAVI'))))" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
+					<div *ngIf="['select'].indexOf(field.fieldType) > -1 && field.name !== 'taskType' && !((field.readOnly || !field.active || ( field.name === 'exchange' && this.gizlilik === false) ) || (field.name === 'haftalikGun' && (this.baseService.getIzinCheck() === false && !(this.baseService.getRoleId() === 'ROLE_MAVI' || this.baseService.getRoleId() === 'ROLE_BEYAZ_MAVI')) || (this.baseService.getIzinCheck() === true && (this.baseService.getRoleId() === 'ROLE_MAVI' || this.baseService.getRoleId() === 'ROLE_BEYAZ_MAVI'))))" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
 						<mat-form-field class="mat-form-field-fluid">
 							<mat-select [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}" (ngModelChange)="filterOptions(field, $event);" [multiple]="field.multiple">
 								<mat-option *ngFor="let option of baseService.getAttr(field.attributeName)?.values" [value]="option.id">{{option.label}}</mat-option>
+							</mat-select>
+							<mat-error *ngIf="field.required">{{field.title}} <strong>zorunludur</strong></mat-error>
+						</mat-form-field>
+					</div>
+					<div *ngIf="['select'].indexOf(field.fieldType) > -1 && field.name === 'taskType' && !((field.readOnly || !field.active || ( field.name === 'exchange' && this.gizlilik === false) ) || (field.name === 'haftalikGun' && (this.baseService.getIzinCheck() === false && !(this.baseService.getRoleId() === 'ROLE_MAVI' || this.baseService.getRoleId() === 'ROLE_BEYAZ_MAVI')) || (this.baseService.getIzinCheck() === true && (this.baseService.getRoleId() === 'ROLE_MAVI' || this.baseService.getRoleId() === 'ROLE_BEYAZ_MAVI'))))" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
+						<mat-form-field class="mat-form-field-fluid">
+							<mat-select [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}" (ngModelChange)="filterOptions(field, $event);" [multiple]="field.multiple">
+								<mat-option *ngFor="let option of konularList" [value]="option.id">{{option.label}}</mat-option>
 							</mat-select>
 							<mat-error *ngIf="field.required">{{field.title}} <strong>zorunludur</strong></mat-error>
 						</mat-form-field>
