@@ -75,17 +75,18 @@ export class ChangeGroupComponent implements OnInit {
 	onYesClick() {
 		const selectedGroup = this.selectedGroupId;
 		this.current.groups.forEach((group: any) => {
-			group.id = selectedGroup;
+			console.log(group);
+			//group.id =  selectedGroup;
 		});
 
 		/*const selectedMember = this.selectedMemberId;
 		this.current.members.forEach((member: any) => {
 			member.id = selectedMember;
 		});*/
-		this.baseService.update(this.current, 'users').subscribe(() => {
+		/*this.baseService.update(this.current, 'users').subscribe(() => {
 			Utils.showActionNotification('Grup güncellendi', 'success', 3000, true, false, 3000, this.snackBar);
 			this.dialogRef.close();
-		});
+		});*/
 	}
 
 	ngOnInit() {

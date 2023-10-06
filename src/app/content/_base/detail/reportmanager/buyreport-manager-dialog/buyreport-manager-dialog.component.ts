@@ -94,7 +94,7 @@ export class BuyReportManagerDialogComponent implements OnInit {
 			Utils.makeFilter(filters),
 			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
 			0,
-			100
+			1000
 		);
 		this.baseService.find(queryParams, 'stores').subscribe(res => {
 			this.stores = [];
@@ -176,7 +176,7 @@ export class BuyReportManagerDialogComponent implements OnInit {
 		this.toplamtutar = 0;
 		this.onayurun = 0;
 		this.onaytutar = 0;
-		this.baseService.find(queryParams, 'contproducts').subscribe(res => {
+		/*this.baseService.find(queryParams, 'contproducts').subscribe(res => {
 			this.products = [];
 			for (const hld of res.body) {
 				console.log(this.buys[0].id + ' --- ' + hld.buy.id);
@@ -204,12 +204,6 @@ export class BuyReportManagerDialogComponent implements OnInit {
 			}
 			console.log(this.onayurun);
 			this.cdr.markForCheck();
-		});
-
-		const options = { timeZone: 'Europe/Istanbul', hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-		/*this.sd = this.usersHoliday[0].baslangic;
-		this.ed = this.usersHoliday[0].bitis;
-		this.dd = this.usersHoliday[0].donus;
-		this.bd = this.usersHoliday[0].isebaslangic;*/
+		});*/
 	}
 }

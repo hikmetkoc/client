@@ -23,6 +23,11 @@ import {ReportDialogComponent} from "../../_base/dialogs/report-dialog/report-di
 import {catchError, tap} from "rxjs/operators";
 import {HttpClient} from "@angular/common/http";
 import {HttpUtilsService} from "../../_base/http-utils.service";
+import {
+	HolidayDetailDialogComponent
+} from "../../_base/detail/reportmanager/holiday-detail-dialog/holiday-detail-dialog.component";
+import {ResignComponent} from "../../_base/dialogs/resign-dialog/resign.component";
+import {ShowResignComponent} from "../../_base/detail/show-resign-dialog/show-resign.component";
 
 @Component({
 	selector: 'kt-user',
@@ -135,7 +140,11 @@ export class UserComponent extends BaseComponent implements OnInit, AfterViewIni
 				icon: 'cloud_download',
 				click: this.getReport.bind(this)
 			});
-		} if (this.baseService.getUser().birim.id === 'Birimler_IT') {
+		} if (this.baseService.getUser().unvan.id === 'Unvanlar_Ist_Amr' || this.baseService.getUser().unvan.id === 'Unvanlar_Ist_On'
+			|| this.baseService.getUser().unvan.id === 'Unvanlar_Isl_Mud' || this.baseService.getUser().id === 2000 || this.baseService.getUser().id === 2
+			|| this.baseService.getUser().unvan.id === 'Unvanlar_Ins_Muh' || this.baseService.getUser().unvan.id === 'Unvanlar_Fin_Den'
+			|| this.baseService.getUser().unvan.id === 'Unvanlar_Yon_Ast' || this.baseService.getUser().unvan.id === 'Unvanlar_Sts_Mud'
+			|| this.baseService.getUser().unvan.id === 'Unvanlar_IK_Uzm' || this.baseService.getUser().unvan.id === 'Unvanlar_On_Muh') {
 			this.buttons.push({
 					display: true,
 					title: 'Yeni Personel',
@@ -144,7 +153,19 @@ export class UserComponent extends BaseComponent implements OnInit, AfterViewIni
 				});
 		}
 	}
+	resign() {
+		const dialogRef = this.dialog.open(ResignComponent, {
+			width: '1200px',
+			data: {current: this.current, model: this.model}
+		});
+	}
 
+	showResign() {
+		const dialogRef = this.dialog.open(ShowResignComponent, {
+			width: '1200px',
+			data: {current: this.current, model: this.model}
+		});
+	}
 	rowClicked(row, reload?) {
 		if (reload) {
 			this.reloadCurrent(row.id);
@@ -172,6 +193,14 @@ export class UserComponent extends BaseComponent implements OnInit, AfterViewIni
 		this.baseService.find(queryParams, 'roles').subscribe((res) => {
 			this.rolesList = res.body;
 			this.getUserRoles();
+		});
+	}
+	showHolidayDetail() {
+		const dialogRef = this.dialog.open(HolidayDetailDialogComponent, {
+			width: '1200px',
+			data: { current: this.current, model: this.model }
+		});
+		dialogRef.afterClosed().subscribe(() => {
 		});
 	}
 
@@ -329,7 +358,7 @@ export class UserComponent extends BaseComponent implements OnInit, AfterViewIni
 				Utils.makeFilter(filters),
 				[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
 				0,
-				100
+				10000
 			);
 			this.baseService.find(queryParams, 'holidays').subscribe(res => {
 				this.productUser = [];

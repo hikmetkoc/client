@@ -55,20 +55,6 @@ export class DetailComponent implements AfterViewInit, OnInit {
 
 	}
 
-	resign() {
-		const dialogRef = this.dialog.open(ResignComponent, {
-			width: '1200px',
-			data: {current: this.current, model: this.model}
-		});
-	}
-
-	showResign() {
-		const dialogRef = this.dialog.open(ShowResignComponent, {
-			width: '1200px',
-			data: {current: this.current, model: this.model}
-		});
-	}
-
 	makeCols() {
 		let i = 0;
 		for (const field of this.model.fields) {
@@ -82,15 +68,6 @@ export class DetailComponent implements AfterViewInit, OnInit {
 	roundUp(num: number): number {
 		return Math.ceil(num);
 	}
-	showHolidayDetail() {
-		const dialogRef = this.dialog.open(HolidayDetailDialogComponent, {
-			width: '1200px',
-			data: { current: this.current, model: this.model }
-		});
-		dialogRef.afterClosed().subscribe(() => {
-		});
-	}
-
 	bubbleOpen(object, apiName) {
 		this.bubbleObject = object;
 		this.bubbleModel = Utils.getModel(apiName);

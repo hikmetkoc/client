@@ -213,26 +213,17 @@ export class TaskComponent extends BaseComponent implements OnInit, AfterViewIni
 		});
 	}
 	getBTReport() {
-		const dialogRef = this.dialog.open(ReportDialogComponent, { data: { filter: 'date', title: 'İş Planı Raporu' } });
-		dialogRef.afterClosed().subscribe(res => {
-			if (res) {
-				if (this.baseService.loadingSubject.value) { return; }
-				this.baseService.loadingSubject.next(true);
-				res.startDate = Utils.dateFormatForApi(res.startDate);
-				res.endDate = Utils.dateFormatForApi(res.endDate);
-				const httpHeaders = this.httpUtils.getHTTPHeaders();
-				this.http.post('api/' + this.model.apiName + '/reportBT?startDate=' + res.startDate + '&endDate=' + res.endDate, undefined, { headers: httpHeaders, responseType: 'blob' })
-					.pipe(
-						tap(res2 => {
-							Utils.downloadFile(res2, 'Excel', 'İş Planı Raporu');
-							this.baseService.loadingSubject.next(false);
-						}),
-						catchError(err => {
-							this.baseService.loadingSubject.next(false);
-							return err;
-						})
-					).subscribe();
-			}
-		});
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		this.http.post('api/' + this.model.apiName + '/reportBT', undefined, { headers: httpHeaders, responseType: 'blob' })
+			.pipe(
+				tap(res2 => {
+					Utils.downloadFile(res2, 'Excel', 'İş Planı Raporu');
+					this.baseService.loadingSubject.next(false);
+				}),
+				catchError(err => {
+					this.baseService.loadingSubject.next(false);
+					return err;
+				})
+			).subscribe();
 	}
 }

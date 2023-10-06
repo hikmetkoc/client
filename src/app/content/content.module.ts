@@ -138,6 +138,7 @@ import { ShowFuelLimitRiskDialogComponent} from './_base/dialogs/show-fuel-limit
 import { ShowResignComponent} from './_base/detail/show-resign-dialog/show-resign.component';
 import { ShowPersonelContractComponent} from './_base/detail/show-personel-contract-dialog/show-personel-contract.component';
 import { NewPersonComponent} from './_base/dialogs/new-person-dialog/new-person.component';
+import { AddIbanComponent} from './_base/dialogs/add-iban-dialog/add-iban.component';
 import { AreYouOkeyComponent} from './_base/dialogs/are-you-okey-dialog/are-you-okey.component';
 import { ShowInvoiceComponent} from './_base/dialogs/show-invoice-dialog/show-invoice.component';
 import { PaymentOrderInfoDialogComponent} from './_base/dialogs/payment-order-info-dialog/payment-order-info-dialog.component';
@@ -415,6 +416,7 @@ const routes: Routes = [
 		SpendOkeyComponent,
 		ResignComponent,
 		NewPersonComponent,
+		AddIbanComponent,
 		AreYouOkeyComponent,
 		PaymentOkeyComponent,
 		LoadInvoiceComponent,
@@ -458,6 +460,7 @@ const routes: Routes = [
 		SpendOkeyComponent,
 		ResignComponent,
 		NewPersonComponent,
+		AddIbanComponent,
 		AreYouOkeyComponent,
 		PaymentOkeyComponent,
 		LoadInvoiceComponent,
@@ -474,7 +477,9 @@ const routes: Routes = [
 	],
 	exports: [
 		TopBarSearchComponent,
-		TinymceComponent
+		TinymceComponent,
+		GridComponent,
+		InvoiceListComponent
 	],
 	imports: [
 		CommonModule,

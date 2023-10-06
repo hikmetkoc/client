@@ -92,6 +92,7 @@
 						<tr>
 							<th>Ödeme Yapan Şirket</th>
 							<th>Meteor Petrol</th>
+							<th>Terminal Şube</th>
 							<th>Meteor İnşaat</th>
 							<th>Cemcan Petrol</th>
 							<th>Ncc Petrol</th>
@@ -109,6 +110,7 @@
 						<tr>
 							<td>Ödeme Yapılacak TL Tutarı</td>
 							<td>{{formatCurrency(this.mpetroltlodeme)}}</td>
+							<td>{{formatCurrency(this.terminaltlodeme)}}</td>
 							<td>{{formatCurrency(this.minsaattlodeme)}}</td>
 							<td>{{formatCurrency(this.cpetroltlodeme)}}</td>
 							<td>{{formatCurrency(this.npetroltlodeme)}}</td>
@@ -124,6 +126,7 @@
 						<tr>
 							<td>Ödeme Yapılacak Dolar Tutarı</td>
 							<td>{{formatCurrency(this.mpetroldlodeme)}}</td>
+							<td>{{formatCurrency(this.terminaldlodeme)}}</td>
 							<td>{{formatCurrency(this.minsaatdlodeme)}}</td>
 							<td>{{formatCurrency(this.cpetroldlodeme)}}</td>
 							<td>{{formatCurrency(this.npetroldlodeme)}}</td>
@@ -224,7 +227,7 @@
 
 <ng-template #mGrid>
 	<div *ngIf="filterColumns.length > 0" class="kt-form" [hidden]="mode === 'Compact'">
-		<div style="margin: -10px 0 10px 0" class="kt-form__filtration row">
+		<div style="margin: -10px 0 10px 0;" class="kt-form__filtration row" [hidden]="!isFilterOpen" [ngClass]="isFilterOpen ? 'filter-open' : 'filter-closed'">
 			<ng-container *ngFor="let filterColumn of filterColumns">
 				<!-- <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2" *ngIf="this.model.name === 'Spend' && filterColumn.name === 'paymentorder'">
 					<mat-form-field class="mat-form-field-fluid">
@@ -246,7 +249,7 @@
 				<ng-container [ngSwitch]="filterColumn.fieldType">
 					<ng-container *ngSwitchCase="'time'">
 						<div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
-							<mat-form-field class="mat-form-field-fluid">
+							<mat-form-field class="mat-form-field-fluid" style="font-weight: bold; font-size: medium; color: #1b1e21">
 								<input matInput [matDatepicker]="picker" placeholder="{{filterColumn.title}} >=" [(ngModel)]="filterColumn.value" (ngModelChange)="loadList()" (focus)="picker.open()">
 								<mat-datepicker-toggle matSuffix [for]="picker" tabIndex="-1">
 								</mat-datepicker-toggle>
@@ -255,7 +258,7 @@
 							</mat-form-field>
 						</div>
 						<div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
-							<mat-form-field class="mat-form-field-fluid">
+							<mat-form-field class="mat-form-field-fluid" style="font-weight: bold; font-size: medium; color: #1b1e21">
 								<input matInput [matDatepicker]="picker2" placeholder="{{filterColumn.title}} <" [(ngModel)]="filterColumn.value2" (ngModelChange)="loadList()" (focus)="picker2.open()">
 								<mat-datepicker-toggle matSuffix [for]="picker2" tabIndex="-1">
 								</mat-datepicker-toggle>
@@ -265,7 +268,7 @@
 						</div>
 					</ng-container>
 					<div *ngSwitchCase="'select'" class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
-						<mat-form-field class="mat-form-field-fluid">
+						<mat-form-field class="mat-form-field-fluid" style="font-weight: bold; font-size: medium; color: #1b1e21">
 							<mat-select placeholder="{{filterColumn.title}}" [(ngModel)]="filterColumn.value" (ngModelChange)="loadList()">
 								<mat-option *ngFor="let option of baseService.getAttr(filterColumn.attributeName)?.values" [value]="option.id">{{option.label}}</mat-option>
 							</mat-select>
@@ -275,7 +278,7 @@
 						</mat-form-field>
 					</div>
 					<div *ngSwitchCase="'object'" class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
-						<mat-form-field class="mat-form-field-fluid">
+						<mat-form-field class="mat-form-field-fluid" style="font-weight: bold; font-size: medium; color: #1b1e21">
 							<input type="text" autocomplete="disabled" #objectSelectInput matInput placeholder="{{filterColumn.title}}" [(ngModel)]="filterColumn.value"  [matAutocomplete]="auto" (focus)="filterOptions(filterColumn, $event)" (ngModelChange)="filterOptions(filterColumn, $event);"/>
 							<button mat-button *ngIf="filterColumn.value && filterColumn.value.id; else searchIcon" matSuffix mat-icon-button aria-label="Clear" (click)="filterColumn.value = undefined; loadList();">
 								<mat-icon>close</mat-icon>
@@ -292,12 +295,42 @@
 						</mat-form-field>
 					</div>
 					<div *ngSwitchDefault class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
-						<mat-form-field class="mat-form-field-fluid">
+						<mat-form-field class="mat-form-field-fluid" style="font-weight: bold; font-size: medium; color: #1b1e21">
 							<input type="text" matInput placeholder="{{filterColumn.title}}" [(ngModel)]="filterColumn.value" (ngModelChange)="loadList()" />
 						</mat-form-field>
 					</div>
 				</ng-container>
 			</ng-container>
+			<div *ngIf="this.model.name === 'Spend'" class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+				<mat-form-field class="mat-form-field-fluid" style="font-weight: bold; font-size: medium; color: #1b1e21">
+					<mat-select placeholder="Ödeme Yapan Şirket" [(ngModel)]="odemeYapanSirket" (ngModelChange)="loadList()">
+						<mat-option *ngFor="let option of baseService.getAttr('Fatura_Sirketleri')?.values" [value]="option.id">{{option.label}}</mat-option>
+					</mat-select>
+					<button mat-button *ngIf="odemeYapanSirket !== undefined" matSuffix mat-icon-button aria-label="Clear" (click)="odemeYapanSirket = undefined; loadList()">
+						<mat-icon>close</mat-icon>
+					</button>
+				</mat-form-field>
+				<mat-form-field class="mat-form-field-fluid" style="font-weight: bold; font-size: medium; color: #1b1e21">
+					<mat-select placeholder="Talimat Onay Durumu" [(ngModel)]="talimatOnayDurumu" (ngModelChange)="loadList()">
+						<mat-option *ngFor="let option of baseService.getAttr('Payment_Status')?.values" [value]="option.id">{{option.label}}</mat-option>
+					</mat-select>
+					<button mat-button *ngIf="talimatOnayDurumu !== undefined" matSuffix mat-icon-button aria-label="Clear" (click)="talimatOnayDurumu = undefined; loadList()">
+						<mat-icon>close</mat-icon>
+					</button>
+				</mat-form-field>
+			</div>
+			<div *ngIf="this.model.name === 'PaymentOrder'" class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+				<div class="button-container" style="display: flex; justify-content: center; gap: 10px;">
+					<button type="button" mat-raised-button color="{{isButtonClicked ? 'warn' : 'primary'}}"(click)="onayListClick()" matTooltip="{{ isButtonClicked ? 'Hepsini Listele' : 'Onayımdakileri Listele' }}">
+						{{ isButtonClicked ? 'Hepsini Listele' : 'Onayımdakileri Listele' }}
+					</button>
+				</div>
+			</div>
+		</div>
+		<div>
+			<button type="button" class="btn btn-dark" style="width: 15%" (click)="toggleFilter()">
+				{{isFilterOpen === false ? 'FİLTRELERİ GÖSTER' : 'FİLTRELERİ GİZLE'}}
+			</button>
 		</div>
 	</div>
 	<div *ngIf="layout.filterItems.length > 0" class="kt-form" [hidden]="mode === 'Compact'">
@@ -418,8 +451,8 @@
 			</ng-container>
 			<ng-container *ngFor="let field of model?.fields">
 				<ng-container *ngIf="['integer','text','url','textarea'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
-					<mat-cell *matCellDef="let row">{{row[field.name]}}</mat-cell>
+					<mat-header-cell *matHeaderCellDef mat-sort-header [style.min-width.px]="field.name === 'invoiceNum' ? 150 : null">{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row" [style.min-width.px]="field.name === 'invoiceNum' ? 150 : null">{{row[field.name]}}</mat-cell>
 				</ng-container>
 				<ng-container *ngIf="['number'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
 					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
@@ -438,8 +471,8 @@
 					<mat-cell *matCellDef="let row">{{row[field.name] ? formatCurrency(row[field.name]) + ' &#8378;': ''}}</mat-cell>
 				</ng-container>
 				<ng-container *ngIf="['currency'].indexOf(field.fieldType) > -1 && field.display && model.apiName !== 'stores'" matColumnDef="{{field.name}}">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
-					<mat-cell *matCellDef="let row" style="font-weight: bold; font-size: 15px">{{row[field.name] ? formatCurrency(row[field.name]) + '': ''}}</mat-cell>
+					<mat-header-cell *matHeaderCellDef mat-sort-header [style.min-width.px]="field.name === 'amount' ? 150 : null">{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row" [style.min-width.px]="field.name === 'amount' ? 150 : null" style="font-weight: bold; font-size: 15px; margin-left: 20px">{{row[field.name] ? formatCurrency(row[field.name]) + '': ''}}</mat-cell>
 				</ng-container>
 				<ng-container *ngIf="['percentage'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
 					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
@@ -456,8 +489,8 @@
 					<mat-cell *matCellDef="let row">{{row[field.name] ? baseService.getAttrVal(row[field.name].id)?.label : ''}}</mat-cell>
 				</ng-container>
 				<ng-container *ngIf="['object'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
-					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
-					<mat-cell *matCellDef="let row">{{row[field.name] ? row[field.name][model.displayField.toString()] : ''}}
+					<mat-header-cell *matHeaderCellDef mat-sort-header [style.min-width.px]="field.name === 'customer' ? 150 : null">{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row" [style.min-width.px]="field.name === 'customer' ? 150 : null">{{row[field.name] ? row[field.name][model.displayField.toString()] : ''}}
 					</mat-cell>
 				</ng-container>
 				<ng-container *ngIf="['time'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
@@ -485,7 +518,7 @@
 						</button>
 					</ng-container>
 					<div *ngIf="model.apiName == 'holidays'">
-						<button *ngIf="row.approvalStatus.label === 'Onay Bekliyor' && (row.owner.id === this.baseService.getUserId() || row.user.id === this.baseService.getUserId() || row.assigner.id === this.baseService.getUserId())" mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
+						<button *ngIf="(row.approvalStatus.label === 'Onay Bekliyor' && (row.owner.id === this.baseService.getUserId() || row.user.id === this.baseService.getUserId() || row.assigner.id === this.baseService.getUserId())) || (this.baseService.getRoleId() === 'ROLE_IK' && row.approvalStatus.label === 'Onaylandı')" mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
 							<mat-icon>create</mat-icon>
 						</button>
 						<button *ngIf="row.approvalStatus.label === 'Onaylandı' && (row.owner.id === this.baseService.getUserId() || row.user.id === this.baseService.getUserId() || row.assigner.id === this.baseService.getUserId())" mat-icon-button color="success" matTooltip="İzin Formu" type="button" (click)="formHoliday(row, $event)">
@@ -528,7 +561,7 @@
 						<button *ngIf="row.secondAssigner.id === this.baseService.getUserId() && row.quoteStatus.label === 'Onay Bekliyor'" mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
 							<mat-icon>cancel</mat-icon>
 						</button>
-						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.preparation.id === 'Tek_Dur_Haz'" mat-icon-button color="primary" matTooltip="Proforma Fatura" type="button" (click)="showFiles(row, $event)">
+						<button *ngIf="(row.owner.id === this.baseService.getUserId() && row.preparation.id === 'Tek_Dur_Haz') || row.secondAssigner.id === this.baseService.getUserId()" mat-icon-button color="primary" matTooltip="Proforma Fatura" type="button" (click)="showFiles(row, $event)">
 							<mat-icon>folder</mat-icon>
 						</button>
 					</div>
@@ -617,17 +650,21 @@
 							<mat-icon>check_circle</mat-icon>
 						</button>
 					</div>
-					<div *ngIf="model.apiName == 'users' && baseService.getUserId() === 2"> <!-- PERSONELLER ADMIN BUTONLARI -->
-						<button mat-icon-button color="success" matTooltip="Sözleşme Oluştur" type="button" (click)="createPersonelContract(row, $event)">
+					<div *ngIf="model.apiName == 'users'"> <!-- PERSONELLER ADMIN BUTONLARI -->
+						<button *ngIf="this.baseService.getUser().unvan.id === 'Unvanlar_Ist_Amr' || this.baseService.getUser().unvan.id === 'Unvanlar_Ist_On'
+			|| this.baseService.getUser().unvan.id === 'Unvanlar_Isl_Mud' || this.baseService.getUser().id === 2000 || this.baseService.getUser().id === 2
+			|| this.baseService.getUser().unvan.id === 'Unvanlar_Ins_Muh' || this.baseService.getUser().unvan.id === 'Unvanlar_Fin_Den'
+			|| this.baseService.getUser().unvan.id === 'Unvanlar_Yon_Ast' || this.baseService.getUser().unvan.id === 'Unvanlar_Sts_Mud'
+			|| this.baseService.getUser().unvan.id === 'Unvanlar_IK_Uzm' || this.baseService.getUser().unvan.id === 'Unvanlar_On_Muh'" mat-icon-button color="success" matTooltip="Sözleşme Oluştur" type="button" (click)="createPersonelContract(row, $event)">
 							<mat-icon>description</mat-icon>
 						</button>
-						<button mat-icon-button color="success" matTooltip="Rol Düzenle" type="button" (click)="changeUserRole(row, $event)">
+						<button *ngIf="baseService.getUserId() === 2" mat-icon-button color="success" matTooltip="Rol Düzenle" type="button" (click)="changeUserRole(row, $event)">
 							<mat-icon>settings</mat-icon>
 						</button>
-						<button mat-icon-button color="success" matTooltip="Grubunu Düzenle" type="button" (click)="changeUserGroup(row, $event)">
+						<button *ngIf="baseService.getUserId() === 2" mat-icon-button color="success" matTooltip="Grubunu Düzenle" type="button" (click)="changeUserGroup(row, $event)">
 							<mat-icon>group</mat-icon>
 						</button>
-						<button mat-icon-button color="warn" matTooltip="Pasife Al" type="button" (click)="changeUserActivate(row, $event)">
+						<button *ngIf="baseService.getUserId() === 2" mat-icon-button color="warn" matTooltip="Pasife Al" type="button" (click)="changeUserActivate(row, $event)">
 							<mat-icon>block</mat-icon>
 						</button>
 					</div>

@@ -172,7 +172,7 @@ export class FilterDialogComponent implements OnInit {
 				undefined,
 				[{ sortBy: field.displayField, sortOrder: 'ASC' }],
 				0,
-				100
+				10000
 			);
 
 			this.baseService.find(queryParams, field.apiName).subscribe(res => {

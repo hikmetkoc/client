@@ -20,7 +20,7 @@ import {FileManagerDialogComponent} from "../../detail/filemanager/file-manager-
 import {FileManagerToolComponent} from "../../detail/filemanager/filemanagertool/filemanagertool.component";
 import {FileManagerComponent} from "../../detail/filemanager/filemanager.component";
 import {MatDialog} from "@angular/material/dialog";
-import {catchError, concatMap, takeWhile, tap} from "rxjs/operators";
+import {catchError, concatMap, map, takeWhile, tap} from "rxjs/operators";
 import { HttpClient } from '@angular/common/http';
 import { HttpUtilsService } from '../../http-utils.service';
 import {Quote} from "@angular/compiler";
@@ -31,6 +31,7 @@ import {StoreDialogComponent} from "../store-dialog/store-dialog.component";
 import {startOfHour} from "@fullcalendar/core/datelib/marker";
 import {ShowResignComponent} from "../../detail/show-resign-dialog/show-resign.component";
 import {ShowInvoiceComponent} from "../show-invoice-dialog/show-invoice.component";
+import {AddIbanComponent} from "../add-iban-dialog/add-iban.component";
 
 @Component({
 	selector: 'kt-edit-entity-dialog',
@@ -128,6 +129,9 @@ export class EditEntityDialogComponent implements OnInit {
 			} else {
 				formFields[field.name] = [{ value: this.valueFormat(field), disabled: field.readOnly }, this.makeValidators(field)];
 			}
+			if (field.name === 'taskType') {
+				this.getAttributeValues('Birimler_IT');
+			}
 		}
 		this.entityForm = this.formBuilder.group(formFields, { validator: this.customValidationFunction.bind(this) });
 	}
@@ -148,18 +152,45 @@ export class EditEntityDialogComponent implements OnInit {
 	}
 
 	addIban() {
-		const values = {
-			invoiceDate : this.entityForm.controls.invoiceDate.value,
-			invoiceNum : this.entityForm.controls.invoiceNum.value,
-			customer : this.entityForm.controls.customer.value.name,
-			sirket : this.baseService.getAttrVal(this.entityForm.controls.sirket.value).label,
-			moneyType : this.baseService.getAttrVal(this.entityForm.controls.moneyType.value).label,
-			amount : this.entityForm.controls.amount.value
-		};
-		const dialogRef = this.dialog.open(EditEntityDialogComponent, {
-			width: '800px',
-			data: {current: null, model: null}
-		});
+		const customer = this.entityForm.controls.customer.value ? this.entityForm.controls.customer.value.id : '';
+		if (customer === '') {
+			Utils.showActionNotification('Lütfen bir tedarikçi seçiniz!', 'warning', 3000, true, false, 3000, this.snackBar);
+		} else {
+			const dialogRef = this.dialog.open(AddIbanComponent, {
+				width: '800px',
+				data: {current: customer, model: null}
+			});
+			dialogRef.afterClosed().subscribe((result) => {
+				if (result !== '') {
+					this.getIban(result).subscribe((ibanObject) => {
+						console.log(ibanObject);
+						this.entityForm.controls['iban'].setValue(ibanObject);
+					});
+				}
+			});
+		}
+	}
+	getIban(ibanName: string) {
+		const filters = new Set();
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{ sortBy: 'name', sortOrder: 'ASC' }],
+			0,
+			3000
+		);
+
+		// Observable döndür
+		return this.baseService.find(queryParams, 'ibans').pipe(
+			map((res) => res.body.filter((hld) => hld.name === ibanName)),
+			tap(() => this.cdr.markForCheck()),
+			map((filteredIbans) => {
+				// filteredIbans dizisinden gelen sonucu alın
+				if (filteredIbans.length > 0) {
+					return filteredIbans[0]; // İlk eşleşen iban'ı döndür
+				}
+				return null; // Eşleşen iban bulunamadıysa null döndür
+			})
+		);
 	}
 
 	customValidationFunction() {
@@ -429,7 +460,7 @@ export class EditEntityDialogComponent implements OnInit {
 				Utils.makeFilter(filters),
 				[{sortBy: 'createdDate', sortOrder: 'ASC'}],
 				0,
-				100
+				10000
 			);
 			this.baseService.find(queryParams, 'quotes').subscribe(res => {
 				this.quotes1 = [];
@@ -545,7 +576,6 @@ export class EditEntityDialogComponent implements OnInit {
 			});*/
 		if (field.name === 'birim' && this.model.name === 'Task') {
 			this.getAttributeValues(value);
-			//this.baseService.getAttr('Konular').values = this.konularList;
 		}
 		if (field.name !== 'iban' && field.name !== 'customer' && !(value.length > 0)) { return; }
 		this.timer = setTimeout(function () {
@@ -568,7 +598,7 @@ export class EditEntityDialogComponent implements OnInit {
 				Utils.makeFilter(filters),
 				[{ sortBy: Utils.getModel(field.objectApiName).displayField, sortOrder: 'ASC' }],
 				0,
-				100
+				10000
 			);
 			this.baseService.find(queryParams, field.objectApiName).subscribe(res => {
 				this.filteredOptionss[field.name] = res.body;

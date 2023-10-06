@@ -51,10 +51,10 @@ export class NewPersonComponent implements OnInit {
 	dogIlce = '';
 	mezunKurum = '';
 	mezunBolum = '';
-	iban = '';
-	muaf = '';
-	kangrubu = '';
-	aciklamaAlani = '';
+	iban = null;
+	muaf = null;
+	kangrubu = null;
+	aciklamaAlani = null;
 	emekli: any;
 	engelli: any;
 	escalisma: any;
@@ -97,7 +97,7 @@ export class NewPersonComponent implements OnInit {
 	onYesClick() {
 		if (this.tc.length !== 11) {
 			Utils.showActionNotification('TC 11 hane olmak zorundadır!', 'error', 2000, true, false, 3000, this.snackBar);
-		} else if (this.cep === '' || this.ad === '' || this.soyad === '' || this.selectedSirketId === undefined || this.selectedUnvanId === undefined || this.birthDate === undefined || this.startDate === undefined) {
+		} else if (this.cep === '' || this.ad === '' || this.soyad === '' || this.selectedSirketId === undefined || this.selectedUnvanId === undefined || this.birthDate === undefined || this.startDate === undefined || this.selectedEgitimId === undefined || this.selectedAskerlikId === undefined || this.selectedCinsiyetId === undefined || this.selectedEhliyetId === undefined || this.mezunKurum === ''  || this.mezunBolum === ''  || this.acilAdSoyad === '' || this.acilYakinlik === '' || this.acilNo === '' || this.dogIl === '' || this.dogIlce === '' || this.acikAdres === '') {
 			Utils.showActionNotification('Lütfen tüm alanları doldurun!', 'error', 2000, true, false, 3000, this.snackBar);
 		} else {
 			const dialogRef = this.dialog.open(AreYouOkeyComponent, {
@@ -139,8 +139,12 @@ export class NewPersonComponent implements OnInit {
 					this.http.put(url + `?unvan=${this.selectedUnvanId}&sgkSirket=${this.selectedSirketId}
 					&egitim=${this.selectedEgitimId}&askerlik=${this.selectedAskerlikId}&cinsiyet=${this.selectedCinsiyetId}&ehliyet=${this.selectedEhliyetId}` , user, {headers: httpHeaders, responseType: 'text'}).subscribe(
 						(res: any) => {
-							this.dialogRef.close();
-							Utils.showActionNotification('Kayıt Başarılı!', 'success', 10000, true, false, 3000, this.snackBar);
+								if (res === 'Kayıt Başarılı') {
+									this.dialogRef.close();
+									Utils.showActionNotification(res, 'success', 10000, true, false, 3000, this.snackBar);
+								} else {
+									Utils.showActionNotification(res, 'success', 10000, true, false, 3000, this.snackBar);
+								}
 							},
 						(error) => {
 							// HTTP isteği tamamen başarısız oldu
@@ -207,11 +211,21 @@ export class NewPersonComponent implements OnInit {
 		);
 		this.baseService.find(queryParams, 'attribute-values').subscribe(res => {
 			this.unvanList = res.body.filter(hld => hld.attribute.id === 'Unvanlar');
-			this.sirketList = res.body.filter(hld => hld.attribute.id === 'Sirketler');
 			this.egitimList = res.body.filter(hld => hld.attribute.id === 'Egitim_Durumlari');
 			this.askerlikList = res.body.filter(hld => hld.attribute.id === 'Askerlik_Durumlari');
 			this.cinsiyetList = res.body.filter(hld => hld.attribute.id === 'Cinsiyetler');
 			this.ehliyetList = res.body.filter(hld => hld.attribute.id === 'Ehliyet_Siniflari');
+			this.cdr.markForCheck();
+		});
+		const filters2 = new Set();
+		const queryParams2 = new QueryParamsModel(
+			Utils.makeFilter(filters2),
+			[{sortBy: 'weight', sortOrder: 'ASC'}],
+			0,
+			10000
+		);
+		this.baseService.find(queryParams2, 'attribute-values').subscribe(res => {
+			this.sirketList = res.body.filter(hld => hld.attribute.id === 'Sirketler');
 			this.cdr.markForCheck();
 		});
 	}

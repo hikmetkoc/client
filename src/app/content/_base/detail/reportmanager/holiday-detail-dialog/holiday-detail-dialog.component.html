@@ -1,11 +1,16 @@
 <kt-portlet>
 
-		<div class="modal-header">
-			<h4 class="modal-title">İzin Bilgileri Detayı</h4>
-			<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Yazdır" (click)="showFiles()">
+	<div class="modal-header">
+		<h4 class="modal-title">İzin Bilgileri Detayı</h4>
+		<div class="ml-auto">
+			<button mat-icon-button class="btn btn-label-brand" color="primary" matTooltip="Yazdır" (click)="showFiles()">
 				<mat-icon>print</mat-icon>
 			</button>
+			<button mat-icon-button class="btn btn-danger" color="primary" matTooltip="Kapat" (click)="onNoClick()">
+				<mat-icon>close</mat-icon>
+			</button>
 		</div>
+	</div>
 	<div id="print-section">
 		<div class="modal-body">
 			<table class="table table-striped" style="text-align: center; width: 100%; table-layout: fixed;">

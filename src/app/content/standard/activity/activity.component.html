@@ -46,7 +46,7 @@
 						<mat-icon>create</mat-icon>
 					</button>
 
-					<button *ngIf="baseService.getPermissionRule(model.name,'delete')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="warn" matTooltip="Sil" (click)="delete(current)" [disabled]="loading$ | async">
+					<button *ngIf="baseService.getRoleId() === 'ROLE_ADMIN'" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="warn" matTooltip="Sil" (click)="delete(current)" [disabled]="loading$ | async">
 						<mat-icon>delete</mat-icon>
 					</button>
 

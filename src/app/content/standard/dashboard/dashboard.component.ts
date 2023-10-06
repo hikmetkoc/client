@@ -37,6 +37,13 @@ export class DashboardComponent implements OnInit {
 	activityWidget2Data;
 	activityWidget3Data;
 	activityWidget4Data;
+
+	invoiceList = [];
+	paymentOrder = [];
+	bekleyenList = [];
+	holidayList = [];
+	waitHolidayList = [];
+	birthDayList = [];
 	date = new Date();
 	/*salesData = { totalDiesel: 0, totalGas: 0, total: 0, monthlyDiesel: 0, monthlyGas: 0, monthlyTotal: 0, datasets: [], labels: [], maxData: 1000 };*/
 	pendingQuotes = [];
@@ -65,6 +72,15 @@ export class DashboardComponent implements OnInit {
 
 		this.getRequestWebPush();
 
+		this.getInvoiceList();
+
+		this.getPaymentOrder();
+
+		this.getHolidayList();
+
+		this.getWaitHolidayList();
+
+		this.getBirthDay();
 		//this.getBirth();
 
 		//this.getTargets();
@@ -94,6 +110,261 @@ export class DashboardComponent implements OnInit {
 		}
 	}
 
+	getInvoiceList() {
+		const filters = new Set();
+		filters.add({
+			name: 'owner.id',
+			operator: FilterOperation.EQUALS,
+			value: this.baseService.getUserId()
+		});
+		filters.add({
+			name: 'invoiceStatus.id',
+			operator: FilterOperation.EQUALS,
+			value: 'Fatura_Durumlari_Atandi'
+		});
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
+			0,
+			50000
+		);
+		this.baseService.find(queryParams, 'invoice_lists').subscribe(res => {
+			this.invoiceList = [];
+			for (const ivl of res.body) {
+				this.invoiceList.push({
+					sendDate: ivl.sendDate,
+					customer: ivl.customer.name,
+					amount: ivl.amount,
+					invoiceDate: ivl.invoiceDate,
+					invoiceNum: ivl.invoiceNum,
+					moneyType: ivl.moneyType.label,
+					faturaSirket: ivl.sirket.label
+				});
+			}
+			this.cdr.markForCheck();
+		});
+	}
+	getPaymentOrder() {
+		const filters = new Set();
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
+			0,
+			50000
+		);
+		this.baseService.find(queryParams, 'payment_orders').subscribe(res => {
+			this.bekleyenList = res.body.filter(hld => (hld.assigner.id === this.baseService.getUserId() && hld.status.id === 'Payment_Status_Bek1') ||
+				(hld.secondAssigner.id === this.baseService.getUserId() && hld.status.id === 'Payment_Status_Bek2'))
+				.map(filteredItem => filteredItem.id);
+			if (this.bekleyenList.length === 0) {
+				this.bekleyenList[0] = '5c2428c3-e052-4906-9231-be1186e09b67';
+			}
+			filters.add({
+				name: 'id',
+				operator: FilterOperation.IN,
+				value: this.bekleyenList
+			});
+			const queryParams2 = new QueryParamsModel(
+				Utils.makeFilter(filters),
+				[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
+				0,
+				50000
+			);
+			this.baseService.find(queryParams2, 'payment_orders').subscribe(res => {
+				this.paymentOrder = [];
+				for (const ivl of res.body) {
+					this.paymentOrder.push({
+						status: ivl.status.label,
+						customer: ivl.customer.name,
+						amount: ivl.amount,
+						assigner: ivl.assigner.firstName + ' ' + ivl.assigner.lastName,
+						secondAssigner: ivl.secondAssigner.firstName + ' ' + ivl.secondAssigner.lastName,
+						invoiceNum: ivl.invoiceNum,
+						moneyType: ivl.moneyType.label,
+						faturaSirket: ivl.sirket.label
+					});
+				}
+				this.cdr.markForCheck();
+			});
+		});
+	}
+	getHolidayList() {
+		const filters = new Set();
+		filters.add({
+			name: 'comeDate',
+			operator: FilterOperation.GREATER_OR_EQUAL_THAN,
+			value: new Date()
+		});
+		filters.add({
+			name: 'startDate',
+			operator: FilterOperation.LESS_OR_EQUAL_THAN,
+			value: new Date()
+		});
+		filters.add({
+			name: 'approvalStatus.id',
+			operator: FilterOperation.EQUALS,
+			value: 'Izin_Dur_Aktif'
+		});
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
+			0,
+			50000
+		);
+		this.baseService.find(queryParams, 'holidays').subscribe(res => {
+			this.holidayList = [];
+			for (const ivl of res.body) {
+				this.holidayList.push({
+					owner: ivl.owner.firstName + ' ' + ivl.owner.lastName,
+					start: ivl.startDate,
+					end: ivl.endDate,
+					come: ivl.comeDate,
+					tur: ivl.type.label
+				});
+			}
+			this.cdr.markForCheck();
+		});
+	}
+	getWaitHolidayList() {
+		const filters = new Set();
+		filters.add({
+			name: 'assigner.id',
+			operator: FilterOperation.EQUALS,
+			value: this.baseService.getUserId()
+		});
+		filters.add({
+			name: 'approvalStatus.id',
+			operator: FilterOperation.EQUALS,
+			value: 'Izin_Dur_Pasif'
+		});
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
+			0,
+			50000
+		);
+		this.baseService.find(queryParams, 'holidays').subscribe(res => {
+			this.waitHolidayList = [];
+			for (const ivl of res.body) {
+				this.waitHolidayList.push({
+					owner: ivl.owner.firstName + ' ' + ivl.owner.lastName,
+					assigner: ivl.assigner.firstName + ' ' + ivl.assigner.lastName,
+					start: ivl.startDate,
+					end: ivl.endDate,
+					come: ivl.comeDate,
+					tur: ivl.type.label
+				});
+			}
+			this.cdr.markForCheck();
+		});
+	}
+	getBirthDay() {
+		const filters = new Set();
+		filters.add({
+			name: 'activated',
+			operator: FilterOperation.EQUALS,
+			value: true
+		});
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{ sortBy: 'birthDate', sortOrder: 'DESC' }],
+			0,
+			1000
+		);
+		this.baseService.find(queryParams, 'users').subscribe(res => {
+			this.birthDayList = [];
+			const today = new Date();
+			const todayMonth = today.getMonth() + 1; // Ay 0'dan başlar, bu yüzden 1 ekleyin
+			const todayDay = today.getDate();
+
+			for (const ivl of res.body) {
+				const birthDate = new Date(ivl.birthDate);
+				const birthMonth = birthDate.getMonth() + 1; // Ay 0'dan başlar, bu yüzden 1 ekleyin
+				const birthDay = birthDate.getDate();
+
+				let daysLeft: number;
+
+				if (todayMonth === birthMonth && todayDay === birthDay) {
+					// Bugün doğum günü
+					daysLeft = 0;
+				} else if (
+					todayMonth < birthMonth ||
+					(todayMonth === birthMonth && todayDay < birthDay)
+				) {
+					// Henüz doğum günü gelmemiş
+					const nextBirthday = new Date(
+						today.getFullYear(),
+						birthMonth - 1,
+						birthDay
+					);
+					const timeDiff = nextBirthday.getTime() - today.getTime();
+					daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+				} else {
+					// Doğum günü bu yıl geçti, bir sonraki yılın doğum gününü hesapla
+					const nextBirthday = new Date(
+						today.getFullYear() + 1,
+						birthMonth - 1,
+						birthDay
+					);
+					const timeDiff = nextBirthday.getTime() - today.getTime();
+					daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+				}
+				// Sadece 15 günden az kalan ve yaş 1'den büyük olan kişileri listeye ekleyin
+				if (daysLeft < 15) {
+					this.birthDayList.push({
+						adsoyad: ivl.firstName + ' ' + ivl.lastName,
+						sirket: ivl.sirket.label,
+						birim: ivl.birim.label,
+						unvan: ivl.unvan.label,
+						dogum: ivl.birthDate,
+						kalan: daysLeft
+					});
+				}
+			}
+
+			// birthDayList'i kalan gün sayısına göre sıralayın
+			this.birthDayList.sort((a, b) => a.kalan - b.kalan);
+
+			// Değişiklikleri algıla
+			this.cdr.markForCheck();
+		});
+	}
+	formatDate(date: string): string {
+		if (!date) return '';
+
+		const formattedDate = new Date(date);
+		const day = ('0' + formattedDate.getDate()).slice(-2);
+		const month = ('0' + (formattedDate.getMonth() + 1)).slice(-2);
+		const year = formattedDate.getFullYear();
+
+		return `${day}-${month}-${year}`;
+	}
+	formatBirthDate(date: string): string {
+		if (!date) return '';
+
+		const formattedDate = new Date(date);
+		const day = (formattedDate.getDate());
+		const monthNames = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'];
+		const month = monthNames[formattedDate.getMonth()];
+
+		return `${day} ${month}`;
+	}
+	formatCurrency(amount, decimalCount = 2, decimal = ',', thousands = '.') {
+		try {
+			decimalCount = Math.abs(decimalCount);
+			decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+
+			const negativeSign = amount < 0 ? '-' : '';
+
+			const i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount), 0).toString();
+			const j = (i.length > 3) ? i.length % 3 : 0;
+
+			return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j)
+				.replace(/(\d{3})(?=\d)/g, '$1' + thousands) + (decimalCount ? decimal + Math.abs(amount - parseInt(i, 0)).toFixed(decimalCount).slice(2) : '');
+		} catch (e) {
+			console.error(e);
+		}
+	}
 	getAnnouncements() {
 		const filters = new Set();
 		filters.add({
@@ -164,7 +435,6 @@ export class DashboardComponent implements OnInit {
 			this.cdr.markForCheck();
 		});
 	}
-
 	getCont() {
 		const filters = new Set();
 		const queryParams = new QueryParamsModel(

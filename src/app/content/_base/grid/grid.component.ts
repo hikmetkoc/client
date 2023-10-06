@@ -32,35 +32,35 @@ import { LayoutShareDialogComponent } from '../dialogs/layout-share-dialog/layou
 import { ActivatedRoute } from '@angular/router';
 import { Math } from 'core-js';
 import { StoreDialogComponent } from '../dialogs/store-dialog/store-dialog.component';
-import {FileManagerDialogComponent} from "../detail/filemanager/file-manager-dialog/file-manager-dialog.component";
-import {FileManagerToolComponent} from "../detail/filemanager/filemanagertool/filemanagertool.component";
-import {SendInvoiceComponent} from "../dialogs/send-invoice-dialog/send-invoice.component";
-import {errorObject} from "rxjs/internal-compatibility";
+import {FileManagerDialogComponent} from '../detail/filemanager/file-manager-dialog/file-manager-dialog.component';
+import {FileManagerToolComponent} from '../detail/filemanager/filemanagertool/filemanagertool.component';
+import {SendInvoiceComponent} from '../dialogs/send-invoice-dialog/send-invoice.component';
+import {errorObject} from 'rxjs/internal-compatibility';
 import {
 	PaymentOrderFileDialogComponent
-} from "../dialogs/payment-order-file-dialog/payment-order-file-dialog.component";
+} from '../dialogs/payment-order-file-dialog/payment-order-file-dialog.component';
 import {
 	PaymentOrderInfoDialogComponent
-} from "../dialogs/payment-order-info-dialog/payment-order-info-dialog.component";
-import {User} from "../../../core/auth";
-import {SendSpendComponent} from "../dialogs/send-spend-dialog/send-spend.component";
-import {SpendToTlComponent} from "../dialogs/spend-to-tl-dialog/spend-to-tl.component";
-import {ConnectStoreDialogComponent} from "../dialogs/connect-store-dialog/connect-store-dialog.component";
-import {SpendOkeyComponent} from "../dialogs/spend-okey-dialog/spend-okey.component";
-import {PaymentOkeyComponent} from "../dialogs/payment-okey-dialog/payment-okey.component";
-import {reportInvalidActions} from "@ngrx/effects/src/effect_notification";
-import {ChangeRoleComponent} from "../dialogs/change-role-dialog/change-role.component";
-import {ChangeGroupComponent} from "../dialogs/change-group-dialog/change-group.component";
+} from '../dialogs/payment-order-info-dialog/payment-order-info-dialog.component';
+import {User} from '../../../core/auth';
+import {SendSpendComponent} from '../dialogs/send-spend-dialog/send-spend.component';
+import {SpendToTlComponent} from '../dialogs/spend-to-tl-dialog/spend-to-tl.component';
+import {ConnectStoreDialogComponent} from '../dialogs/connect-store-dialog/connect-store-dialog.component';
+import {SpendOkeyComponent} from '../dialogs/spend-okey-dialog/spend-okey.component';
+import {PaymentOkeyComponent} from '../dialogs/payment-okey-dialog/payment-okey.component';
+import {reportInvalidActions} from '@ngrx/effects/src/effect_notification';
+import {ChangeRoleComponent} from '../dialogs/change-role-dialog/change-role.component';
+import {ChangeGroupComponent} from '../dialogs/change-group-dialog/change-group.component';
 import {
 	ReportManagerDialogComponent
-} from "../detail/reportmanager/report-manager-dialog/report-manager-dialog.component";
-import {ResignComponent} from "../dialogs/resign-dialog/resign.component";
-import {NewPersonComponent} from "../dialogs/new-person-dialog/new-person.component";
-import {ShowPersonelContractComponent} from "../detail/show-personel-contract-dialog/show-personel-contract.component";
-import {SpendInfoDialogComponent} from "../dialogs/spend-info-dialog/spend-info-dialog.component";
+} from '../detail/reportmanager/report-manager-dialog/report-manager-dialog.component';
+import {ResignComponent} from '../dialogs/resign-dialog/resign.component';
+import {NewPersonComponent} from '../dialogs/new-person-dialog/new-person.component';
+import {ShowPersonelContractComponent} from '../detail/show-personel-contract-dialog/show-personel-contract.component';
+import {SpendInfoDialogComponent} from '../dialogs/spend-info-dialog/spend-info-dialog.component';
 import {
 	ShowFuelLimitRiskDialogComponent
-} from "../dialogs/show-fuel-limit-risk-dialog/show-fuel-limit-risk-dialog.component";
+} from '../dialogs/show-fuel-limit-risk-dialog/show-fuel-limit-risk-dialog.component';
 
 @Component({
 	selector: 'kt-grid',
@@ -127,6 +127,8 @@ export class GridComponent implements AfterViewInit {
 	toplamdlodeme: any;
 	mpetroltlodeme: any;
 	mpetroldlodeme: any;
+	terminaltlodeme: any;
+	terminaldlodeme: any;
 	minsaattlodeme: any;
 	minsaatdlodeme: any;
 	cpetroltlodeme: any;
@@ -151,6 +153,11 @@ export class GridComponent implements AfterViewInit {
 	avelicedlodeme: any;
 	izinbul = [];
 	loading: boolean;
+	odemeYapanSirket: any;
+	talimatOnayDurumu: any;
+	isButtonClicked = false;
+	bekleyenList = [];
+	isFilterOpen = false;
 
 	constructor(
 		private cdr: ChangeDetectorRef,
@@ -194,6 +201,17 @@ export class GridComponent implements AfterViewInit {
 		this.tablo = this.model.apiName;
 	}
 
+	toggleFilter() {
+		this.isFilterOpen = !this.isFilterOpen;
+	}
+	onayListClick() {
+		if (this.isButtonClicked) {
+			this.isButtonClicked = false;
+		} else {
+			this.isButtonClicked = true;
+		}
+		this.loadList();
+	}
 	async loadList() {
 		this.selection.clear();
 		const queryParams = new QueryParamsModel();
@@ -301,6 +319,43 @@ export class GridComponent implements AfterViewInit {
 			}
 		}
 		if (this.model.name === 'PaymentOrder') {
+			if (this.isButtonClicked) {
+				const filters3 = new Set();
+				const queryParams3 = new QueryParamsModel(
+					Utils.makeFilter(filters3),
+					[{sortBy: 'createdDate', sortOrder: 'ASC'}],
+					0,
+					10000
+				);
+				this.baseService.find(queryParams3, 'payment_orders').subscribe(res => {
+					this.bekleyenList = res.body.filter(hld => (hld.assigner.id === this.baseService.getUserId() && hld.status.id === 'Payment_Status_Bek1') ||
+						(hld.secondAssigner.id === this.baseService.getUserId() && hld.status.id === 'Payment_Status_Bek2'))
+						.map(filteredItem => filteredItem.id);
+					console.log(this.bekleyenList);
+					if (this.bekleyenList.length === 0) {
+						this.bekleyenList[0] = '5c2428c3-e052-4906-9231-be1186e09b67';
+					}
+					filters.add({
+						name: 'id',
+						operator: FilterOperation.IN,
+						value: this.bekleyenList
+					});
+					queryParams.filter = Utils.makeFilter(filters);
+					queryParams.owner = this.owner;
+					queryParams.assigner = this.assigner;
+					queryParams.other = this.other;
+
+					queryParams.search = this.searchStr;
+					this.dataSource.load(queryParams);
+					this.dataSource.entitySubject.subscribe(res2 => {
+						if (JSON.stringify(this.result) !== JSON.stringify(res2)) {
+							this.result = res2;
+							this.loadComplete.emit(res2);
+						}
+					});
+					this.cdr.markForCheck();
+				});
+			}
 			if (this.baseService.getUser().birim.id === 'Birimler_Muh') {
 				filters.add({
 					name: 'muhasebeGoruntusu',
@@ -310,7 +365,10 @@ export class GridComponent implements AfterViewInit {
 				filters.add({
 					name: 'cost',
 					operator: FilterOperation.IN,
-					value: ['Cost_Place_MeteorMerkez' , 'Cost_Place_Terminal' , 'Cost_Place_Mudanya' , 'Cost_Place_Ncc' , 'Cost_Place_Cemcan' , 'Cost_Place_Mudanya' , 'Cost_Place_Simya' , 'Cost_Place_Vitalyum' , 'Cost_Place_Vita' , 'Cost_Place_Tepe' , 'Cost_Place_Samanli' , 'Cost_Place_Ciftlikkoy' , 'Cost_Place_Sarj' , 'Cost_Place_Charge' , 'Cost_Place_Otobil']
+					value: ['Cost_Place_MeteorMerkez' , 'Cost_Place_Terminal' , 'Cost_Place_Mudanya' ,
+						'Cost_Place_Ncc' , 'Cost_Place_Cemcan' , 'Cost_Place_Mudanya' , 'Cost_Place_Simya' ,
+						'Cost_Place_Vitalyum' , 'Cost_Place_Vita' , 'Cost_Place_Tepe' , 'Cost_Place_Samanli' ,
+						'Cost_Place_Ciftlikkoy' , 'Cost_Place_Sarj' , 'Cost_Place_Charge' , 'Cost_Place_Otobil']
 				});
 			}
 			if (this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas') {
@@ -334,13 +392,6 @@ export class GridComponent implements AfterViewInit {
 					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir']
 				});
 			}
-			/*if (this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas') {
-				filters.add({
-					name: 'owner.birim.id',
-					operator: FilterOperation.IN,
-					value: ['Birimler_Loher', 'Birimler_Avelice']
-				});
-			}*/
 			if (this.baseService.getUser().unvan.id === 'Unvanlar_Gen_Mud') {
 				filters.add({
 					name: 'secondAssigner.id',
@@ -355,6 +406,20 @@ export class GridComponent implements AfterViewInit {
 			}
 		}
 		if (this.model.name === 'Spend') {
+			if (this.odemeYapanSirket !== undefined) {
+				filters.add({
+					name: 'paymentorder.odemeYapanSirket',
+					operator: FilterOperation.EQUALS,
+					value: this.odemeYapanSirket
+				});
+			}
+			if (this.talimatOnayDurumu !== undefined) {
+				filters.add({
+					name: 'paymentorder.status.id',
+					operator: FilterOperation.EQUALS,
+					value: this.talimatOnayDurumu
+				});
+			}
 			if (this.baseService.getUser().birim.id === 'Birimler_Fin') {
 				await this.odemelerBul();
 				filters.add({
@@ -517,38 +582,42 @@ export class GridComponent implements AfterViewInit {
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
 		this.http.post(apiUrl, null, { headers: httpHeaders, responseType: 'text' }).subscribe(
 			response => {
+				console.log(response);
 				const parts = response.split('&');
 				this.mpetroltlodeme = parseFloat(parts[0].split('-')[0].replace(',', '.'));
 				this.mpetroldlodeme = parseFloat(parts[0].split('-')[1].replace(',', '.'));
 
-				this.minsaattlodeme = parseFloat(parts[1].split('-')[0].replace(',', '.'));
-				this.minsaatdlodeme = parseFloat(parts[1].split('-')[1].replace(',', '.'));
+				this.terminaltlodeme = parseFloat(parts[1].split('-')[0].replace(',', '.'));
+				this.terminaldlodeme = parseFloat(parts[1].split('-')[1].replace(',', '.'));
 
-				this.cpetroltlodeme = parseFloat(parts[2].split('-')[0].replace(',', '.'));
-				this.cpetroldlodeme = parseFloat(parts[2].split('-')[1].replace(',', '.'));
+				this.minsaattlodeme = parseFloat(parts[2].split('-')[0].replace(',', '.'));
+				this.minsaatdlodeme = parseFloat(parts[2].split('-')[1].replace(',', '.'));
 
-				this.npetroltlodeme = parseFloat(parts[3].split('-')[0].replace(',', '.'));
-				this.npetroldlodeme = parseFloat(parts[3].split('-')[1].replace(',', '.'));
+				this.cpetroltlodeme = parseFloat(parts[3].split('-')[0].replace(',', '.'));
+				this.cpetroldlodeme = parseFloat(parts[3].split('-')[1].replace(',', '.'));
 
-				this.izmirsubetlodeme = parseFloat(parts[4].split('-')[0].replace(',', '.'));
-				this.izmirsubedlodeme = parseFloat(parts[4].split('-')[1].replace(',', '.'));
+				this.npetroltlodeme = parseFloat(parts[4].split('-')[0].replace(',', '.'));
+				this.npetroldlodeme = parseFloat(parts[4].split('-')[1].replace(',', '.'));
 
-				this.igdirsubetlodeme = parseFloat(parts[5].split('-')[0].replace(',', '.'));
-				this.igdirsubedlodeme = parseFloat(parts[5].split('-')[1].replace(',', '.'));
+				this.izmirsubetlodeme = parseFloat(parts[5].split('-')[0].replace(',', '.'));
+				this.izmirsubedlodeme = parseFloat(parts[5].split('-')[1].replace(',', '.'));
 
-				this.simyatlodeme = parseFloat(parts[6].split('-')[0].replace(',', '.'));
-				this.simyadlodeme = parseFloat(parts[6].split('-')[1].replace(',', '.'));
+				this.igdirsubetlodeme = parseFloat(parts[6].split('-')[0].replace(',', '.'));
+				this.igdirsubedlodeme = parseFloat(parts[6].split('-')[1].replace(',', '.'));
 
-				this.bircetlodeme = parseFloat(parts[7].split('-')[0].replace(',', '.'));
-				this.bircedlodeme = parseFloat(parts[7].split('-')[1].replace(',', '.'));
+				this.simyatlodeme = parseFloat(parts[7].split('-')[0].replace(',', '.'));
+				this.simyadlodeme = parseFloat(parts[7].split('-')[1].replace(',', '.'));
 
-				this.mudanyatlodeme = parseFloat(parts[8].split('-')[0].replace(',', '.'));
-				this.mudanyadlodeme = parseFloat(parts[8].split('-')[1].replace(',', '.'));
+				this.bircetlodeme = parseFloat(parts[8].split('-')[0].replace(',', '.'));
+				this.bircedlodeme = parseFloat(parts[8].split('-')[1].replace(',', '.'));
 
-				this.startlodeme = parseFloat(parts[9].split('-')[0].replace(',', '.'));
-				this.stardlodeme = parseFloat(parts[9].split('-')[1].replace(',', '.'));
+				this.mudanyatlodeme = parseFloat(parts[9].split('-')[0].replace(',', '.'));
+				this.mudanyadlodeme = parseFloat(parts[9].split('-')[1].replace(',', '.'));
 
-				this.chargetlodeme = parseFloat(parts[10].split('-')[0].replace(',', '.'));
+				this.startlodeme = parseFloat(parts[10].split('-')[0].replace(',', '.'));
+				this.stardlodeme = parseFloat(parts[10].split('-')[1].replace(',', '.'));
+
+				this.chargetlodeme = parseFloat(parts[11].split('-')[0].replace(',', '.'));
 				this.chargedlodeme = parseFloat(parts[11].split('-')[1].replace(',', '.'));
 
 				this.avelicetlodeme = parseFloat(parts[12].split('-')[0].replace(',', '.'));
@@ -609,7 +678,7 @@ export class GridComponent implements AfterViewInit {
 		}
 		const apiUrl = 'api/' + this.model.apiName + '/sendnotificationmail';
 		const receiver = entity.assigner.eposta;
-		//const receiver = 'hikmet@meteorpetrol.com';
+		// const receiver = 'hikmet@meteorpetrol.com';
 		const subject = 'İzin Hatırlatması';
 		const message = entity.owner.firstName + ' ' + entity.owner.lastName + ' kullanıcısı, yapmış olduğu bir izin talebini onaylamanız için size bir hatırlatmada bulunuyor.';
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
@@ -633,7 +702,7 @@ export class GridComponent implements AfterViewInit {
 			}
 		);
 	}*/
-	addFilterColumns(filters) {	//Filtrelere veri girilirken yapılacak olanlar;
+	addFilterColumns(filters) {	// Filtrelere veri girilirken yapılacak olanlar;
 		for (let filterColumn of this.filterColumns) {
 			switch (filterColumn.fieldType) {
 				case 'time':
@@ -775,6 +844,7 @@ export class GridComponent implements AfterViewInit {
 			}*/
 			if (field.filterable) {
 				this.filterColumns.push(field);
+				// todo: SPEND -> ODEME YAPAN ŞİRKET
 				/*if (this.model.name === 'Task' && field.name === 'owner' && field.value === undefined) {
 					field.value = this.baseService.getUser();
 				}*/
@@ -791,6 +861,9 @@ export class GridComponent implements AfterViewInit {
 				} */
 			}
 		}
+		/*if (this.model.name === 'Spend') {
+			this.filterColumns.push('paymentorder');
+		}*/
 		if (this.showButtons && !this.readOnly) {
 			this.displayedColumns.push('actions');
 		}
@@ -986,7 +1059,6 @@ export class GridComponent implements AfterViewInit {
 			entity.approvalStatus = this.baseService.getAttrVal('Izin_Dur_Aktif');
 			this.baseService.update(entity, 'holidays').subscribe(() => {
 				this.loadList();
-				this.change.emit(this.result);
 			});
 		}
 		if (this.model.apiName === 'buys') {
@@ -1091,7 +1163,7 @@ export class GridComponent implements AfterViewInit {
 				BaslangicTarihi : startDate,
 				BitisTarihi : endDate
 			};*/
-			//const apiUrl = `api/invoice_lists/${entity.invoiceNum}`;
+			// const apiUrl = `api/invoice_lists/${entity.invoiceNum}`;
 
 			this.http.get(apiUrl, { headers: httpHeaders, responseType: 'json' })
 				.subscribe(
@@ -1103,8 +1175,8 @@ export class GridComponent implements AfterViewInit {
 						}
 						/*const cariKoduRes = response[0].CariUnvan + ' - ' + response[0].KullanilabilirLimit + ' - ' + response[0].BankaAdi + ' - ' + response[0].NakitRisk;
 						console.log('RES Cevabı:', cariKoduRes);*/
-						//const apidescription = 'cariKoduRes' || 'Bir sorun ile karşılaşıldı, lütfen girdiğiniz Cari Kodunu kontrol edin veya Ferit Bey ile iletişime geçiniz!';
-						//Utils.showActionNotification(apidescription, 'success', 10000, true, false, 3000, this.snackBar);
+						// const apidescription = 'cariKoduRes' || 'Bir sorun ile karşılaşıldı, lütfen girdiğiniz Cari Kodunu kontrol edin veya Ferit Bey ile iletişime geçiniz!';
+						// Utils.showActionNotification(apidescription, 'success', 10000, true, false, 3000, this.snackBar);
 					},
 					(error) => {
 						Utils.showActionNotification(error.toString(), 'success', 10000, true, false, 3000, this.snackBar);
@@ -1133,7 +1205,7 @@ export class GridComponent implements AfterViewInit {
 					}
 				);*/
 		}
-		//this.loadList();
+		// this.loadList();
 	}
 	cancel(entity, e?, presetValues = []) {
 		if (e) {
@@ -1187,7 +1259,7 @@ export class GridComponent implements AfterViewInit {
 					}, disableClose: true
 				});
 				dialogRef.afterClosed().subscribe(res => {
-					//Utils.showActionNotification('Reddedildi', 'success', 3000, true, false, 3000, this.snackBar);
+					// Utils.showActionNotification('Reddedildi', 'success', 3000, true, false, 3000, this.snackBar);
 					this.loadList();
 					this.change.emit(this.result);
 				});
@@ -1200,7 +1272,7 @@ export class GridComponent implements AfterViewInit {
 				this.change.emit(this.result);
 			});
 		}
-		//this.loadList();
+		// this.loadList();
 	}
 
 	showFuelLimit(entity, e?, presetValues = []) {
@@ -1233,7 +1305,7 @@ export class GridComponent implements AfterViewInit {
 			this.change.emit(this.result);
 		});
 
-		//this.loadList();
+		// this.loadList();
 	}
 	createPersonelContract(entity, e?, presetValues = []) {
 		if (e) {
@@ -1285,7 +1357,7 @@ export class GridComponent implements AfterViewInit {
 			this.change.emit(this.result);
 		});
 
-		//this.loadList();
+		// this.loadList();
 	}
 
 	control(entity, e?, presetValues = []) {
@@ -1333,9 +1405,9 @@ export class GridComponent implements AfterViewInit {
 			entity[p.field] = p.value;
 		}
 		if (entity.owner === null || entity.owner.id !== this.baseService.getUserId()) {
-			Utils.showActionNotification('Bu faturanın sahibi siz değilsiniz!','warning', 10000, true, false, 3000, this.snackBar);
+			Utils.showActionNotification('Bu faturanın sahibi siz değilsiniz!', 'warning', 10000, true, false, 3000, this.snackBar);
 		} else if (entity.invoiceStatus.id === 'Fatura_Durumlari_Donus') {
-			Utils.showActionNotification('Bu fatura daha önceden talimata dönüştürüldü!','warning', 10000, true, false, 3000, this.snackBar);
+			Utils.showActionNotification('Bu fatura daha önceden talimata dönüştürüldü!', 'warning', 10000, true, false, 3000, this.snackBar);
 		} else {
 			const dialogRef = this.dialog.open(EditEntityDialogComponent, {data: {entity, model: this.model}});
 			dialogRef.afterClosed().subscribe(res => {
@@ -1699,6 +1771,13 @@ export class GridComponent implements AfterViewInit {
 			width: '600px'
 		});
 	}
+	changeUserActivate(entity, e?, presetValues = []) {
+		if (e) { e.stopPropagation(); }
+		entity.activated = false;
+		this.baseService.update(entity, 'users').subscribe(() => {
+			Utils.showActionNotification('Kullanıcı pasife alındı', 'success', 3000, true, false, 3000, this.snackBar);
+		});
+	}
 	changeUserGroup(entity, e?, presetValues = []) {
 		if (e) { e.stopPropagation(); }
 		return this.dialog.open(ChangeGroupComponent, {
@@ -1733,7 +1812,9 @@ export class GridComponent implements AfterViewInit {
 			priority_error: row['invoiceStatus'] && row['invoiceStatus'].label === 'Hatalı Atama',
 			priority_cancel: row['invoiceStatus'] && row['invoiceStatus'].label === 'İptal',
 			priority_spend_success: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Ödendi',
-			priority_payment_order_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Ödendi'
+			priority_payment_order_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Ödendi',
+			priority_spend_cancel: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Reddedildi',
+			priority_payment_order_half_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Kısmi Ödendi'
 		};
 	}
 
@@ -1938,7 +2019,7 @@ export class GridComponent implements AfterViewInit {
 				Utils.makeFilter(filters),
 				[{ sortBy: Utils.getModel(field.objectApiName).displayField, sortOrder: 'ASC' }],
 				0,
-				100
+				10000
 			);
 
 			this.baseService.find(queryParams, field.objectApiName).subscribe(res => {

@@ -1,0 +1,59 @@
+<kt-portlet>
+	<kt-portlet-body>
+		<div id="print-section">
+			<p style="text-align: center; font-size: large; font-weight: bold">YENİ IBAN</p>
+			<br />
+			<div style="overflow-y: hidden; overflow: auto; white-space: nowrap;">
+				<style>
+					table {
+						border-collapse: collapse;
+						width: 100%;
+					}
+
+					table, th, td {
+						border: 0px solid black; /* Tablonun kenarlarını kalın yapar */
+					}
+
+					.form-check {
+						text-align: center;
+					}
+				</style>
+				<table>
+				<tr>
+					<td>
+						<mat-form-field>
+							<mat-label>IBAN:</mat-label>
+							<input matInput [textMask]="{mask: utils.ibanMask}" [(ngModel)]="iban">
+							<mat-icon matSuffix>credit_card</mat-icon>
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>IBAN Bankası</mat-label>
+							<mat-select [(value)]="selectedBankId">
+								<mat-option *ngFor="let attr of bankList" [value]="attr.id">{{attr.label}}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>IBAN Para Birimi</mat-label>
+							<mat-select [(value)]="selectedMoneyTypeId">
+								<mat-option *ngFor="let attr of moneyTypeList" [value]="attr.id">{{attr.label}}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</td>
+				</tr>
+			</table>
+		</div>
+		</div>
+		<div class="button-container" style="display: flex; justify-content: center; gap: 10px;">
+			<button type="button" mat-raised-button color="primary" (click)="onYesClick()" matTooltip="Tamam">
+				Onayla
+			</button>
+			<button type="button" mat-raised-button color="warn" (click)="onNoClick()" matTooltip="Vazgeç">
+				Vazgeç
+			</button>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

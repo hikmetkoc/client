@@ -130,7 +130,7 @@ export class LineItemsComponent implements AfterViewInit, OnInit {
 				filters,
 				[{ sortBy: field.displayField, sortOrder: 'ASC' }],
 				0,
-				100
+				10000
 			);
 
 			this.baseService.find(queryParams, field.apiName).subscribe(res => {

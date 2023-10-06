@@ -36,7 +36,9 @@ export class PaymentOrderInfoDialogComponent implements OnInit {
 		this.model = this.data.model;
 		this.current = this.data.current;
 	}
-
+	onNoClick() {
+		this.dialogRef.close();
+	}
 	formatAmount(amount) {
 		// Amount'u yerel para birimi biçimine dönüştür
 		return Number(amount).toLocaleString('tr-TR', { minimumFractionDigits: 2 });

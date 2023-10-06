@@ -17,6 +17,7 @@ export class ShowFuelLimitRiskDialogComponent implements OnInit {
 	@Input() model: any;
 	riskDetay = [];
 	toplamLimit = 0;
+	cariUnvani = '';
 
 	constructor(
 		private cdr: ChangeDetectorRef,
@@ -60,12 +61,15 @@ export class ShowFuelLimitRiskDialogComponent implements OnInit {
 							cariUnvan : response[i].CariUnvan,
 							dbsLimit : response[i].DbsLimit,
 							onayliFatura : response[i].OnayliFatura,
-							limit : response[i].DbsLimit - response[i].NakitRisk - response[i].OnayliFatura,
+							limit : response[i].KullanilabilirLimit,
 							bankaAdi : response[i].BankaAdi,
-							nakitRisk : response[i].NakitRisk,
+							nakitRisk : response[i].DbsLimit - response[i].OnayliFatura - response[i].BankadanGelenKullanilabilirLimit,
 						});
-						this.toplamLimit += this.riskDetay[i].limit;
+						//this.toplamLimit += this.riskDetay[i].limit;
+						this.toplamLimit = this.riskDetay[0].limit;
+						this.cariUnvani = this.riskDetay[0].cariUnvan;
 					}
+					//limit : response[i].DbsLimit - response[i].NakitRisk - response[i].OnayliFatura,
 				},
 				(error) => {
 					Utils.showActionNotification(error.toString(), 'success', 10000, true, false, 3000, this.snackBar);

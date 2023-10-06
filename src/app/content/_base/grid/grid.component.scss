@@ -63,7 +63,20 @@ kt-grid {
 			font-weight: bold;
 		}
 	}
+	.priority_spend_cancel {
+		background-color: #900f13;
 
+		mat-cell {
+			font-weight: bold;
+		}
+	}
+	.priority_payment_order_half_success {
+		background-color: #47CEAC;
+
+		mat-cell {
+			font-weight: bold;
+		}
+	}
 	.mat-icon-button {
 		width: 30px !important;
 		height: 30px !important;
