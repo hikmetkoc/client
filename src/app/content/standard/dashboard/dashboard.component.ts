@@ -8,6 +8,8 @@ import { formatDate } from '@angular/common';
 import { tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
+import {HttpClient} from "@angular/common/http";
+import {HttpUtilsService} from "../../_base/http-utils.service";
 
 @Component({
 	selector: 'kt-dashboard',
@@ -24,9 +26,7 @@ export class DashboardComponent implements OnInit {
 	usersBirth = [];
 	targets = [];
 
-	ilktirnak;
-	ikincitirnak;
-	ucuncutirnak;
+	paymentStat = 'VERİLER YÜKLENİYOR...';
 
 	taskyeni;
 	taskdevam;
@@ -55,6 +55,8 @@ export class DashboardComponent implements OnInit {
 		private layoutConfigService: LayoutConfigService,
 		public baseService: BaseService,
 		public snackBar: MatSnackBar,
+		private http: HttpClient,
+		private httpUtils: HttpUtilsService,
 		public router: Router,
 	) {
 	}
@@ -146,7 +148,7 @@ export class DashboardComponent implements OnInit {
 	}
 	getPaymentOrder() {
 		const filters = new Set();
-		const queryParams = new QueryParamsModel(
+		/*const queryParams = new QueryParamsModel(
 			Utils.makeFilter(filters),
 			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
 			0,
@@ -163,16 +165,19 @@ export class DashboardComponent implements OnInit {
 				name: 'id',
 				operator: FilterOperation.IN,
 				value: this.bekleyenList
-			});
-			const queryParams2 = new QueryParamsModel(
-				Utils.makeFilter(filters),
-				[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
-				0,
-				50000
-			);
-			this.baseService.find(queryParams2, 'payment_orders').subscribe(res => {
-				this.paymentOrder = [];
-				for (const ivl of res.body) {
+			});*/
+		const queryParams2 = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
+			0,
+			5000
+		);
+		this.baseService.find(queryParams2, 'payment_orders').subscribe(res => {
+			this.paymentOrder = [];
+			for (const ivl of res.body) {
+				if (ivl.status.id === 'Payment_Status_Muh' || ivl.status.id === 'Payment_Status_Onay' || ivl.status.id === 'Payment_Status_Kismi' || ivl.status.id === 'Payment_Status_Red' || ivl.status.id === 'Payment_Status_Ode') { continue;}
+				if ((ivl.assigner.id === this.baseService.getUserId() && ivl.status.id === 'Payment_Status_Bek1') ||
+					(ivl.secondAssigner.id === this.baseService.getUserId() && ivl.status.id === 'Payment_Status_Bek2')) {
 					this.paymentOrder.push({
 						status: ivl.status.label,
 						customer: ivl.customer.name,
@@ -184,9 +189,31 @@ export class DashboardComponent implements OnInit {
 						faturaSirket: ivl.sirket.label
 					});
 				}
-				this.cdr.markForCheck();
-			});
+			}
+			this.cdr.markForCheck();
+			this.paymentStat = 'VERİLER YÜKLENDİ!';
 		});
+		/*this.paymentOrder = [];
+		const apiUrl = 'api/payment_orders/mycorrect';
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		this.http.post(apiUrl, null, { headers: httpHeaders, responseType: 'json' }).subscribe(
+			response => {
+				const responseLen =  Object.keys(response).length;
+				const data = Object(response);
+				console.log('API Cevabı:', data);
+				for ( let i = 0; i < responseLen; i++) {
+					this.paymentOrder.push({
+						status: data[i].status.label,
+						customer: data[i].customer.name,
+						amount: data[i].amount,
+						assigner: data[i].assigner.firstName + ' ' + data[i].assigner.lastName,
+						secondAssigner: data[i].secondAssigner.firstName + ' ' + data[i].secondAssigner.lastName,
+						invoiceNum: data[i].invoiceNum,
+						moneyType: data[i].moneyType.label,
+						faturaSirket: data[i].sirket.label
+					});
+				}
+			});*/
 	}
 	getHolidayList() {
 		const filters = new Set();

@@ -63,7 +63,8 @@ export class ShowFuelLimitRiskDialogComponent implements OnInit {
 							onayliFatura : response[i].OnayliFatura,
 							limit : response[i].KullanilabilirLimit,
 							bankaAdi : response[i].BankaAdi,
-							nakitRisk : response[i].DbsLimit - response[i].OnayliFatura - response[i].BankadanGelenKullanilabilirLimit,
+							nakitRisk : response[i].BankaAdi === 'GARANTİ BANKASI' || response[i].BankaAdi === 'ING BANK' ?
+								response[i].DbsLimit - response[i].OnayliFatura - response[i].BankadanGelenKullanilabilirLimit : response[i].NakitRisk,
 						});
 						//this.toplamLimit += this.riskDetay[i].limit;
 						this.toplamLimit = this.riskDetay[0].limit;

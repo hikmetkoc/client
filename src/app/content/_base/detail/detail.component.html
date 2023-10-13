@@ -101,14 +101,17 @@
 							<mat-icon>info</mat-icon>
 						</button>
 					</span>
-					<span *ngIf="['time'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+					<span *ngIf="['time'].indexOf(field.fieldType) > -1 && this.model.name !== 'FuelLimit'" [class]="tiny ? '' : 'kt-widget4__title'">
 						{{current[field.name] | date:'short'}}
 					</span>
-					<span *ngIf="['date'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+					<span *ngIf="['date'].indexOf(field.fieldType) > -1 && this.model.name !== 'FuelLimit'" [class]="tiny ? '' : 'kt-widget4__title'">
 						{{current[field.name] | date:'shortDate'}}
 					</span>
-					<span *ngIf="['duration'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+					<span *ngIf="['duration'].indexOf(field.fieldType) > -1 && this.model.name !== 'FuelLimit'" [class]="tiny ? '' : 'kt-widget4__title'">
 						{{current[field.name] ? current[field.name] + ' dakika':''}}
+					</span>
+					<span *ngIf="(['date'].indexOf(field.fieldType) > -1 || ['duration'].indexOf(field.fieldType) > -1 || ['time'].indexOf(field.fieldType) > -1) && this.model.name === 'FuelLimit'" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{formatDate(current[field.name])}}
 					</span>
 					<span *ngIf="['boolean'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
 						<mat-checkbox [checked]="current[field.name]" disabled="true"></mat-checkbox>

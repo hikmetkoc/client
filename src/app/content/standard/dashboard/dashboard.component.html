@@ -23,13 +23,13 @@
 			</kt-portlet-body>
 		</kt-portlet>
 	</div>
-	<div class="col-md-9">
+	<div class="col-md-9" style="overflow-y: auto;">
 		<kt-portlet>
-			<kt-portlet-header title="Fatura Listesi - İşlem Bekleyenler">
-			</kt-portlet-header>
+			<kt-portlet-header title="Fatura Listesi - İşlem Bekleyenler"></kt-portlet-header>
 			<kt-portlet-body>
 				<div style="overflow: auto;">
-					<table *ngIf="invoiceList.length >0" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000; font-size: medium">
+					<div style="max-height: 400px; overflow-y: auto;">
+						<table *ngIf="invoiceList.length >0" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000; font-size: medium;">
 						<thead>
 						<tr style="background-color: #1b1e21; color: #d7dbf7">
 							<th>Ödeme Yapılacak Şirket</th>
@@ -53,6 +53,7 @@
 					</table>
 				</div>
 				<div *ngIf="invoiceList.length < 1" style="font-weight: bold; color: #0f695f">İŞLEMİNİZİ BEKLEYEN E-FATURA BULUNMAMAKTADIR</div>
+				</div>
 			</kt-portlet-body>
 		</kt-portlet>
 	</div>
@@ -64,9 +65,9 @@
 			</kt-portlet-header>
 			<kt-portlet-body>
 				<div style="overflow: auto;">
-					<table *ngIf="birthDayList.length > 0" style="text-align: center; width: 100%; border: 1px solid #000;
-					 white-space: normal; font-size: medium; word-wrap: break-word; overflow-y: auto">
-						<thead>
+					<div style="max-height: 400px; overflow-y: auto;">
+						<table *ngIf="birthDayList.length >0" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000; font-size: medium;">
+							<thead>
 						<tr style="background-color: #1b1e21; color: #d7dbf7">
 							<th>Ad Soyad</th>
 							<th>Şirket</th>
@@ -91,18 +92,18 @@
 					</table>
 				</div>
 				<div *ngIf="birthDayList.length < 1" style="font-weight: bold; color: #0f695f">15 GÜN İÇİNDE KİMSENİN DOĞUM GÜNÜ OLMAYACAKTIR</div>
+				</div>
 			</kt-portlet-body>
 		</kt-portlet>
 	</div>
 	<div class="col-md-6">
 		<kt-portlet>
-			<kt-portlet-header title="Talimat Listesi - Onay Bekleyenler">
+			<kt-portlet-header title="Talimat Listesi - Onay Bekleyenler : {{paymentStat}} {{baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm' ? ' - Muhasebe Onayları Gözükmez' : ''}}">
 			</kt-portlet-header>
 			<kt-portlet-body>
-				<div class="row" style="max-height: 300px; overflow-y: auto;">
-					<div style="min-width: 20%; white-space: break-spaces; display: flex;">
-						<table *ngIf="paymentOrder.length > 0" style="text-align: center; width: 100%; border: 1px solid #000;
-					 white-space: normal; font-size: medium; word-wrap: break-word; overflow-y: auto">
+				<div style="overflow: auto;">
+					<div style="max-height: 400px; overflow-y: auto;">
+						<table *ngIf="paymentOrder.length >0" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000; font-size: medium;">
 							<thead>
 							<tr style="background-color: #1b1e21; color: #d7dbf7">
 								<th>1.Onaycı</th>
@@ -144,8 +145,8 @@
 			</kt-portlet-header>
 			<kt-portlet-body>
 				<div style="overflow: auto;">
-					<div style="min-width: 20%; white-space: break-spaces; display: flex; width: 100%">
-						<table *ngIf="holidayList.length > 0" style="text-align: center; width: 100%; border: 1px solid #000; font-size: medium; white-space: nowrap; table-layout: fixed;">
+					<div style="max-height: 400px; overflow-y: auto;">
+						<table *ngIf="holidayList.length >0" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000; font-size: medium;">
 							<thead>
 							<tr style="background-color: #1b1e21; color: #d7dbf7;">
 								<th>İzni Kullanan</th>
@@ -181,11 +182,11 @@
 				</ng-container>
 			</kt-portlet-header>
 			<kt-portlet-body>
-				<div class="row">
-					<div style="overflow: auto;">
-						<div style="min-width: 20%; white-space: break-spaces; display: flex; width: 100%">
-						<table *ngIf="waitHolidayList.length > 0" style="text-align: center; width: 100%; border: 1px solid #000; font-size: medium; white-space: nowrap; table-layout: fixed;">
-							<thead>
+				<div class="row" style="width: 100%">
+					<div style="overflow: auto; width: 100%">
+						<div style="max-height: 400px; overflow-y: auto; width: 100%">
+							<table *ngIf="waitHolidayList.length >0" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000; font-size: medium;">
+								<thead>
 							<tr style="background-color: #1b1e21; color: #d7dbf7;">
 								<th>İzni Kullanan</th>
 								<th>Onaycı</th>

@@ -26,13 +26,13 @@ import {HttpUtilsService} from "../../_base/http-utils.service";
 import {HttpClient} from "@angular/common/http";
 import {formatDate} from "@angular/common";
 @Component({
-	selector: 'kt-fuellimit',
-	templateUrl: './fuellimit.component.html',
+	selector: 'kt-fuelrisk',
+	templateUrl: './fuelrisk.component.html',
 	changeDetection: ChangeDetectionStrategy.Default,
-	styleUrls: ['./fuellimit.component.scss'],
+	styleUrls: ['./fuelrisk.component.scss'],
 	encapsulation: ViewEncapsulation.None
 })
-export class FuelLimitComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class FuelRiskComponent extends BaseComponent implements OnInit, AfterViewInit {
 
 	@ViewChild('calendar', undefined) calendarComponent: FullCalendarComponent;
 	public visitword: string;
@@ -59,7 +59,7 @@ export class FuelLimitComponent extends BaseComponent implements OnInit, AfterVi
 	) {
 		super(baseService, dialog, snackBar, translate, route, router, breakpointObserver);
 
-		this.model = Utils.getModel('FuelLimit');
+		this.model = Utils.getModel('FuelRisk');
 	}
 
 	ngOnInit() {
@@ -77,15 +77,15 @@ export class FuelLimitComponent extends BaseComponent implements OnInit, AfterVi
 			this.reloadCurrent(row.id);
 		} else {
 			this.defaultFilter = [{
-				name: 'fuellimit.id',
+				name: 'fuelrisk.id',
 				operator: 'EQUALS',
 				value: row.id
 			}];
 			this.defaultValues = [{
-				field: 'fuellimitId',
+				field: 'fuelriskId',
 				value: row.id
 			}, {
-				field: 'fuellimit',
+				field: 'fuelrisk',
 				value: row
 			}];
 			this.current = row;
@@ -94,13 +94,6 @@ export class FuelLimitComponent extends BaseComponent implements OnInit, AfterVi
 
 	evaluateButtons() {
 		this.buttons = [];
-
-		this.buttons.push({
-			display: this.baseService.getPermissionRule(this.model.name, 'update'),
-			title: 'Yeni Ek Limit Talebi',
-			icon: 'add_box',
-			click: this.mainGrid.add.bind(this.mainGrid)
-		});
 	}
 
 	calendarView(isCalendar) {
@@ -145,32 +138,6 @@ export class FuelLimitComponent extends BaseComponent implements OnInit, AfterVi
 		return this.dialog.open(DeleteEntityDialogComponent, {
 			data: {},
 			width: '440px'
-		});
-	}
-	riskRowClicked(row) {
-		this.router.navigate(['/fuel_risks'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
-	}
-	getReport() {
-		const dialogRef = this.dialog.open(ReportDialogComponent, { data: { filter: 'date', title: 'Ek Limit Raporu' } });
-		dialogRef.afterClosed().subscribe(res => {
-			if (res) {
-				if (this.baseService.loadingSubject.value) { return; }
-				this.baseService.loadingSubject.next(true);
-				res.startDate = Utils.dateFormatForApi(res.startDate);
-				res.endDate = Utils.dateFormatForApi(res.endDate);
-				const httpHeaders = this.httpUtils.getHTTPHeaders();
-				this.http.post('api/' + this.model.apiName + '/report?startDate=' + res.startDate + '&endDate=' + res.endDate, undefined, { headers: httpHeaders, responseType: 'blob' })
-					.pipe(
-						tap(res2 => {
-							Utils.downloadFile(res2, 'Excel', 'Ek Limit Raporu');
-							this.baseService.loadingSubject.next(false);
-						}),
-						catchError(err => {
-							this.baseService.loadingSubject.next(false);
-							return err;
-						})
-					).subscribe();
-			}
 		});
 	}
 }

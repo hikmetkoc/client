@@ -1,0 +1,107 @@
+<kt-portlet>
+	<div [hidden]="islem === true" class="modal-header">
+		<h4 class="modal-title">Ek Limit Talebi İşlem Ekranı</h4>
+		<div class="ml-auto">
+			<button mat-icon-button class="btn btn-label-brand" color="primary" matTooltip="Kapat" (click)="closeClick()">
+				<mat-icon>close</mat-icon>
+			</button>
+		</div>
+	</div>
+	<kt-portlet-body>
+		<mat-form-field [hidden]="islem === true" class="mat-form-field-fluid">
+			<input matInput [(ngModel)]="startDate" [matDatepicker]="picker1" placeholder="Limit Başlangıç Tarihi">
+			<mat-datepicker-toggle matSuffix [for]="picker1" tabIndex="-1"></mat-datepicker-toggle>
+			<mat-datepicker touchUi="false" #picker1></mat-datepicker>
+			<mat-error>Limit Başlangıç Tarihi
+				<strong>zorunludur</strong>
+			</mat-error>
+		</mat-form-field>
+		<mat-form-field [hidden]="islem === true" class="mat-form-field-fluid">
+			<input matInput [(ngModel)]="endDate" [matDatepicker]="picker2" placeholder="Limit Bitiş Tarihi">
+			<mat-datepicker-toggle matSuffix [for]="picker2" tabIndex="-1"></mat-datepicker-toggle>
+			<mat-datepicker touchUi="false" #picker2></mat-datepicker>
+			<mat-error>Limit Bitiş Tarihi
+				<strong>zorunludur</strong>
+			</mat-error>
+		</mat-form-field>
+		<br/>
+		<div style="max-height: 300px; overflow-x: auto; overflow-y: auto" [hidden]="islem === true">
+			<div style="text-align: center; background-color: #222; padding: 10px;">
+				<h4 style="font-weight: bold; font-size: 20px; color: #fff;">FİRMAYA YAPILAN SON 15 TALEP</h4>
+			</div>
+			<style>
+				table {
+					width: 100%;
+					border: 1px solid #000;
+					table-layout: fixed; /* İçeriğin tablo hücrelerini sığdırmak için kullanılır */
+				}
+
+				th {
+					white-space: nowrap;
+					text-align: center;
+					vertical-align: middle;
+					padding: 5px 10px;
+				}
+
+				td {
+					white-space: nowrap;
+					text-align: center;
+					vertical-align: middle;
+					padding: 5px 10px;
+				}
+
+				/* Tablo taştığında yatay kaydırma çubuğu ekle */
+				table-container {
+					max-height: 400px; /* İsteğe bağlı olarak maksimum yüksekliği ayarlayın */
+					overflow-y: auto;
+					border: 1px solid #000;
+				}
+			</style>
+			<table *ngIf="riskList.length >0" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000; font-size: medium;">
+				<thead>
+					<tr style="background-color: #1b1e21; color: #d7dbf7;">
+						<th>Talep Tarihi</th>
+						<th>Talebi Oluşturan</th>
+						<th>Onaycı</th>
+						<th>Onay Durumu</th>
+						<th>İşlem Tarihi</th>
+						<th>Limit Başlangıç Tarihi</th>
+						<th>Limit Bitiş Tarihi</th>
+						<th>Ek Limit Tutarı</th>
+						<th>Talep Gerekçesi</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let list of riskList">
+						<td>{{list.createdDate ? formatDate2(list.createdDate) : ''}}</td>
+						<td>{{list.owner !== undefined ? list.owner : ''}}</td>
+						<td>{{list.assigner !== undefined ? list.assigner : ''}}</td>
+						<td>{{list.status !== undefined ? list.status : ''}}</td>
+						<td>{{list.okeyFirst ? formatDate2(list.okeyFirst) : ''}}</td>
+						<td>{{list.startDate ? formatDate2(list.startDate) : ''}}</td>
+						<td>{{list.endDate ? formatDate2(list.endDate) : ''}}</td>
+						<td>{{list.fuelTl !== undefined ? formatCurrency(list.fuelTl) : ''}}</td>
+						<td>{{list.description !== undefined ? list.description : ''}}</td>
+					</tr>
+				</tbody>
+			</table>
+			<br/>
+			<br/>
+		</div>
+		<div class="button-container" style="display: flex; justify-content: center; gap: 10px;">
+			<button [hidden]="islem === true || riskDetay.length === 0" type="button" mat-raised-button color="primary" (click)="onYesClick()" matTooltip="Onayla">
+				Onayla
+			</button>
+			<button [hidden]="islem === true || riskDetay.length === 0" type="button" mat-raised-button color="warn" (click)="onNoClick()" matTooltip="Reddet">
+				Reddet
+			</button>
+			<button [hidden]="islem === true" type="button" mat-raised-button color="warn" (click)="onCancelClick()" matTooltip="Vazgeç">
+				Vazgeç
+			</button>
+			<div [hidden]="islem === false" class="loading-container" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+				<mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+				<span style="font-size: 20px; color: #333; margin-top: 10px;">İŞLEM YAPILIYOR...</span>
+			</div>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

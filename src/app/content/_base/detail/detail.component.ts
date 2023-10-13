@@ -110,5 +110,14 @@ export class DetailComponent implements AfterViewInit, OnInit {
 	onEditClick() {
 		this.editClick2.emit(this.current);
 	}
+	formatDate(date: string): string {
+		if (!date) return '';
 
+		const formattedDate = new Date(date);
+		const day = ('0' + formattedDate.getDate()).slice(-2);
+		const month = ('0' + (formattedDate.getMonth() + 1)).slice(-2);
+		const year = formattedDate.getFullYear();
+
+		return `${day}-${month}-${year}`;
+	}
 }

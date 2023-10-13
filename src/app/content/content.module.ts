@@ -111,6 +111,7 @@ import { InvoiceListComponent } from './standard/invoicelist/invoicelist.compone
 import { SpendComponent } from './standard/spend/spend.component';
 import { LimitComponent } from './admin/limit/limit.component';
 import { FuelLimitComponent } from './standard/fuellimit/fuellimit.component';
+import { FuelRiskComponent} from './standard/fuelrisk/fuelrisk.component';
 import { IbanComponent } from './standard/iban/iban.component';
 import { HolManagerComponent } from './admin/holmanager/holmanager.component';
 import { UserPermissionComponent } from './admin/userpermission/userpermisson.component';
@@ -134,7 +135,9 @@ import { LoadInvoiceComponent} from './_base/dialogs/load-invoice-dialog/load-in
 import { SendSpendComponent} from './_base/dialogs/send-spend-dialog/send-spend.component';
 import { SpendToTlComponent} from './_base/dialogs/spend-to-tl-dialog/spend-to-tl.component';
 import { PaymentOrderFileDialogComponent} from './_base/dialogs/payment-order-file-dialog/payment-order-file-dialog.component';
+import { Base64FileDialogComponent} from './_base/dialogs/base64-file-dialog/base64-file-dialog.component';
 import { ShowFuelLimitRiskDialogComponent} from './_base/dialogs/show-fuel-limit-risk-dialog/show-fuel-limit-risk-dialog.component';
+import { FuelLimitOkeyComponent} from './_base/dialogs/fuel-limit-okey-dialog/fuel-limit-okey.component';
 import { ShowResignComponent} from './_base/detail/show-resign-dialog/show-resign.component';
 import { ShowPersonelContractComponent} from './_base/detail/show-personel-contract-dialog/show-personel-contract.component';
 import { NewPersonComponent} from './_base/dialogs/new-person-dialog/new-person.component';
@@ -222,6 +225,10 @@ const routes: Routes = [
 	{
 		path: 'fuellimit',
 		component: FuelLimitComponent
+	},
+	{
+		path: 'fuelrisk',
+		component: FuelRiskComponent
 	},
 	{
 		path: 'iban',
@@ -378,6 +385,7 @@ const routes: Routes = [
 		InvoiceListComponent,
 		LimitComponent,
 		FuelLimitComponent,
+		FuelRiskComponent,
 		IbanComponent,
 		HolManagerComponent,
 		UserPermissionComponent,
@@ -423,7 +431,9 @@ const routes: Routes = [
 		SendSpendComponent,
 		SpendToTlComponent,
 		PaymentOrderFileDialogComponent,
+		Base64FileDialogComponent,
 		ShowFuelLimitRiskDialogComponent,
+		FuelLimitOkeyComponent,
 		ShowInvoiceComponent,
 		ShowResignComponent,
 		ShowPersonelContractComponent,
@@ -467,7 +477,9 @@ const routes: Routes = [
 		SendSpendComponent,
 		SpendToTlComponent,
 		PaymentOrderFileDialogComponent,
+		Base64FileDialogComponent,
 		ShowFuelLimitRiskDialogComponent,
+		FuelLimitOkeyComponent,
 		ShowInvoiceComponent,
 		ShowResignComponent,
 		ShowPersonelContractComponent,

@@ -17,6 +17,7 @@
 				<th>Cari Unvanı</th>
 				<th>Banka Adı</th>
 				<th>Dbs Limit</th>
+				<th>Onaylı Fatura</th>
 				<th>Nakit Risk</th>
 			</tr>
 			</thead>
@@ -25,6 +26,7 @@
 				<td>{{ risk.cariUnvan }}</td>
 				<td>{{ risk.bankaAdi }}</td>
 				<td>{{ formatAmount(risk.dbsLimit) + ' TL' }}</td>
+				<td>{{ formatAmount(risk.onayliFatura) + ' TL' }}</td>
 				<td>{{ formatAmount(risk.nakitRisk) + ' TL' }}</td>
 			</tr>
 			</tbody>

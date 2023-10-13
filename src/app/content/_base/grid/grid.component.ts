@@ -61,6 +61,8 @@ import {SpendInfoDialogComponent} from '../dialogs/spend-info-dialog/spend-info-
 import {
 	ShowFuelLimitRiskDialogComponent
 } from '../dialogs/show-fuel-limit-risk-dialog/show-fuel-limit-risk-dialog.component';
+import {Base64FileDialogComponent} from "../dialogs/base64-file-dialog/base64-file-dialog.component";
+import {FuelLimitOkeyComponent} from "../dialogs/fuel-limit-okey-dialog/fuel-limit-okey.component";
 
 @Component({
 	selector: 'kt-grid',
@@ -156,6 +158,7 @@ export class GridComponent implements AfterViewInit {
 	odemeYapanSirket: any;
 	talimatOnayDurumu: any;
 	isButtonClicked = false;
+	isSecondButtonClicked = false;
 	bekleyenList = [];
 	isFilterOpen = false;
 
@@ -209,6 +212,14 @@ export class GridComponent implements AfterViewInit {
 			this.isButtonClicked = false;
 		} else {
 			this.isButtonClicked = true;
+		}
+		this.loadList();
+	}
+	onayList2Click() {
+		if (this.isSecondButtonClicked) {
+			this.isSecondButtonClicked = false;
+		} else {
+			this.isSecondButtonClicked = true;
 		}
 		this.loadList();
 	}
@@ -320,40 +331,27 @@ export class GridComponent implements AfterViewInit {
 		}
 		if (this.model.name === 'PaymentOrder') {
 			if (this.isButtonClicked) {
-				const filters3 = new Set();
-				const queryParams3 = new QueryParamsModel(
-					Utils.makeFilter(filters3),
-					[{sortBy: 'createdDate', sortOrder: 'ASC'}],
-					0,
-					10000
-				);
-				this.baseService.find(queryParams3, 'payment_orders').subscribe(res => {
-					this.bekleyenList = res.body.filter(hld => (hld.assigner.id === this.baseService.getUserId() && hld.status.id === 'Payment_Status_Bek1') ||
-						(hld.secondAssigner.id === this.baseService.getUserId() && hld.status.id === 'Payment_Status_Bek2'))
-						.map(filteredItem => filteredItem.id);
-					console.log(this.bekleyenList);
-					if (this.bekleyenList.length === 0) {
-						this.bekleyenList[0] = '5c2428c3-e052-4906-9231-be1186e09b67';
-					}
-					filters.add({
-						name: 'id',
-						operator: FilterOperation.IN,
-						value: this.bekleyenList
-					});
-					queryParams.filter = Utils.makeFilter(filters);
-					queryParams.owner = this.owner;
-					queryParams.assigner = this.assigner;
-					queryParams.other = this.other;
-
-					queryParams.search = this.searchStr;
-					this.dataSource.load(queryParams);
-					this.dataSource.entitySubject.subscribe(res2 => {
-						if (JSON.stringify(this.result) !== JSON.stringify(res2)) {
-							this.result = res2;
-							this.loadComplete.emit(res2);
-						}
-					});
-					this.cdr.markForCheck();
+				filters.add({
+					name: 'assigner.id',
+					operator: FilterOperation.EQUALS,
+					value: this.baseService.getUserId()
+				});
+				filters.add({
+					name: 'status.id',
+					operator: FilterOperation.EQUALS,
+					value: 'Payment_Status_Bek1'
+				});
+			}
+			if (this.isSecondButtonClicked) {
+				filters.add({
+					name: 'secondAssigner.id',
+					operator: FilterOperation.EQUALS,
+					value: this.baseService.getUserId()
+				});
+				filters.add({
+					name: 'status.id',
+					operator: FilterOperation.EQUALS,
+					value: 'Payment_Status_Bek2'
 				});
 			}
 			if (this.baseService.getUser().birim.id === 'Birimler_Muh') {
@@ -962,6 +960,35 @@ export class GridComponent implements AfterViewInit {
 			console.error(e);
 		}
 	}
+	symbol(entity, field, presetValues  = []) {
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		if (entity && entity.hasOwnProperty('moneyType')) {
+			if (entity.moneyType.id === 'Par_Bir_Tl') {
+				return ' ' + '\u20BA'; // TL simgesi
+			} else if (entity.moneyType.id === 'Par_Bir_Dl') {
+				return ' ' + '\u0024'; // Dolar simgesi
+			} else if (entity.moneyType.id === 'Par_Bir_Euro') {
+				return ' ' + '\u20AC'; // Euro simgesi
+			}
+		} else if (entity && entity.paymentorder.moneyType && field.name !== 'exchangeMoney' && field.name !== 'payTl') {
+			if (entity.paymentorder.moneyType.id === 'Par_Bir_Tl') {
+				return ' ' + '\u20BA'; // TL simgesi
+			} else if (entity.paymentorder.moneyType.id === 'Par_Bir_Dl') {
+				return ' ' + '\u0024'; // Dolar simgesi
+			} else if (entity.paymentorder.moneyType.id === 'Par_Bir_Euro') {
+				return ' ' + '\u20AC'; // Euro simgesi
+			}
+		} else if (field.name === 'payTl') {
+			return '\u20BA';
+		} else {
+			return '';
+		}
+	}
 
 	getFilters() {
 		const queryParams = new QueryParamsModel();
@@ -1133,77 +1160,19 @@ export class GridComponent implements AfterViewInit {
 			}
 		}
 		if (this.model.name === 'FuelLimit') {
-
-			/*entity.status = this.baseService.getAttrVal('Fuel_Dur_Onay');
-			this.baseService.update(entity, 'fuellimits').subscribe(() => {
+			const dialogRef = this.dialog.open(FuelLimitOkeyComponent, {
+				data: {
+					current: entity,
+					model: this.model,
+				}, disableClose: true
+			});
+			dialogRef.afterClosed().subscribe(res => {
+				if (res === 'no') {
+					Utils.showActionNotification('Reddedildi', 'success', 3000, true, false, 3000, this.snackBar);
+				}
 				this.loadList();
 				this.change.emit(this.result);
-			});*/
-			const httpHeaders = this.httpUtils.getHTTPHeaders();
-			const fuelTl = Number(entity.fuelTl);
-			const curcode = entity.curcode;
-			const description = entity.description;
-			const startDate1 = new Date(entity.startDate);
-			const endDate1 = new Date(entity.endDate);
-			const startDate = this.formatDate(startDate1);
-			const endDate = this.formatDate(endDate1);
-
-			const servisSifre = '14ADa23.';
-			const firmaKodu = 875257;
-			const cariKodu = curcode;
-			const apiUrl = `https://srv.nccpetrol.com/DisServis/riskdetayget?ServisSifre=${servisSifre}&CariKodu=${cariKodu}&FirmaKodu=${firmaKodu}`;
-
-			/*const requestBody = {
-				ServisSifre : '14ADa23.',
-				FirmaKodu : 875257,
-				KullaniciId : 47468,
-				CariKodu : curcode,
-				EkLimitTutar : fuelTl,
-				EkLimitAciklama : description,
-				BaslangicTarihi : startDate,
-				BitisTarihi : endDate
-			};*/
-			// const apiUrl = `api/invoice_lists/${entity.invoiceNum}`;
-
-			this.http.get(apiUrl, { headers: httpHeaders, responseType: 'json' })
-				.subscribe(
-					(response) => {
-						const responseLen =  Object.keys(response).length;
-						console.log('API Cevabı:', response);
-						for ( let i = 0; i < responseLen; i++) {
-							console.log('RES Cevabı:', response[i].CariUnvan + ' - ' + response[i].KullanilabilirLimit + ' - ' + response[i].BankaAdi + ' - ' + response[i].NakitRisk);
-						}
-						/*const cariKoduRes = response[0].CariUnvan + ' - ' + response[0].KullanilabilirLimit + ' - ' + response[0].BankaAdi + ' - ' + response[0].NakitRisk;
-						console.log('RES Cevabı:', cariKoduRes);*/
-						// const apidescription = 'cariKoduRes' || 'Bir sorun ile karşılaşıldı, lütfen girdiğiniz Cari Kodunu kontrol edin veya Ferit Bey ile iletişime geçiniz!';
-						// Utils.showActionNotification(apidescription, 'success', 10000, true, false, 3000, this.snackBar);
-					},
-					(error) => {
-						Utils.showActionNotification(error.toString(), 'success', 10000, true, false, 3000, this.snackBar);
-					}
-				);
-
-			/*const requestBody = {
-				ServisSifre : '14ADa23.',
-				FirmaKodu : 875257,
-				KullaniciId : 47468,
-				CariKodu : curcode,
-				EkLimitTutar : fuelTl,
-				EkLimitAciklama : description,
-				BaslangicTarihi : startDate,
-				BitisTarihi : endDate
-			};
-			this.http.post(apiUrl, requestBody, { headers: httpHeaders })
-				.subscribe(
-					(response) => {
-						console.log('API Cevabı:', response);
-						const apidescription = response['Description'] || 'Bir sorun ile karşılaşıldı, lütfen girdiğiniz Cari Kodunu kontrol edin veya Ferit Bey ile iletişime geçiniz!';
-						Utils.showActionNotification(apidescription, 'success', 10000, true, false, 3000, this.snackBar);
-					},
-					(error) => {
-						Utils.showActionNotification(error.toString(), 'success', 10000, true, false, 3000, this.snackBar);
-					}
-				);*/
+			});
 		}
 		// this.loadList();
 	}
@@ -1456,58 +1425,6 @@ export class GridComponent implements AfterViewInit {
 		});
 	}
 
-	uploadFile(entity, e?, presetValues = []) {
-		this.loading = true;
-		if (e) {
-			e.stopPropagation();
-		}
-		for (const defaultValue of this.defaultValues) {
-			entity[defaultValue.field] = defaultValue.value;
-		}
-		for (const p of presetValues) {
-			entity[p.field] = p.value;
-		}
-		if (entity.name === 'null FATURADAN GELEN') {
-			Utils.showActionNotification('Bu fatura, Fatura Listesinden gelmektedir. İçerisine başka fatura yükleyemezsiniz!', 'warning', 10000, true, false, 3000, this.snackBar);
-		} else if (entity.owner.id !== this.baseService.getUserId()) {
-			Utils.showActionNotification('Sadece talimatı oluşturan kişiler dosya eklemesi yapabilir!', 'warning', 10000, true, false, 3000, this.snackBar);
-		} else if (entity.status.id !== 'Payment_Status_Bek1') {
-			Utils.showActionNotification('Sadece 1.Onay Bekleniyor durumunda faturada değişiklik yapabilirsiniz!', 'warning', 10000, true, false, 3000, this.snackBar);
-		} else {
-			const dialogRef = this.dialog.open(PaymentOrderFileDialogComponent, {
-				width: '800px',
-				data: {current: entity, model: this.model},
-				disableClose: true,
-			});
-			dialogRef.afterClosed().subscribe(() => {
-				this.loadList();
-			});
-		}
-		this.loading = false;
-	}
-
-	uploadHoliday(entity, e?, presetValues = []) {
-		this.loading = true;
-		if (e) {
-			e.stopPropagation();
-		}
-		for (const defaultValue of this.defaultValues) {
-			entity[defaultValue.field] = defaultValue.value;
-		}
-		for (const p of presetValues) {
-			entity[p.field] = p.value;
-		}
-		const dialogRef = this.dialog.open(PaymentOrderFileDialogComponent, {
-			width: '800px',
-			data: {current: entity, model: this.model},
-			disableClose: true,
-		});
-		dialogRef.afterClosed().subscribe(() => {
-			this.loadList();
-		});
-		this.loading = false;
-	}
-
 	formHoliday(entity, e?, presetValues = []) {
 		if (e) {
 			e.stopPropagation();
@@ -1522,28 +1439,6 @@ export class GridComponent implements AfterViewInit {
 			width: '800px',
 			data: {current: entity, model: this.model}
 		});
-	}
-
-	toUploadDekont(entity, e?, presetValues = []) {
-		this.loading = true;
-		if (e) {
-			e.stopPropagation();
-		}
-		for (const defaultValue of this.defaultValues) {
-			entity[defaultValue.field] = defaultValue.value;
-		}
-		for (const p of presetValues) {
-			entity[p.field] = p.value;
-		}
-		const dialogRef = this.dialog.open(PaymentOrderFileDialogComponent, {
-			width: '800px',
-			data: {current: entity, model: this.model},
-			disableClose: true,
-		});
-		dialogRef.afterClosed().subscribe(() => {
-			this.loadList();
-		});
-		this.loading = false;
 	}
 
 	infoPaymentOrder(entity, e?, presetValues = []) {
@@ -1580,100 +1475,34 @@ export class GridComponent implements AfterViewInit {
 		dialogRef.afterClosed().subscribe(() => {
 		});
 	}
-	/*showInvoiceFiles(entity, e?, presetValues = []) {
-		let fileId = '';
-		const filters = new Set();
-		filters.add({
-			name: 'entityId',
-			operator: 'EQUALS',
-			value: entity.id
-		});
-		filters.add({
-			name: 'entityName',
-			operator: 'EQUALS',
-			value: 'PaymentOrder'
-		});
-		const queryParams = new QueryParamsModel(
-			Utils.makeFilter(filters),
-			[{sortBy: 'createdDate', sortOrder: 'DESC'}],
-			0,
-			100
-		);
-		this.baseService.find(queryParams, 'file-descriptors').subscribe(res => {
-			for (const hld of res.body) {
-				const httpHeaders = this.httpUtils.getHTTPHeaders();
-				this.http.post('api/' + this.model.apiName + '/file-show?fileId=' + hld.id, {}, {
-					headers: httpHeaders,
-					responseType: 'blob'
-				})
-					.subscribe(
-						response => {
-							const fileBlob = response;
-							const fileUrl = URL.createObjectURL(fileBlob);
 
-							// Yeni bir sekme açarak dosyayı görüntüleme işlemi yapın
-							window.open(fileUrl, '_blank');
-						},
-						error => {
-							// Hata durumunda uygun bir bildirim gösterin
-							console.log('Dosya görüntüleme hatası:', error);
-						}
-					);
-			}
-			this.cdr.markForCheck();
+	uploadBase64File(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const dialogRef = this.dialog.open(Base64FileDialogComponent, {
+			width: '800px',
+			data: {current: entity, model: this.model},
+			disableClose: true,
 		});
-	}*/
-
-	showInvoiceListFiles(entity, e?, presetValues = []) {
-		if (e) { e.stopPropagation(); }
-		const apiUrl = `api/invoice_lists/${entity.invoiceNum}`;
-		const httpHeaders = this.httpUtils.getHTTPHeaders();
-
-		this.http.get(apiUrl, { headers: httpHeaders, responseType: 'text' }).subscribe(
-			response => {
-				const decodedData = atob(response);
-				const uint8Array = new Uint8Array(decodedData.length);
-				for (let i = 0; i < decodedData.length; ++i) {
-					uint8Array[i] = decodedData.charCodeAt(i);
-				}
-				const blob = new Blob([uint8Array], { type: 'application/pdf' });
-				const fileUrl = URL.createObjectURL(blob);
-				window.open(fileUrl, '_blank');
-			},
-			error => {
-				Utils.showActionNotification('Bu Faturaya ait PDF bulunamadı!', 'warning', 10000, true, false, 3000, this.snackBar);
-			}
-		);
+		dialogRef.afterClosed().subscribe(() => {
+			this.loadList();
+		});
 	}
 
-	/*showPaymentOrderListFiles(entity, e?, presetValues = []) {
+	showBase64File(entity, e?, presetValues = []) {
 		if (e) { e.stopPropagation(); }
-		const apiUrl = `api/payment_orders/${entity.id}`;
+		const apiUrl = 'api/file_containers/showFile';
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
-
-		this.http.get(apiUrl, { headers: httpHeaders, responseType: 'text' }).subscribe(
-			response => {
-				const decodedData = atob(response);
-				const uint8Array = new Uint8Array(decodedData.length);
-				for (let i = 0; i < decodedData.length; ++i) {
-					uint8Array[i] = decodedData.charCodeAt(i);
-				}
-				const blob = new Blob([uint8Array], { type: 'application/pdf' });
-				const fileUrl = URL.createObjectURL(blob);
-				window.open(fileUrl, '_blank');
-			},
-			error => {
-				Utils.showActionNotification('Bu Faturaya ait PDF bulunamadı!', 'warning', 10000, true, false, 3000, this.snackBar);
-			}
-		);
-	}*/
-
-	showBase64Files(entity, e?, presetValues = []) {
-		if (e) { e.stopPropagation(); }
-		const apiUrl = `api/${this.model.apiName}/${entity.id}`;
-		const httpHeaders = this.httpUtils.getHTTPHeaders();
-
-		this.http.get(apiUrl, { headers: httpHeaders, responseType: 'text' }).subscribe(
+		const locName = this.model.name;
+		const location = entity.id.toString();
+		this.http.get(apiUrl + `?location=${location}&locName=${locName}`, { headers: httpHeaders, responseType: 'text' }).subscribe(
 			response => {
 				const decodedData = atob(response);
 				const cleanData = decodedData.replace(/\s+/g, '');
@@ -1694,7 +1523,7 @@ export class GridComponent implements AfterViewInit {
 				} else if (fileSignature === 'II*\x00' || fileSignature === 'MM\x00*') {
 					fileType = 'image/tiff';
 				} else {
-					Utils.showActionNotification('Dosya türü belirlenemedi!', 'warning', 10000, true, false, 3000, this.snackBar);
+					Utils.showActionNotification('Dosya eksik veya hatalı yüklendi!', 'warning', 10000, true, false, 3000, this.snackBar);
 					return;
 				}
 
@@ -1711,48 +1540,7 @@ export class GridComponent implements AfterViewInit {
 			}
 		);
 	}
-	toShowDekont(entity, e?, presetValues = []) {
-		if (e) { e.stopPropagation(); }
-		const apiUrl = `api/spends/toShowDekont/${entity.id}`;
-		const httpHeaders = this.httpUtils.getHTTPHeaders();
 
-		this.http.get(apiUrl, { headers: httpHeaders, responseType: 'text' }).subscribe(
-			response => {
-				const decodedData = atob(response);
-				const fileSignature = decodedData.substring(0, 4);
-				console.log(fileSignature);
-				let fileType: string;
-
-				if (fileSignature === '%PDF') {
-					fileType = 'application/pdf';
-				} else if (fileSignature === 'ÿØÿâ' || fileSignature === 'ÿÛÿà') {
-					fileType = 'image/jpeg';
-				} else if (fileSignature === 'PNG') {
-					fileType = 'image/png';
-				} else if (fileSignature === 'GIF8') {
-					fileType = 'image/gif';
-				} else if (fileSignature === 'RIFF' && decodedData.substr(8, 4) === 'WEBP') {
-					fileType = 'image/webp';
-				} else if (fileSignature === 'II*\x00' || fileSignature === 'MM\x00*') {
-					fileType = 'image/tiff';
-				} else {
-					Utils.showActionNotification('Dosya türü belirlenemedi!', 'warning', 10000, true, false, 3000, this.snackBar);
-					return;
-				}
-
-				const uint8Array = new Uint8Array(decodedData.length);
-				for (let i = 0; i < decodedData.length; ++i) {
-					uint8Array[i] = decodedData.charCodeAt(i);
-				}
-				const blob = new Blob([uint8Array], { type: fileType });
-				const fileUrl = URL.createObjectURL(blob);
-				window.open(fileUrl, '_blank');
-			},
-			error => {
-				Utils.showActionNotification('Bu Dekonta ait PDF veya PNG bulunamadı!', 'warning', 10000, true, false, 3000, this.snackBar);
-			}
-		);
-	}
 	sendOwner(entity, e?, presetValues = []) {
 		if (e) { e.stopPropagation(); }
 		if (entity.invoiceStatus.id !== 'Fatura_Durumlari_Donus' && entity.invoiceStatus.id !== 'Fatura_Durumlari_Mukerrer' && entity.invoiceStatus.id !== 'Fatura_Durumlari_Iptal') {
@@ -1814,7 +1602,9 @@ export class GridComponent implements AfterViewInit {
 			priority_spend_success: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Ödendi',
 			priority_payment_order_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Ödendi',
 			priority_spend_cancel: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Reddedildi',
-			priority_payment_order_half_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Kısmi Ödendi'
+			priority_payment_order_half_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Kısmi Ödendi',
+			fuel_limit_okey: this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Onaylandı',
+			fuel_limit_cancel: this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Reddedildi'
 		};
 	}
 
@@ -2031,41 +1821,6 @@ export class GridComponent implements AfterViewInit {
 				});
 			}
 		}.bind(this), 500);
-
-		/*Hikmet Koç : Birim'e göre Konu*/
-		/*this.timer = setTimeout(function () {
-			const filters = new Set();
-			if (value && value.length >= 0) {
-				filters.add({
-					name: 'instanceName',
-					operator: 'CONTAINS',
-					value
-				});
-			}
-			if (field.name === 'type') {
-				const selectedBirimId = this.entityForm.controls.birim.value ? this.entityForm.controls.birim.value.id : null;
-				filters.add({
-					name: 'birim.id',
-					operator: 'EQUALS',
-					value: selectedBirimId
-				});
-				filters.add({
-					name: 'attribute_id',
-					operator: 'EQUALS',
-					value: 'Konular'
-				});
-			}
-			const queryParams = new QueryParamsModel(
-				Utils.makeFilter(filters),
-				[{ sortBy: Utils.getModel(field.objectApiName).displayField, sortOrder: 'ASC' }],
-				0,
-				100
-			);
-
-			this.baseService.find(queryParams, field.objectApiName).subscribe(res => {
-				this.filteredOptionss[field.name] = res.body;
-			});
-		}.bind(this), 500);*/
 	}
 
 	objectDisplay(field, option) {

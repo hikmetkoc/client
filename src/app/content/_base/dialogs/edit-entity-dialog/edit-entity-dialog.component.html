@@ -54,7 +54,7 @@
 			</kt-dialog-alert>
 			<div class="form-group kt-form__group row">
 				<ng-container *ngFor="let field of model.fields">
-					<div *ngIf="['text','email','number'].indexOf(field.fieldType) > -1 && field.title !== 'Kullanılan İzin Günü'" [hidden]="field.readOnly || !field.active" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
+					<div *ngIf="['text','email','number'].indexOf(field.fieldType) > -1 && field.title !== 'Kullanılan İzin Günü'" [hidden]="field.readOnly || !field.active || (this.model.name === 'User' && this.baseService.getUserId() !== 2 && (field.name === 'login' || field.name === 'email' || field.name === 'password' || field.name === 'eposta'))" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
 						<mat-form-field class="mat-form-field-fluid">
 							<input type="{{field.fieldType}}" matInput [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="field.required">{{field.title}}

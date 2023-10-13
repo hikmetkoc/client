@@ -118,13 +118,13 @@ export class InvoiceListComponent extends BaseComponent implements OnInit, After
 			title: 'Fatura Listesini Güncelle',
 			icon: 'refresh',
 			click: this.runInvoiceService.bind(this)
-		}/*,
+		},
 			{
-			display: this.baseService.getPermissionRule('user', 'update'),
-			title: 'Fatura Listesi Raporu',
-			icon: 'cloud_download',
-			click: this.getReport.bind(this)
-		}*/);
+			display: this.baseService.getUserId() === 2,
+			title: 'TCMB Service',
+			icon: 'account_balance',
+			click: this.runTcmbService.bind(this)
+		});
 	}
 
 	calendarView(isCalendar) {
@@ -271,6 +271,21 @@ export class InvoiceListComponent extends BaseComponent implements OnInit, After
 		});
 		dialogRef.afterClosed().subscribe(() => {
 		});
+	}
+
+	runTcmbService() {
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		this.http.post('api/approval_user_limits/tcmbservice', {}, {headers: httpHeaders, responseType: 'blob', observe: 'response'}).subscribe(
+			res => {
+				if (res) {
+					Utils.showActionNotification('Kurlar başarıyla yüklendi.', 'success', 10000, true, false, 3000, this.snackBar);
+				}
+			},
+			err => {
+				console.error(err);
+				Utils.showActionNotification('Kurlar yüklenirken hata oluştu.', 'error', 10000, true, false, 3000, this.snackBar);
+			}
+		);
 	}
 
 }

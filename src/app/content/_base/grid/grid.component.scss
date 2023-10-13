@@ -77,6 +77,20 @@ kt-grid {
 			font-weight: bold;
 		}
 	}
+	.fuel_limit_okey {
+		background-color: #0f695f;
+		mat-cell {
+			font-weight: bold;
+			color: seashell;
+		}
+	}
+	.fuel_limit_cancel {
+		background-color: #b31217;
+		mat-cell {
+			font-weight: bold;
+			color: seashell;
+		}
+	}
 	.mat-icon-button {
 		width: 30px !important;
 		height: 30px !important;
