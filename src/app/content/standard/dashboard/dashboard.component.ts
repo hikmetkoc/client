@@ -62,6 +62,9 @@ export class DashboardComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+
+		this.getChangePage();
+
 		this.getCharts();
 
 		this.getAnnouncements();
@@ -89,6 +92,12 @@ export class DashboardComponent implements OnInit {
 
 	}
 
+	getChangePage() {
+		if (this.baseService.getRoleId() === 'ROLE_MAVI') {
+			this.router.navigate(['/holiday']);
+		}
+	}
+
 	getRequestWebPush() {
 		if ('Notification' in window && Notification.permission === 'granted') {
 			// Kullanıcı izni zaten alındı, bildirim gönder
@@ -113,6 +122,7 @@ export class DashboardComponent implements OnInit {
 	}
 
 	getInvoiceList() {
+		if (!this.utils.hasOperation('FaturaListesi_Goruntuleme')) { return 0; }
 		const filters = new Set();
 		filters.add({
 			name: 'owner.id',
@@ -147,25 +157,11 @@ export class DashboardComponent implements OnInit {
 		});
 	}
 	getPaymentOrder() {
+		if (!this.utils.hasOperation('Talimat_Goruntuleme')) {
+			this.paymentStat = 'VERİLER YÜKLENDİ!';
+			return 0;
+		}
 		const filters = new Set();
-		/*const queryParams = new QueryParamsModel(
-			Utils.makeFilter(filters),
-			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
-			0,
-			50000
-		);
-		this.baseService.find(queryParams, 'payment_orders').subscribe(res => {
-			this.bekleyenList = res.body.filter(hld => (hld.assigner.id === this.baseService.getUserId() && hld.status.id === 'Payment_Status_Bek1') ||
-				(hld.secondAssigner.id === this.baseService.getUserId() && hld.status.id === 'Payment_Status_Bek2'))
-				.map(filteredItem => filteredItem.id);
-			if (this.bekleyenList.length === 0) {
-				this.bekleyenList[0] = '5c2428c3-e052-4906-9231-be1186e09b67';
-			}
-			filters.add({
-				name: 'id',
-				operator: FilterOperation.IN,
-				value: this.bekleyenList
-			});*/
 		const queryParams2 = new QueryParamsModel(
 			Utils.makeFilter(filters),
 			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
@@ -193,27 +189,6 @@ export class DashboardComponent implements OnInit {
 			this.cdr.markForCheck();
 			this.paymentStat = 'VERİLER YÜKLENDİ!';
 		});
-		/*this.paymentOrder = [];
-		const apiUrl = 'api/payment_orders/mycorrect';
-		const httpHeaders = this.httpUtils.getHTTPHeaders();
-		this.http.post(apiUrl, null, { headers: httpHeaders, responseType: 'json' }).subscribe(
-			response => {
-				const responseLen =  Object.keys(response).length;
-				const data = Object(response);
-				console.log('API Cevabı:', data);
-				for ( let i = 0; i < responseLen; i++) {
-					this.paymentOrder.push({
-						status: data[i].status.label,
-						customer: data[i].customer.name,
-						amount: data[i].amount,
-						assigner: data[i].assigner.firstName + ' ' + data[i].assigner.lastName,
-						secondAssigner: data[i].secondAssigner.firstName + ' ' + data[i].secondAssigner.lastName,
-						invoiceNum: data[i].invoiceNum,
-						moneyType: data[i].moneyType.label,
-						faturaSirket: data[i].sirket.label
-					});
-				}
-			});*/
 	}
 	getHolidayList() {
 		const filters = new Set();

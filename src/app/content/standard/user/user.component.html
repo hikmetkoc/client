@@ -71,6 +71,27 @@
 		</kt-portlet-body>
 	</kt-portlet>
 
+	<kt-portlet *ngIf="this.baseService.getUserId() === 80">
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Zimmetler
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button [hidden]="this.baseService.getUserId() !== 2" (click)="acceptanceGrid.add()" mat-raised-button matTooltip="Yeni Zimmet Oluştur" type="button">
+					Yeni Zimmet
+				</button>
+				<button class="btn btn-danger" (click)="print()" mat-raised-button matTooltip="Zimmet Belgesi Yazdır" type="button">
+					Zimmet Belgesi Yazdır
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #acceptanceGrid [showButtons]="true" entity="UserAcceptance" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="acceptanceRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+
 	<!--<kt-portlet>
 		<kt-portlet-header>
 			<ng-container ktPortletTitle>

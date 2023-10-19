@@ -52,6 +52,15 @@ export class MenuHorizontalService {
 			} else if (menuItem.page === '/userpermission' && !Utils.hasOperation('Yetkizin_Goruntuleme')) {
 			} else if (menuItem.page === '/spend' && !Utils.hasOperation('Odemeler_Goruntuleme')) {
 			} else if (menuItem.page === '/fuellimit' && !Utils.hasOperation('YakitLimit_Goruntuleme')) {
+			} else if (menuItem.page === '/material' && !Utils.hasOperation('Demirbas_Goruntuleme')) {
+			} else if (menuItem.page === '/motionsums' && !Utils.hasOperation('Hesaplar_Goruntuleme')) {
+			} else if (menuItem.page === '/behavior' && !Utils.hasOperation('Hareketler_Goruntuleme')) {
+			} else if (menuItem.title === 'PROJE İŞLEMLERİ' && !Utils.hasOperation('Projeler_Goruntuleme')) {
+			} else if (menuItem.title === 'FATURA İŞLEMLERİ' && !Utils.hasOperation('FaturaListesi_Goruntuleme')) {
+			} else if (menuItem.title === 'TEDARİKÇİ İŞLEMLERİ' && !Utils.hasOperation('Tedarikci_Goruntuleme')) {
+			} else if (menuItem.title === 'SATIN ALMA İŞLEMLERİ' && !Utils.hasOperation('Satınalma_Goruntuleme')) {
+			} else if (menuItem.title === 'TALEPLER' && !Utils.hasOperation('Talep_Goruntuleme')) {
+			} else if (menuItem.title === 'Dashboard' && !Utils.hasOperation('Talep_Goruntuleme')) {
 			} else {
 				filteredItems.push(menuItem);
 			}

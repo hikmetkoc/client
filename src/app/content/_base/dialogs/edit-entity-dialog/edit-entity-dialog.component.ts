@@ -594,6 +594,23 @@ export class EditEntityDialogComponent implements OnInit {
 					value: this.entityForm.controls.customer.value ? this.entityForm.controls.customer.value.id : null
 				});
 			}
+			/*if (field.name === 'material') {
+				const filters2 = new Set();
+				filters2.add({
+					name: 'id',
+					operator: 'EQUALS',
+					value: '9fb3fb85-6549-4e12-a8e5-f636ad0d448f'
+				});
+				const queryParams2 = new QueryParamsModel(
+					Utils.makeFilter(filters2),
+					[{ sortBy: 'instanceName', sortOrder: 'ASC' }],
+					0,
+					10000
+				);
+				this.baseService.find(queryParams2, 'materials').subscribe(res => {
+					this.filteredOptionss[field.name] = res.body;
+				});
+			}*/
 			const queryParams = new QueryParamsModel(
 				Utils.makeFilter(filters),
 				[{ sortBy: Utils.getModel(field.objectApiName).displayField, sortOrder: 'ASC' }],

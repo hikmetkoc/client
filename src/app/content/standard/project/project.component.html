@@ -1,0 +1,111 @@
+<kt-grid #mainGrid [entity]="model.name" owner="HIERARCHY_D" [showButtons]="true" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current || isCalendar"></kt-grid>
+
+<ng-container *ngIf="isCalendar">
+	<kt-portlet>
+		<kt-portlet-header [class]="'kt-portlet__head--lg'">
+			<ng-container ktPortletTitle>
+				<button mat-icon-button mat-button matTooltip="Geri dön" (click)="calendarView(false)" class="kt-margin-r-5">
+					<mat-icon>keyboard_arrow_left</mat-icon>
+				</button>
+				<h3 class="kt-portlet__head-title">
+					<span>Ajanda Görünümü</span>
+				</h3>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<div class="kt-portlet">
+				<div class="m-portlet__body m-portlet__body--no-padding">
+					<full-calendar #calendar defaultView="dayGridMonth" [plugins]="calendarPlugins" (dateClick)="dateClick($event)" (eventClick)="eventClick($event)" locale="tr" [buttonText]="{
+									today: 'Bugün',
+									month: 'Ay',
+									week: 'Hafta',
+									day: 'Gün',
+									list: 'Liste'}">
+					</full-calendar>
+				</div>
+			</div>
+		</kt-portlet-body>
+	</kt-portlet>
+</ng-container>
+
+<ng-container *ngIf="current">
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<button mat-icon-button mat-button matTooltip="Geri dön" (click)="resetCurrent()" class="kt-margin-r-5">
+					<mat-icon>keyboard_arrow_left</mat-icon>
+				</button>
+				<h3 class="kt-portlet__head-title">
+					<span>Proje Detayı</span>
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<div class="page-header-buttons">
+					<!--<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Hatırlat" (click)="remember()">
+						<mat-icon>notifications</mat-icon>
+					</button> -->
+
+					<button *ngIf="this.baseService.getRoleId() === 'ROLE_ADMIN'" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="warn" matTooltip="Sil" (click)="delete(current)" [disabled]="loading$ | async">
+						<mat-icon>delete</mat-icon>
+					</button>
+
+					<kt-filemanager [(current)]="current" [model]="model"></kt-filemanager>
+				</div>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-detail [(current)]="current" [model]="model" naked="true"></kt-detail>
+		</kt-portlet-body>
+	</kt-portlet>
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Görevler
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="projTaskGrid.add()" mat-raised-button matTooltip="Yeni görev oluştur" type="button">
+					Yeni Görev
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #projTaskGrid entity="ProjTask" mode="Compact" [showButtons]="true" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="projTaskRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Sorumlular
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="projOfficerGrid.add()" mat-raised-button matTooltip="Yeni sorumlu oluştur" type="button">
+					Yeni Sorumlu
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #projOfficerGrid entity="ProjOfficer" mode="Compact" [showButtons]="true" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="projOfficerRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Proje Özeti
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+
+		</kt-portlet-body>
+	</kt-portlet>
+</ng-container>

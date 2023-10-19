@@ -129,6 +129,51 @@ export class MenuConfig {
 					]
 				},
 				{
+					title: 'PROJE İŞLEMLERİ',
+					root: true,
+					alignment: 'left',
+					icon: 'flaticon-coins',
+					submenu: [
+						{
+							title: 'Projeler',
+							root: true,
+							page: '/project',
+							icon: 'flaticon-notes',
+						},
+						{
+							title: 'Görevler',
+							root: true,
+							page: '/projtask',
+							icon: 'flaticon-coins',
+						},
+						{
+							title: 'Sorumlular',
+							root: true,
+							page: '/projofficer',
+							icon: 'flaticon-file',
+						},
+						{
+							title: 'Görev Sorumluları',
+							root: true,
+							page: '/projtaskofficer',
+							icon: 'flaticon-coins'
+						},
+						{
+							title: 'Görev İşlemleri',
+							root: true,
+							page: '/projtaskactivity',
+							icon: 'flaticon-coins'
+						}
+						]
+				},
+				{
+					title: 'Hareketler',
+					root: true,
+					alignment: 'left',
+					page: '/behavior',
+					icon: 'flaticon-layer',
+				},
+				{
 					title: 'Yönetici Raporu',
 					root: true,
 					alignment: 'left',
@@ -141,6 +186,13 @@ export class MenuConfig {
 					alignment: 'left',
 					page: '/fuellimit',
 					icon: 'flaticon-truck',
+				},
+				{
+					title: 'Demirbaşlar',
+					root: true,
+					alignment: 'left',
+					page: '/material',
+					icon: 'flaticon-business',
 				},
 				{
 					title: 'Raporlar',

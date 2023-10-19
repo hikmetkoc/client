@@ -103,17 +103,28 @@ import { TeamComponent } from './admin/team/team.component';
 import { WidgetModule } from './standard/dashboard/widgets/widget.module';
 import { ActivityWizardComponent } from './standard/activitywizard/activitywizard.component';
 import { TaskComponent } from './standard/task/task.component';
+import { ProjectComponent} from './standard/project/project.component';
+import { ProjTaskComponent} from './standard/projtask/projtask.component';
+import { ProjOfficerComponent} from './standard/projofficer/projofficer.component';
+import { ProjTaskOfficerComponent} from './standard/projtaskofficer/projtaskofficer.component';
+import { ProjTaskActivityComponent} from './standard/projtaskactivity/projtaskactivity.component';
 import { CustomTaskComponent } from './standard/customtask/customtask.component';
 import { OfferComponent } from './standard/offer/offer.component';
+import { BehaviorComponent} from './standard/behavior/behavior.component';
+import { MotionSumsComponent} from './standard/motionsums/motionsums.component';
 import { BuyComponent } from './standard/buy/buy.component';
 import { PaymentOrderComponent } from './standard/paymentorder/paymentorder.component';
 import { InvoiceListComponent } from './standard/invoicelist/invoicelist.component';
 import { SpendComponent } from './standard/spend/spend.component';
 import { LimitComponent } from './admin/limit/limit.component';
 import { FuelLimitComponent } from './standard/fuellimit/fuellimit.component';
+import { MaterialComponent} from './standard/material/material.component';
+import { UserAcceptanceComponent} from './standard/useracceptance/useracceptance.component';
 import { FuelRiskComponent} from './standard/fuelrisk/fuelrisk.component';
 import { IbanComponent } from './standard/iban/iban.component';
 import { HolManagerComponent } from './admin/holmanager/holmanager.component';
+import { AttrComponent} from './admin/attr/attr.component';
+import { AttributeValueComponent} from './admin/attributevalue/attributevalue.component';
 import { UserPermissionComponent } from './admin/userpermission/userpermisson.component';
 import { VocationDayComponent } from './admin/vocationday/vocationday.component';
 import { StoreComponent } from './standard/store/store.component';
@@ -122,6 +133,7 @@ import { MapComponent } from './standard/map/map.component';
 import { TaskWizardComponent } from './standard/taskwizard/taskwizard.component';
 import { ReportDialogComponent } from './_base/dialogs/report-dialog/report-dialog.component';
 import { HolidayReportDialogComponent } from './_base/dialogs/holiday-report-dialog/holiday-report-dialog.component';
+import { UserAcceptanceDialogComponent} from './_base/detail/reportmanager/user-acceptance-dialog/user-acceptance-dialog.component';
 import { StoreDialogComponent } from './_base/dialogs/store-dialog/store-dialog.component';
 import { SendSmsDialogComponent } from './_base/dialogs/send-sms-dialog/send-sms-dialog.component';
 import { SendInvoiceComponent} from './_base/dialogs/send-invoice-dialog/send-invoice.component';
@@ -207,6 +219,26 @@ const routes: Routes = [
 		component: TaskComponent
 	},
 	{
+		path: 'project',
+		component: ProjectComponent
+	},
+	{
+		path: 'projtask',
+		component: ProjTaskComponent
+	},
+	{
+		path: 'projofficer',
+		component: ProjOfficerComponent
+	},
+	{
+		path: 'projtaskofficer',
+		component: ProjTaskOfficerComponent
+	},
+	{
+		path: 'projtaskactivity',
+		component: ProjTaskActivityComponent
+	},
+	{
 		path: 'buy',
 		component: BuyComponent
 	},
@@ -227,6 +259,14 @@ const routes: Routes = [
 		component: FuelLimitComponent
 	},
 	{
+		path: 'material',
+		component: MaterialComponent
+	},
+	{
+		path: 'useracceptance',
+		component: UserAcceptanceComponent
+	},
+	{
 		path: 'fuelrisk',
 		component: FuelRiskComponent
 	},
@@ -237,6 +277,14 @@ const routes: Routes = [
 	{
 		path: 'holmanager',
 		component: HolManagerComponent
+	},
+	{
+		path: 'attr',
+		component: AttrComponent
+	},
+	{
+		path: 'attributevalue',
+		component: AttributeValueComponent
 	},
 	{
 		path: 'userpermission',
@@ -257,6 +305,14 @@ const routes: Routes = [
 	{
 		path: 'offer',
 		component: OfferComponent
+	},
+	{
+		path: 'behavior',
+		component: BehaviorComponent
+	},
+	{
+		path: 'motionsums',
+		component: MotionSumsComponent
 	},
 	{
 		path: 'customactivity',
@@ -377,17 +433,28 @@ const routes: Routes = [
 		UserComponent,
 		UserAdmComponent,
 		TaskComponent,
+		ProjectComponent,
+		ProjTaskComponent,
+		ProjOfficerComponent,
+		ProjTaskOfficerComponent,
+		ProjTaskActivityComponent,
 		TinymceComponent,
 		CustomTaskComponent,
 		OfferComponent,
+		BehaviorComponent,
+		MotionSumsComponent,
 		BuyComponent,
 		PaymentOrderComponent,
 		InvoiceListComponent,
 		LimitComponent,
 		FuelLimitComponent,
+		MaterialComponent,
+		UserAcceptanceComponent,
 		FuelRiskComponent,
 		IbanComponent,
 		HolManagerComponent,
+		AttrComponent,
+		AttributeValueComponent,
 		UserPermissionComponent,
 		VocationDayComponent,
 		StoreComponent,
@@ -415,6 +482,7 @@ const routes: Routes = [
 		TaskWizardComponent,
 		ReportDialogComponent,
 		HolidayReportDialogComponent,
+		UserAcceptanceDialogComponent,
 		StoreDialogComponent,
 		SendSmsDialogComponent,
 		SendInvoiceComponent,
@@ -461,6 +529,7 @@ const routes: Routes = [
 		HolidayDetailDialogComponent,
 		ReportDialogComponent,
 		HolidayReportDialogComponent,
+		UserAcceptanceDialogComponent,
 		StoreDialogComponent,
 		SendSmsDialogComponent,
 		SendInvoiceComponent,

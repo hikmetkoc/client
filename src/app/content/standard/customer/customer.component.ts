@@ -383,6 +383,9 @@ export class CustomerComponent extends BaseComponent implements OnInit, AfterVie
 		this.router.navigate(['/invoicelist'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
 	}
 
+	motionSumRowClicked(row) {
+		this.router.navigate(['/motionsums'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
+	}
 	delete(_item: any, e) {
 		if (e) { e.stopPropagation(); }
 

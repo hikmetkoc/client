@@ -28,6 +28,10 @@ import {
 } from "../../_base/detail/reportmanager/holiday-detail-dialog/holiday-detail-dialog.component";
 import {ResignComponent} from "../../_base/dialogs/resign-dialog/resign.component";
 import {ShowResignComponent} from "../../_base/detail/show-resign-dialog/show-resign.component";
+import {LayoutSaveDialogComponent} from "../../_base/dialogs/filter-save-dialog/filter-save-dialog.component";
+import {
+	UserAcceptanceDialogComponent
+} from "../../_base/detail/reportmanager/user-acceptance-dialog/user-acceptance-dialog.component";
 
 @Component({
 	selector: 'kt-user',
@@ -280,8 +284,19 @@ export class UserComponent extends BaseComponent implements OnInit, AfterViewIni
 	holidayRowClicked(row) {
 		this.router.navigate(['/holiday'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
 	}
+	acceptanceRowClicked(row) {
+		this.router.navigate(['/useracceptance'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
+	}
 	exuseholidayRowClicked(row) {
 		this.router.navigate(['/exuseholiday'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
+	}
+	print() {
+		const dialogRef = this.dialog.open(UserAcceptanceDialogComponent, {
+			data: {
+				current: this.current,
+				model: this.model
+			}
+		});
 	}
 	makeChildren(users) {
 		const items = [];

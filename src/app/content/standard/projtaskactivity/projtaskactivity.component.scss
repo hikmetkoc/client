@@ -1,0 +1,22 @@
+kt-projtaskactivity {
+	.fc-toolbar {
+		padding: 10px !important;
+		margin-bottom: unset !important;
+	}
+
+	.fc-button {
+		background-color: rgb(255, 130, 130) !important;
+	}
+
+	.mat-icon-button {
+		width: 30px !important;
+		height: 30px !important;
+		line-height: unset !important;
+	}
+
+	::ng-deep .cdk-overlay-container {
+		position: fixed !important;
+		z-index: 100000 !important;
+		/* set value you need */
+	}
+}

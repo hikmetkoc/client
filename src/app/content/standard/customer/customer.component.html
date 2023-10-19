@@ -194,6 +194,24 @@
 			<kt-grid #invoiceListGrid entity="InvoiceList" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues"></kt-grid>
 		</kt-portlet-body>
 	</kt-portlet>
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Hesaplar
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="motionSumGrid.add()" mat-raised-button matTooltip="Yeni hesap oluştur" type="button">
+					Yeni Hesap
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #motionSumGrid entity="MotionSums" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="motionSumRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
 </ng-container>
 
 <ng-template #surveyModal let-c="close" let-d="dismiss">

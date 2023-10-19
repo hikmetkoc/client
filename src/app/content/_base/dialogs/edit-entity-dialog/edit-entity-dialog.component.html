@@ -227,7 +227,11 @@
 							</div>
 							<div class="col-md-3">
 								<div style="width: 45%; float: left;">
-									<div *ngIf="this.model.apiName !== 'buys' && this.model.apiName !== 'stores' && this.model.apiName !== 'holidays'" [hidden]="this.model.apiName === 'users' || this.model.apiName === 'invoice_lists' || this.model.apiName === 'payment_orders' || this.model.apiName === 'fuellimits' || this.model.apiName === 'spends'">
+									<div *ngIf="this.model.apiName !== 'buys' && this.model.apiName !== 'stores' && this.model.apiName !== 'holidays'"
+										 [hidden]="this.model.apiName === 'users' || this.model.apiName === 'invoice_lists' || this.model.apiName === 'payment_orders'
+										 || this.model.apiName === 'fuellimits' || this.model.apiName === 'spends' || this.model.apiName === 'user_acceptances'
+										|| this.model.apiName === 'projects' || this.model.apiName === 'proj_tasks' || this.model.apiName === 'proj_taskactivities'
+										|| this.model.apiName === 'behaviors'">
 									<mat-form-field class="mat-form-field-fluid">
 										<!-- <input type="text" [textMask]="{mask: utils.hourMask}" matInput placeholder="SS" formControlName="{{field.name + 'Hour'}}" /> -->
 										<mat-select placeholder="SS" formControlName="{{field.name + 'Hour'}}">
@@ -248,7 +252,11 @@
 										</mat-form-field>
 									</div>
 								</div>
-								<div style="width: 45%; float: left;" *ngIf="this.model.apiName !== 'buys' && this.model.apiName !== 'stores' && this.model.apiName !== 'holidays'" [hidden]="this.model.apiName === 'users' || this.model.apiName === 'invoice_lists' || this.model.apiName === 'payment_orders' || this.model.apiName === 'fuellimits' || this.model.apiName === 'spends'">
+								<div style="width: 45%; float: left;" *ngIf="this.model.apiName !== 'buys' && this.model.apiName !== 'stores' && this.model.apiName !== 'holidays'"
+									 [hidden]="this.model.apiName === 'users' || this.model.apiName === 'invoice_lists' || this.model.apiName === 'payment_orders'
+									 || this.model.apiName === 'fuellimits' || this.model.apiName === 'spends' || this.model.apiName === 'user_acceptances'
+										|| this.model.apiName === 'projects' || this.model.apiName === 'proj_tasks' || this.model.apiName === 'proj_taskactivities'
+										|| this.model.apiName === 'behaviors'">
 									<mat-form-field class="mat-form-field-fluid">
 										<!-- <input type="text" [textMask]="{mask: utils.hourMask}" matInput placeholder="DD" formControlName="{{field.name + 'Minute'}}" /> -->
 										<mat-select placeholder="DD" formControlName="{{field.name + 'Minute'}}">

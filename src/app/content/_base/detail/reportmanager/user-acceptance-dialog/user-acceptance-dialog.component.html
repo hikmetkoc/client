@@ -1,0 +1,127 @@
+<kt-portlet>
+
+	<div class="modal-header">
+		<h4 class="modal-title">Zimmet Formu</h4>
+		<div class="ml-auto">
+			<button mat-icon-button class="btn btn-label-brand" color="primary" matTooltip="Yazdır" (click)="showFiles()">
+				<mat-icon>print</mat-icon>
+			</button>
+			<button mat-icon-button class="btn btn-danger" color="primary" matTooltip="Kapat" (click)="onNoClick()">
+				<mat-icon>close</mat-icon>
+			</button>
+		</div>
+	</div>
+	<div id="print-section">
+		<div class="modal-body">
+			<style>
+				table tr td,
+				table tr th {
+					vertical-align: middle;
+				}
+			</style>
+			<table class="table table-striped" style="text-align: center; width: 100%; table-layout: fixed;">
+				<thead>
+				<tr>
+					<td>Adı Soyadı</td>
+					<td>{{this.usersAcceptance[0].user ? this.usersAcceptance[0].user.firstName + ' ' + this.usersAcceptance[0].user.lastName : ' '}}</td>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>TC Kimlik Nu.</td>
+					<td>{{this.usersAcceptance[0].user ? this.usersAcceptance[0].user.tck : ' '}}</td>
+				</tr>
+				</tbody>
+			</table>
+			<table class="table table-striped" style="text-align: center; width: 100%; table-layout: fixed;">
+				<thead>
+				<tr>
+					<th>Sıra</th>
+					<th>Cins</th>
+					<th>Marka</th>
+					<th>Model</th>
+					<th>Seri No</th>
+					<th>Açıklama</th>
+					<th>Teslim Alma Tarihi</th>
+					<th>Teslim Etme Tarihi</th>
+					<th>Şirket Kod</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let user of usersAcceptance">
+					<td>1</td>
+					<td>{{user.material.type ? user.material.type.label : ' '}}</td>
+					<td>{{user.material.brand ? user.material.brand.label : ' '}}</td>
+					<td>{{user.material.model ? user.material.model : ' '}}</td>
+					<td>{{user.material.serialNumber ? user.material.serialNumber : ' '}}</td>
+					<td>{{user.material.ayirt ? user.material.ayirt : ' '}}</td>
+					<td>{{user.startDate ? formatDate(user.startDate) : ' '}}</td>
+					<td>{{user.endDate ? formatDate(user.endDate) : ' '}}</td>
+					<td>{{user.material.sirket ? user.material.sirket.label : ' '}}</td>
+				</tr>
+				</tbody>
+			</table>
+			<br/>
+			<h4>Yukarıda sıra ve sicil numarası, adı, özellikleri, nereye veya kime verildiği yazılı olan demirbaş, makine ve cihaz teslim edilmiştir.
+				Kullanıcı kendi kusuru sonucunda doğacak zararları İş Sözleşmesi gereğince tazmin etmeyi kabul eder.</h4>
+			<br/>
+				<br/>
+				<br/>
+				<table class="table table-striped" style="text-align: center; width: 100%; table-layout: fixed;">
+				<tr>
+					<td colspan="2">Taşınır Kayıt ve Kontrol Yetkilisinin</td>
+					<td>Teslim Edilen Ürün Sıra Numaraları</td>
+					<td>Teslim Alanın</td>
+				</tr>
+				<tr>
+					<td>Adı Soyadı:</td>
+					<td>Mete ÖCAL</td>
+					<td rowspan="3">1,2</td>
+					<td>Adı Soyadı:</td>
+				</tr>
+				<tr>
+					<td>Unvanı:</td>
+					<td>Bilgi İşlem Şefi</td>
+					<td>{{this.usersAcceptance[0].user ? this.usersAcceptance[0].user.firstName + ' ' + this.usersAcceptance[0].user.lastName : ''}}</td>
+				</tr>
+				<tr>
+					<td>İmzası:</td>
+					<td></td>
+					<td>Unvanı:</td>
+				</tr>
+				<tr>
+					<td>Adı Soyadı:</td>
+					<td>Yılmaz KARAMAN</td>
+					<td rowspan="3"></td>
+					<td>{{this.usersAcceptance[0].user ? this.usersAcceptance[0].user.unvan.label : ''}}</td>
+				</tr>
+				<tr>
+					<td>Unvanı:</td>
+					<td>Satış ve Pazarlama Müdürü</td>
+					<td>İmzası:</td>
+				</tr>
+				<tr>
+					<td>İmzası:</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Adı Soyadı:</td>
+					<td>Funda BUGÜN</td>
+					<td rowspan="3"></td>
+				</tr>
+				<tr>
+					<td>Unvanı:</td>
+					<td>Finans Müdürü</td>
+				</tr>
+				<tr>
+					<td>İmzası:</td>
+					<td></td>
+				</tr>
+			</table>
+			<br/>
+			<h4 style="text-align: right">...../...../.....</h4>
+		</div>
+	</div>
+
+</kt-portlet>

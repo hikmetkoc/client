@@ -2,7 +2,7 @@
 <div class="kt-header__topbar kt-grid__item">
 	<!-- <kt-cart [bgImage]="'./assets/media/misc/bg-1.jpg'"></kt-cart>
 	<kt-language-selector></kt-language-selector> -->
-	<kt-top-bar-search></kt-top-bar-search>
+	<kt-top-bar-search *ngIf="utils.hasOperation('Talep_Goruntuleme')"></kt-top-bar-search>
 	<!-- <kt-notification [bgImage]="'./assets/media/misc/bg-1-.jpg'" [pulse]="true" [pulseLight]="true" [skin]="'dark'"></kt-notification>
 	<div class="kt-header__topbar-item kt-header__topbar-item--user" routerLink="/customer/map" matTooltip="Harita">
 		<div class="kt-header__topbar-wrapper">
@@ -26,7 +26,7 @@
 			</span>
 		</div>
 	</div> -->
-	<div class="kt-header__topbar-item kt-header__topbar-item--user" routerLink="/document" matTooltip="Dokumanlar">
+	<div *ngIf="this.utils.hasOperation('Talep_Goruntuleme')" class="kt-header__topbar-item kt-header__topbar-item--user" routerLink="/document" matTooltip="Dokümanlar">
 		<div class="kt-header__topbar-wrapper">
 			<span class="kt-header__topbar-icon">
 				<i [ngClass]="'flaticon-doc'"></i>
