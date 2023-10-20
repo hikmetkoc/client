@@ -17,6 +17,9 @@ export class UserAcceptanceDialogComponent implements OnInit {
 	usersAcceptance = [];
 	input1: string;
 	input2: string;
+	bilgiislem: string;
+	otobil: string;
+	finans: string;
 
 	constructor(
 		private cdr: ChangeDetectorRef,
@@ -100,5 +103,29 @@ export class UserAcceptanceDialogComponent implements OnInit {
 			this.usersAcceptance = res.body.filter(flt => flt.user.id === this.current.id);
 			this.cdr.markForCheck();
 		});
+
+		for (let i = 0; i <= this.usersAcceptance.length - 1; i++) {
+			if (this.usersAcceptance[i].type.id !== 'Material_Type_Araba'
+			|| this.usersAcceptance[i].type.id !== 'Material_Type_Kredi_Karti') {
+				if (this.bilgiislem === '') {
+					this.bilgiislem = i.toString();
+				} else {
+					this.bilgiislem = this.bilgiislem + ', ' + i;
+				}
+			} else if (this.usersAcceptance[i].type.id !== 'Material_Type_Araba') {
+				if (this.otobil === '') {
+					this.otobil = i.toString();
+				} else {
+					this.otobil = this.otobil + ', ' + i;
+				}
+			} else if (this.usersAcceptance[i].type.id !== 'Material_Type_Kredi_Karti') {
+				if (this.finans === '') {
+					this.finans = i.toString();
+				} else {
+					this.finans = this.finans + ', ' + i;
+				}
+			}
+		}
+		console.log(this.bilgiislem + ' - ' + this.otobil + ' - ' + this.finans);
 	}
 }

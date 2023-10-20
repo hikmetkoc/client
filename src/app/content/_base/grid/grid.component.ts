@@ -161,6 +161,11 @@ export class GridComponent implements AfterViewInit {
 	isSecondButtonClicked = false;
 	bekleyenList = [];
 	isFilterOpen = false;
+	maliyetYeri: any;
+	hareketlerTedarikci: any;
+	hareketlerUstCari: any;
+	hareketlerList = [];
+	hareketlerUstCariList = [];
 
 	constructor(
 		private cdr: ChangeDetectorRef,
@@ -222,6 +227,46 @@ export class GridComponent implements AfterViewInit {
 			this.isSecondButtonClicked = true;
 		}
 		this.loadList();
+	}
+	getBehaviorList() {
+		const filters = new Set();
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{sortBy: 'createdDate', sortOrder: 'ASC'}],
+			0,
+			10000
+		);
+		this.baseService.find(queryParams, 'motionsumss').subscribe(res => {
+			this.hareketlerList = res.body.map( flt => flt.customer);
+			for (let a = 0; a <= this.hareketlerList.length - 1; a++) {
+				for (let b = 0; a <= this.hareketlerList.length - 1; b++) {
+					if (this.hareketlerList[a].id === this.hareketlerList[b].id ) {
+						this.hareketlerList.splice(a,1);
+					}
+				}
+			}
+			this.cdr.markForCheck();
+		});
+	}
+	getBehaviorUstList() {
+		const filters = new Set();
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{sortBy: 'createdDate', sortOrder: 'ASC'}],
+			0,
+			10000
+		);
+		this.baseService.find(queryParams, 'motionsumss').subscribe(res => {
+			this.hareketlerUstCariList = res.body.map( flt => flt.parent);
+			for (let a = 0; a <= this.hareketlerUstCariList.length - 1; a++) {
+				for (let b = 0; a <= this.hareketlerUstCariList.length - 1; b++) {
+					if (this.hareketlerUstCariList[a].id === this.hareketlerUstCariList[b].id ) {
+						this.hareketlerUstCariList.splice(a,1);
+					}
+				}
+			}
+			this.cdr.markForCheck();
+		});
 	}
 	async loadList() {
 		this.selection.clear();
@@ -457,6 +502,31 @@ export class GridComponent implements AfterViewInit {
 					name: 'createdBy',
 					operator: FilterOperation.EQUALS,
 					value: 1
+				});
+			}
+		}
+		if (this.model.name === 'Behavior') {
+			if (this.maliyetYeri !== undefined) {
+				filters.add({
+					name: 'motionsums.cost',
+					operator: FilterOperation.EQUALS,
+					value: this.maliyetYeri
+				});
+			}
+			this.getBehaviorList();
+			this.getBehaviorUstList();
+			if (this.hareketlerTedarikci !== undefined) {
+				filters.add({
+					name: 'motionsums.customer.id',
+					operator: FilterOperation.EQUALS,
+					value: this.hareketlerTedarikci
+				});
+			}
+			if (this.hareketlerUstCari !== undefined) {
+				filters.add({
+					name: 'motionsums.parent.id',
+					operator: FilterOperation.EQUALS,
+					value: this.hareketlerUstCari
 				});
 			}
 		}
@@ -831,6 +901,13 @@ export class GridComponent implements AfterViewInit {
 			this.displayedColumns.push('paymentorder6');
 			this.displayedColumns.push('paymentorder7');
 			this.displayedColumns.push('paymentorder8');
+		} else if (this.model.name === 'Behavior') {
+			this.displayedColumns.push('hareketlerSirket');
+			this.displayedColumns.push('hareketlerTedarikci');
+			this.displayedColumns.push('hareketlerMaliyet');
+			this.displayedColumns.push('hareketlerBorc');
+			this.displayedColumns.push('hareketlerAlacak');
+			this.displayedColumns.push('hareketlerBakiye');
 		}
 		for (const field of this.model.fields) {
 			if (field.display) {
@@ -879,14 +956,14 @@ export class GridComponent implements AfterViewInit {
 			this.baseService.loadingSubject.next(false);
 			if (this.baseService.loadingSubject.value) { return; }
 			const httpHeaders = this.httpUtils.getHTTPHeaders();
-			const url = `api/payment_orders/selectedExcelReport`;
+			const url = `api/${this.model.apiName}/selectedExcelReport`;
 			const requestData = { ids: selectedIds };
 
 			this.http.post(url, requestData, { headers: httpHeaders, responseType: 'blob' })
 				.pipe(
 					tap(res => {
 						if (res) {
-							Utils.downloadFile(res, 'Excel', 'Seçili Ödeme Talimatı Raporu');
+							Utils.downloadFile(res, 'Excel', 'Seçili Excel Raporu');
 							this.baseService.loadingSubject.next(true);
 						}
 					}),
@@ -1784,12 +1861,28 @@ export class GridComponent implements AfterViewInit {
 
 	filterOptions(field: any, value: any) {
 		this.filteredOptionss[field.name] = [];
+		this.timer = setTimeout(function () {
 		if (this.timer) {
 			clearTimeout(this.timer);
 		}
 
-		if (field.name !== 'district' && field.name !== 'city' && !(value.length > 0)) { return; }
-		this.timer = setTimeout(function () {
+		if (this.hareketlerTedarikci !== undefined) {
+			const filters2 = new Set();
+			filters2.add({
+				name: 'name',
+				operator: 'EQUALS',
+				value: field
+			});
+			const queryParams2 = new QueryParamsModel(
+				Utils.makeFilter(filters2),
+				[{ sortBy: 'name', sortOrder: 'ASC' }],
+				0,
+				10000
+			);
+			this.baseService.find(queryParams2, 'customers').subscribe(res => {
+				this.filteredOptionss[this.hareketlerTedarikci] = res.body;
+			});
+		} else {
 			const filters = new Set();
 			if (value && value.length >= 0) {
 				filters.add({
@@ -1820,6 +1913,8 @@ export class GridComponent implements AfterViewInit {
 					this.filteredOptionss[field.name] = res.body;
 				});
 			}
+		}
+		if (field.name !== 'district' && field.name !== 'city' && !(value.length > 0)) { return; }
 		}.bind(this), 500);
 	}
 

@@ -11,6 +11,9 @@
 		</ng-container>
 		<ng-container ktPortletTools>
 			<div>
+				<button mat-button class="fa-info" matTooltip="Bilgi" *ngIf="model.name === 'InvoiceList' || model.name === 'PaymentOrder'" (click)="lookInfo()">
+					<i class="fas fa-info" style="margin-top:-2px;"></i>
+				</button>
 				<button mat-button matTooltip="IBAN Ekle" *ngIf="model.name === 'InvoiceList' || model.name === 'PaymentOrder'" (click)="addIban()">
 					<i class="fas fa-credit-card" style="margin-top:-2px;"></i>&nbsp;IBAN Ekle
 				</button>

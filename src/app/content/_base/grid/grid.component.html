@@ -319,6 +319,34 @@
 					</button>
 				</mat-form-field>
 			</div>
+			<div *ngIf="this.model.name === 'Behavior'" class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+				<div style="display: flex; align-items: center; gap: 90px; flex-wrap: nowrap;">
+				<mat-form-field class="mat-form-field-fluid" style="font-weight: bold; font-size: medium; color: #1b1e21">
+					<mat-select placeholder="Maliyet Yeri" [(ngModel)]="maliyetYeri" (ngModelChange)="loadList()">
+						<mat-option *ngFor="let option of baseService.getAttr('Cost_Place')?.values" [value]="option.id">{{option.label}}</mat-option>
+					</mat-select>
+					<button mat-button *ngIf="maliyetYeri !== undefined" matSuffix mat-icon-button aria-label="Clear" (click)="maliyetYeri = undefined; loadList()">
+						<mat-icon>close</mat-icon>
+					</button>
+				</mat-form-field>
+				<mat-form-field class="mat-form-field-fluid" style="font-weight: bold; font-size: medium; color: #1b1e21">
+					<mat-select placeholder="Tedarikçi" [(ngModel)]="hareketlerTedarikci" (ngModelChange)="loadList()">
+						<mat-option *ngFor="let option of hareketlerList" [value]="option.id">{{option.name}}</mat-option>
+					</mat-select>
+					<button mat-button *ngIf="hareketlerTedarikci !== undefined" matSuffix mat-icon-button aria-label="Clear" (click)="hareketlerTedarikci = undefined; loadList()">
+						<mat-icon>close</mat-icon>
+					</button>
+				</mat-form-field>
+				<mat-form-field class="mat-form-field-fluid" style="font-weight: bold; font-size: medium; color: #1b1e21">
+					<mat-select placeholder="Üst Cari" [(ngModel)]="hareketlerUstCari" (ngModelChange)="loadList()">
+						<mat-option *ngFor="let option of hareketlerUstCariList" [value]="option.id">{{option.name}}</mat-option>
+					</mat-select>
+					<button mat-button *ngIf="hareketlerUstCari !== undefined" matSuffix mat-icon-button aria-label="Clear" (click)="hareketlerUstCari = undefined; loadList()">
+						<mat-icon>close</mat-icon>
+					</button>
+				</mat-form-field>
+				</div>
+			</div>
 			<div *ngIf="this.model.name === 'PaymentOrder' && this.baseService.getUser().unvan.id !== 'Unvanlar_Muh_Uzm'" class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
 				<div class="button-container" style="display: flex; justify-content: center; gap: 10px;">
 					<button type="button" mat-raised-button color="{{isButtonClicked ? 'warn' : 'primary'}}"(click)="onayListClick()" matTooltip="{{ isButtonClicked ? 'Filtreyi Temizle' : '1.Onayımdakileri Listele' }}">
@@ -455,6 +483,30 @@
 			<ng-container matColumnDef="paymentorder8">
 				<mat-header-cell *matHeaderCellDef>Ödeme Tipi</mat-header-cell>
 				<mat-cell *matCellDef="let row">{{row.paymentorder.paymentType.label.toString()? row.paymentorder.paymentType.label.toString() : ' '}}</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="hareketlerSirket">
+				<mat-header-cell *matHeaderCellDef>Üst Cari</mat-header-cell>
+				<mat-cell *matCellDef="let row">{{row.motionsums.parent ? row.motionsums.parent.name : ' '}}</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="hareketlerTedarikci">
+				<mat-header-cell *matHeaderCellDef>Tedarikçi</mat-header-cell>
+				<mat-cell *matCellDef="let row">{{row.motionsums.customer ? row.motionsums.customer.name : ' '}}</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="hareketlerMaliyet">
+				<mat-header-cell *matHeaderCellDef>Maliyet Yeri</mat-header-cell>
+				<mat-cell *matCellDef="let row">{{row.motionsums.cost ? row.motionsums.cost.label : ' '}}</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="hareketlerBorc">
+				<mat-header-cell *matHeaderCellDef>Borç</mat-header-cell>
+				<mat-cell style="font-weight: bold" *matCellDef="let row">{{row.motionsums.loan ? formatCurrency(row.motionsums.loan) + ' &#8378;' : ' '}}</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="hareketlerAlacak">
+				<mat-header-cell *matHeaderCellDef>Alacak</mat-header-cell>
+				<mat-cell style="font-weight: bold" *matCellDef="let row">{{row.motionsums.receive ? formatCurrency(row.motionsums.receive) + ' &#8378;' : ' '}}</mat-cell>
+			</ng-container>
+			<ng-container matColumnDef="hareketlerBakiye">
+				<mat-header-cell *matHeaderCellDef>Bakiye</mat-header-cell>
+				<mat-cell style="font-weight: bold" *matCellDef="let row">{{row.motionsums.balance ? formatCurrency(row.motionsums.balance) + ' &#8378;' : ' '}}</mat-cell>
 			</ng-container>
 			<ng-container *ngFor="let field of model?.fields">
 				<ng-container *ngIf="['integer','text','url','textarea'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">

@@ -151,6 +151,13 @@ export class EditEntityDialogComponent implements OnInit {
 		});
 	}
 
+	lookInfo() {
+		/*const dialogRef = this.dialog.open(LookInfoComponent, {
+			width: '800px',
+			data: {current: this.current, model: null}
+		});*/
+	}
+
 	addIban() {
 		const customer = this.entityForm.controls.customer.value ? this.entityForm.controls.customer.value.id : '';
 		if (customer === '') {

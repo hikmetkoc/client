@@ -3,7 +3,7 @@
 	<div class="modal-header">
 		<h4 class="modal-title">Zimmet Formu</h4>
 		<div class="ml-auto">
-			<button mat-icon-button class="btn btn-label-brand" color="primary" matTooltip="Yazdır" (click)="showFiles()">
+			<button [hidden]="usersAcceptance.length === 0" mat-icon-button class="btn btn-label-brand" color="primary" matTooltip="Yazdır" (click)="showFiles()">
 				<mat-icon>print</mat-icon>
 			</button>
 			<button mat-icon-button class="btn btn-danger" color="primary" matTooltip="Kapat" (click)="onNoClick()">
@@ -11,7 +11,8 @@
 			</button>
 		</div>
 	</div>
-	<div id="print-section">
+	<div [hidden]="usersAcceptance.length > 0" style="font-weight: bold; font-size: medium;">Zimmet bulunmamaktadır!</div>
+	<div [hidden]="usersAcceptance.length === 0" id="print-section">
 		<div class="modal-body">
 			<style>
 				table tr td,
@@ -19,6 +20,7 @@
 					vertical-align: middle;
 				}
 			</style>
+			<br/>
 			<table class="table table-striped" style="text-align: center; width: 100%; table-layout: fixed;">
 				<thead>
 				<tr>
@@ -48,15 +50,15 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr *ngFor="let user of usersAcceptance">
-					<td>1</td>
+				<tr *ngFor="let user of usersAcceptance; let i = index">
+					<td>{{i + 1}}</td>
 					<td>{{user.material.type ? user.material.type.label : ' '}}</td>
 					<td>{{user.material.brand ? user.material.brand.label : ' '}}</td>
 					<td>{{user.material.model ? user.material.model : ' '}}</td>
 					<td>{{user.material.serialNumber ? user.material.serialNumber : ' '}}</td>
 					<td>{{user.material.ayirt ? user.material.ayirt : ' '}}</td>
-					<td>{{user.startDate ? formatDate(user.startDate) : ' '}}</td>
-					<td>{{user.endDate ? formatDate(user.endDate) : ' '}}</td>
+					<td>{{user.receiveDate ? formatDate(user.receiveDate) : ' '}}</td>
+					<td>{{user.submitDate ? formatDate(user.submitDate) : ' '}}</td>
 					<td>{{user.material.sirket ? user.material.sirket.label : ' '}}</td>
 				</tr>
 				</tbody>
@@ -76,7 +78,7 @@
 				<tr>
 					<td>Adı Soyadı:</td>
 					<td>Mete ÖCAL</td>
-					<td rowspan="3">1,2</td>
+					<td rowspan="3">{{bilgiislem}}</td>
 					<td>Adı Soyadı:</td>
 				</tr>
 				<tr>
@@ -92,7 +94,7 @@
 				<tr>
 					<td>Adı Soyadı:</td>
 					<td>Yılmaz KARAMAN</td>
-					<td rowspan="3"></td>
+					<td rowspan="3">{{otobil}}</td>
 					<td>{{this.usersAcceptance[0].user ? this.usersAcceptance[0].user.unvan.label : ''}}</td>
 				</tr>
 				<tr>
@@ -108,7 +110,7 @@
 				<tr>
 					<td>Adı Soyadı:</td>
 					<td>Funda BUGÜN</td>
-					<td rowspan="3"></td>
+					<td rowspan="3">{{finans}}</td>
 				</tr>
 				<tr>
 					<td>Unvanı:</td>
@@ -123,5 +125,4 @@
 			<h4 style="text-align: right">...../...../.....</h4>
 		</div>
 	</div>
-
 </kt-portlet>

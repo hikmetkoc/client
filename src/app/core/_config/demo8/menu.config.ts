@@ -43,6 +43,12 @@ export class MenuConfig {
 							icon: 'flaticon-suitcase',
 						},
 						{
+							title: 'Hareketler',
+							root: true,
+							page: '/behavior',
+							icon: 'flaticon-layer',
+						},
+						{
 							title: 'Görevler',
 							root: true,
 							page: '/customtask',
@@ -165,13 +171,6 @@ export class MenuConfig {
 							icon: 'flaticon-coins'
 						}
 						]
-				},
-				{
-					title: 'Hareketler',
-					root: true,
-					alignment: 'left',
-					page: '/behavior',
-					icon: 'flaticon-layer',
 				},
 				{
 					title: 'Yönetici Raporu',
