@@ -157,6 +157,7 @@ import { AddIbanComponent} from './_base/dialogs/add-iban-dialog/add-iban.compon
 import { AreYouOkeyComponent} from './_base/dialogs/are-you-okey-dialog/are-you-okey.component';
 import { ShowInvoiceComponent} from './_base/dialogs/show-invoice-dialog/show-invoice.component';
 import { PaymentOrderInfoDialogComponent} from './_base/dialogs/payment-order-info-dialog/payment-order-info-dialog.component';
+import { LookInfoDialogComponent} from './_base/dialogs/look-info-dialog/look-info-dialog.component';
 import { SpendInfoDialogComponent} from './_base/dialogs/spend-info-dialog/spend-info-dialog.component';
 import { ContinueConfirmComponent } from './_base/dialogs/continue-confirm/continue-confirm.component';
 import { LeadComponent } from './standard/lead/lead.component';
@@ -506,6 +507,7 @@ const routes: Routes = [
 		ShowResignComponent,
 		ShowPersonelContractComponent,
 		PaymentOrderInfoDialogComponent,
+		LookInfoDialogComponent,
 		SpendInfoDialogComponent,
 		ContinueConfirmComponent,
 		LeadComponent,
@@ -553,6 +555,7 @@ const routes: Routes = [
 		ShowResignComponent,
 		ShowPersonelContractComponent,
 		PaymentOrderInfoDialogComponent,
+		LookInfoDialogComponent,
 		SpendInfoDialogComponent,
 		ContinueConfirmComponent
 	],

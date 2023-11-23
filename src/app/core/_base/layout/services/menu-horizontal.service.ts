@@ -54,8 +54,7 @@ export class MenuHorizontalService {
 			} else if (menuItem.page === '/fuellimit' && !Utils.hasOperation('YakitLimit_Goruntuleme')) {
 			} else if (menuItem.page === '/material' && !Utils.hasOperation('Demirbas_Goruntuleme')) {
 			} else if (menuItem.page === '/motionsums' && !Utils.hasOperation('Hesaplar_Goruntuleme')) {
-			} else if (menuItem.page === '/behavior' && !Utils.hasOperation('Hareketler_Goruntuleme')) {
-			} else if (menuItem.title === 'PROJE İŞLEMLERİ' && !Utils.hasOperation('Projeler_Goruntuleme')) {
+			} else if (menuItem.title === 'PROJE İŞLEMLERİ' && !Utils.getDepartment()) {
 			} else if (menuItem.title === 'FATURA İŞLEMLERİ' && !Utils.hasOperation('FaturaListesi_Goruntuleme')) {
 			} else if (menuItem.title === 'TEDARİKÇİ İŞLEMLERİ' && !Utils.hasOperation('Tedarikci_Goruntuleme')) {
 			} else if (menuItem.title === 'SATIN ALMA İŞLEMLERİ' && !Utils.hasOperation('Satınalma_Goruntuleme')) {

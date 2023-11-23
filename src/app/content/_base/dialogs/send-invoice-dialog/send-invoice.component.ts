@@ -97,7 +97,7 @@ export class SendInvoiceComponent implements OnInit {
 			10000
 		);
 		this.baseService.find(queryParams, 'user_permissions').subscribe(res => {
-			this.userList = res.body.filter(hld => hld.createPayment === true && hld.user.activated === true );
+			this.userList = res.body.filter(hld => hld.sendInvoice === true && hld.user.activated === true );
 			this.cdr.markForCheck();
 		});
 	}

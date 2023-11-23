@@ -93,6 +93,11 @@ export class UserAcceptanceDialogComponent implements OnInit {
 
 	getAcceptance() {
 		const filters = new Set();
+		filters.add({
+			name: 'user.id',
+			operator: 'EQUALS',
+			value: this.current.id
+		});
 		const queryParams = new QueryParamsModel(
 			Utils.makeFilter(filters),
 			[{sortBy: 'createdDate', sortOrder: 'DESC'}],
@@ -100,11 +105,12 @@ export class UserAcceptanceDialogComponent implements OnInit {
 			1000
 		);
 		this.baseService.find(queryParams, 'user_acceptances').subscribe(res => {
-			this.usersAcceptance = res.body.filter(flt => flt.user.id === this.current.id);
+			this.usersAcceptance = res.body;
+			console.log(this.usersAcceptance.length);
 			this.cdr.markForCheck();
 		});
 
-		for (let i = 0; i <= this.usersAcceptance.length - 1; i++) {
+		/*for (let i = 0; i <= this.usersAcceptance.length - 1; i++) {
 			if (this.usersAcceptance[i].type.id !== 'Material_Type_Araba'
 			|| this.usersAcceptance[i].type.id !== 'Material_Type_Kredi_Karti') {
 				if (this.bilgiislem === '') {
@@ -125,7 +131,7 @@ export class UserAcceptanceDialogComponent implements OnInit {
 					this.finans = this.finans + ', ' + i;
 				}
 			}
-		}
-		console.log(this.bilgiislem + ' - ' + this.otobil + ' - ' + this.finans);
+		}*/
+		//console.log(this.bilgiislem + ' - ' + this.otobil + ' - ' + this.finans);
 	}
 }

@@ -32,6 +32,8 @@ import {startOfHour} from "@fullcalendar/core/datelib/marker";
 import {ShowResignComponent} from "../../detail/show-resign-dialog/show-resign.component";
 import {ShowInvoiceComponent} from "../show-invoice-dialog/show-invoice.component";
 import {AddIbanComponent} from "../add-iban-dialog/add-iban.component";
+import {LookInfoDialogComponent} from "../look-info-dialog/look-info-dialog.component";
+import {ShowFuelLimitRiskDialogComponent} from "../show-fuel-limit-risk-dialog/show-fuel-limit-risk-dialog.component";
 
 @Component({
 	selector: 'kt-edit-entity-dialog',
@@ -72,18 +74,10 @@ export class EditEntityDialogComponent implements OnInit {
 	lastquoteid: any;
 	quotes1 = [];
 	raporsay: any;
-	raporsay2: any;
-	lastquoteid2: any;
-	quotes2 = [];
-	raporsay3: any;
-	raporsay4: any;
-	input1: string;
-	sonid: any;
-	deneme: boolean;
 	gizlilik: boolean;
 	gizlilik2: boolean;
+	complateHidden: boolean;
 	isButtonClicked = false;
-	dialog2: any;
 	konularList = [];
 
 	constructor(
@@ -109,6 +103,7 @@ export class EditEntityDialogComponent implements OnInit {
 		this.entity = this.data.entity;
 		this.gizlilik = false;
 		this.gizlilik2 = false;
+		this.complateHidden = true;
 		this.model = this.data.model;
 		this.current = this.data.current;
 		this.model = JSON.parse(JSON.stringify(this.data.model));
@@ -152,10 +147,19 @@ export class EditEntityDialogComponent implements OnInit {
 	}
 
 	lookInfo() {
-		/*const dialogRef = this.dialog.open(LookInfoComponent, {
+		const dialogRef = this.dialog.open(LookInfoDialogComponent, {
 			width: '800px',
 			data: {current: this.current, model: null}
-		});*/
+		});
+	}
+	lookRisk() {
+		if (this.entityForm.controls.curcode.value === null) {
+			Utils.showActionNotification('Lütfen önce Cari Kodunu yazınız!', 'warning', 3000, true, false, 3000, this.snackBar);
+		} else {
+			const dialogRef = this.dialog.open(ShowFuelLimitRiskDialogComponent, { data: {current: this.entityForm.controls.curcode.value, model: this.model},
+				width: '1200px'
+			});
+		}
 	}
 
 	addIban() {
@@ -581,8 +585,17 @@ export class EditEntityDialogComponent implements OnInit {
 				this.filteredOptionss[field.name] = res.body;
 				console.log(this.filteredOptionss);
 			});*/
-		if (field.name === 'birim' && this.model.name === 'Task') {
-			this.getAttributeValues(value);
+		if (this.model.name === 'Task') {
+			if (field.name === 'birim') {
+				this.getAttributeValues(value);
+			}
+			if (field.name === 'status') {
+				if (value === 'Gör_Dur_Tamamlandı') {
+					this.complateHidden = false;
+				} else {
+					this.complateHidden = true;
+				}
+			}
 		}
 		if (field.name !== 'iban' && field.name !== 'customer' && !(value.length > 0)) { return; }
 		this.timer = setTimeout(function () {
@@ -858,7 +871,7 @@ export class EditEntityDialogComponent implements OnInit {
 		const description = this.baseService.getUserFullName() + ' tarafından geri gönderildi. ' + this.entityForm.controls.description.value;
 		console.log(id + ' - ' + status + ' - ' + description);
 		const url = `api/invoice_lists/${id}?status=${status}&description=${description}`;
-		//`?receiver=${receiver}&subject=${subject}&message=${message}`
+		// `?receiver=${receiver}&subject=${subject}&message=${message}`
 		// PUT isteği gönderme
 		this.http.put(url, null, { headers: httpHeaders})
 			.subscribe(

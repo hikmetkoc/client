@@ -9,6 +9,7 @@ export class Utils {
 
     static phoneMask = ['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
 	static ibanMask: Array<RegExp | string> = ['T', 'R', /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/];
+	static userDepartment = '';
 
 	static currencyMask = createNumberMask({
         prefix: '',
@@ -523,7 +524,14 @@ export class Utils {
         }
         return false;
     }
-
+	public static getDepartment() {
+		const user = JSON.parse(localStorage.getItem('user'));
+		if (user.birim.id === 'Birimler_IT' || user.id === 90) {
+			return true;
+		} else {
+			return false;
+		}
+	}
     public static arrayAddIfNotPresent(array, subject) {
         if (!this.arrayIsPresent(array, subject)) {
             array.push(subject);

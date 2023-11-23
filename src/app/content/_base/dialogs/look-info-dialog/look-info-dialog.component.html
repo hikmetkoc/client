@@ -1,0 +1,117 @@
+<kt-portlet>
+			<div class="modal-header">
+				<h4 class="modal-title">Bilgi Ekranı</h4>
+				<div class="ml-auto">
+					<button mat-icon-button class="btn btn-label-brand" color="primary" matTooltip="Kapat" (click)="onNoClick()">
+						<mat-icon>close</mat-icon>
+					</button>
+				</div>
+			</div>
+	<kt-portlet-body style="font-size: 15px">
+		<br/>
+		<div style="text-align: center; background-color: #222; padding: 10px;">
+			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">ONAY GRUPLARI</h4>
+		</div>
+		<table class="table table-striped">
+			<thead style="background-color: #0f695f">
+				<tr>
+					<th>Onay Grubu</th>
+					<th>1.Onay</th>
+					<th>2.Onay</th>
+					<th>3.Onay</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>METEOR MERKEZ</td>
+					<td>Cemal ELİTAŞ</td>
+					<td>Ümit YAŞAR</td>
+					<td>Özgür Cem CAN</td>
+				</tr>
+				<tr>
+					<td>İSTASYON / SATIN ALMA</td>
+					<td>Murat GEDİK</td>
+					<td>Ümit YAŞAR</td>
+					<td>Özgür Cem CAN</td>
+				</tr>
+				<tr>
+					<td>OTOBİL</td>
+					<td>Yılmaz KARAMAN</td>
+					<td>Ümit YAŞAR</td>
+					<td>Özgür Cem CAN</td>
+				</tr>
+				<tr>
+					<td>İNŞAAT</td>
+					<td>Murat CAN</td>
+					<td>Özgür Cem CAN</td>
+					<td>Özgür Cem CAN</td>
+				</tr>
+				<tr>
+					<td>İZMİR</td>
+					<td>Mustafa KARAMAN</td>
+					<td>Zafer AYDIN</td>
+					<td>Özgür Cem CAN</td>
+				</tr>
+				<tr>
+					<td>IĞDIR</td>
+					<td>Mustafa ÖCAL</td>
+					<td>Mustafa KARAMAN</td>
+					<td>Zafer AYDIN</td>
+				</tr>
+				<tr>
+					<td>İNŞAAT SATIŞ</td>
+					<td>Arif Ali CAN</td>
+					<td>Murat CAN</td>
+					<td>Özgür Cem CAN</td>
+				</tr>
+			</tbody>
+		</table>
+		<br/>
+		<div style="text-align: center; background-color: #222; padding: 10px;">
+			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">! DİKKAT EDİLMESİ GEREKENLER !</h4>
+		</div>
+		<style>
+			td {
+				font-weight: bold;
+			}
+		</style>
+		<table class="table table-striped">
+			<tr>
+				<td>Tedarikçi kaydı varsa, mükerrer eklemeyin.</td>
+			</tr>
+			<tr>
+				<td>Sadece yeni Iban eklerken, IBAN Ekle butonuna tıklayın.</td>
+			</tr>
+			<tr>
+				<td>Ödeme Yapan firmayı doğru seçin.</td>
+			</tr>
+		</table>
+	</kt-portlet-body>
+</kt-portlet>
+
+<!--
+<tr>
+				<td>{{current.store.stcode ? current.store.stcode : ''}}</td>
+				<td>{{current.invoiceNum ? current.invoiceNum : ''}}</td>
+				<td>{{(current.invoiceDate | date:'dd.MM.yyyy') ? (current.invoiceDate | date:'dd.MM.yyyy'): ''}}</td>
+				<td>{{current.paymentSubject.label ? current.paymentSubject.label : ''}}</td>
+				<td>{{current.paymentType.label ? current.paymentType.label : ''}}</td>
+				<td>{{current.paymentStyle.label ? current.paymentStyle.label : ''}}</td>
+				<td>{{current.exchange.label ? current.exchange.label : ''}}</td>
+				<td>{{current.iban.name ? current.iban.name : ''}}</td>
+				<td>{{current.description ? current.description : ''}}</td>
+				<td>{{current.kaynak ? current.kaynak : ''}}</td>
+			</tr>
+			<tr>
+				<td>{{(current.okeyFirst | date:'dd.MM.yyyy') ? (current.okeyFirst | date:'dd.MM.yyyy') : ''}}</td>
+				<td>{{(current.okeyMuh | date:'dd.MM.yyyy') ? (current.okeyMuh | date:'dd.MM.yyyy') : ''}}</td>
+				<td>{{(current.okeySecond | date:'dd.MM.yyyy') ? (current.okeySecond | date:'dd.MM.yyyy') : ''}}</td>
+				<td>{{current.cancelUser.firstName ? current.cancelUser.firstName + ' ' + current.cancelUser.lastName: ''}}</td>
+				<td>{{(current.cancelDate | date:'dd.MM.yyyy') ? (current.cancelDate | date:'dd.MM.yyyy') : ''}}</td>
+			</tr>
+			<tr>
+				<td>{{current.amount ? current.amount : ''}}</td>
+				<td>{{current.payamount? current.payamount : ''}}</td>
+				<td>{{current.nextamount ? current.nextamount : ''}}</td>
+			</tr>
+-->

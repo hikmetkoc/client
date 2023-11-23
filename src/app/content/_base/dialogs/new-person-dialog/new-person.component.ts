@@ -39,6 +39,7 @@ export class NewPersonComponent implements OnInit {
 	askerlikList = [];
 	cinsiyetList = [];
 	ehliyetList = [];
+	birimList = [];
 	ad = '';
 	soyad = '';
 	tc = '';
@@ -58,7 +59,7 @@ export class NewPersonComponent implements OnInit {
 	emekli: any;
 	engelli: any;
 	escalisma: any;
-	tcv: any;
+	tcv: any = true;
 	mybelgesi = false;
 	selectedEgitimId: any;
 	selectedSirketId: any;
@@ -66,6 +67,7 @@ export class NewPersonComponent implements OnInit {
 	selectedAskerlikId: any;
 	selectedEhliyetId: any;
 	selectedCinsiyetId: any;
+	selectedBirimId: any;
 	birthDate: any;
 	startDate: any;
 	utils = Utils;
@@ -97,7 +99,12 @@ export class NewPersonComponent implements OnInit {
 	onYesClick() {
 		if (this.tc.length !== 11) {
 			Utils.showActionNotification('TC 11 hane olmak zorundadır!', 'error', 2000, true, false, 3000, this.snackBar);
-		} else if (this.cep === '' || this.ad === '' || this.soyad === '' || this.selectedSirketId === undefined || this.selectedUnvanId === undefined || this.birthDate === undefined || this.startDate === undefined || this.selectedEgitimId === undefined || this.selectedAskerlikId === undefined || this.selectedCinsiyetId === undefined || this.selectedEhliyetId === undefined || this.mezunKurum === ''  || this.mezunBolum === ''  || this.acilAdSoyad === '' || this.acilYakinlik === '' || this.acilNo === '' || this.dogIl === '' || this.dogIlce === '' || this.acikAdres === '') {
+		} else if (this.cep === '' || this.ad === '' || this.soyad === '' || this.selectedSirketId === undefined ||
+			this.selectedUnvanId === undefined || this.birthDate === undefined || this.startDate === undefined ||
+			this.selectedEgitimId === undefined || this.selectedAskerlikId === undefined || this.selectedCinsiyetId === undefined ||
+			this.selectedEhliyetId === undefined || this.selectedBirimId === undefined || this.mezunKurum === ''  || this.mezunBolum === ''  || this.acilAdSoyad === '' ||
+			this.acilYakinlik === '' || this.acilNo === '' || this.dogIl === '' || this.dogIlce === '' || this.acikAdres === '' ||
+			this.iban === '' || this.kangrubu === '') {
 			Utils.showActionNotification('Lütfen tüm alanları doldurun!', 'error', 2000, true, false, 3000, this.snackBar);
 		} else {
 			const dialogRef = this.dialog.open(AreYouOkeyComponent, {
@@ -137,7 +144,7 @@ export class NewPersonComponent implements OnInit {
 					};
 
 					this.http.put(url + `?unvan=${this.selectedUnvanId}&sgkSirket=${this.selectedSirketId}
-					&egitim=${this.selectedEgitimId}&askerlik=${this.selectedAskerlikId}&cinsiyet=${this.selectedCinsiyetId}&ehliyet=${this.selectedEhliyetId}` , user, {headers: httpHeaders, responseType: 'text'}).subscribe(
+					&egitim=${this.selectedEgitimId}&askerlik=${this.selectedAskerlikId}&cinsiyet=${this.selectedCinsiyetId}&ehliyet=${this.selectedEhliyetId}&birim=${this.selectedBirimId}` , user, {headers: httpHeaders, responseType: 'text'}).subscribe(
 						(res: any) => {
 								if (res === 'Kayıt Başarılı') {
 									this.dialogRef.close();
@@ -215,6 +222,7 @@ export class NewPersonComponent implements OnInit {
 			this.askerlikList = res.body.filter(hld => hld.attribute.id === 'Askerlik_Durumlari');
 			this.cinsiyetList = res.body.filter(hld => hld.attribute.id === 'Cinsiyetler');
 			this.ehliyetList = res.body.filter(hld => hld.attribute.id === 'Ehliyet_Siniflari');
+			this.birimList = res.body.filter(hld => hld.attribute.id === 'Birimler');
 			this.cdr.markForCheck();
 		});
 		const filters2 = new Set();

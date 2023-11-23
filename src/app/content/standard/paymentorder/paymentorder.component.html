@@ -60,7 +60,7 @@
 				</h3>
 			</ng-container>
 			<ng-container ktPortletTools>
-				<button [hidden]="this.current.kismi === false || this.current.base64File === null || this.current.status.label === 'Reddedildi' || this.current.status.label === 'Ödendi' || this.current.status.label === 'Otomatik Ödendi'" (click)="spendGrid.add()" mat-raised-button matTooltip="Yeni Ödeme oluştur" type="button">
+				<button [hidden]="this.current.kismi === false || this.current.pdf === false || this.current.status.label === 'Reddedildi' || this.current.status.label === 'Ödendi' || this.current.status.label === 'Otomatik Ödemede'" (click)="spendGrid.add()" mat-raised-button matTooltip="Yeni Ödeme oluştur" type="button">
 					Yeni Ödeme
 				</button>
 			</ng-container>

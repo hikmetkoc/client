@@ -159,7 +159,7 @@ export class GridComponent implements AfterViewInit {
 	talimatOnayDurumu: any;
 	isButtonClicked = false;
 	isSecondButtonClicked = false;
-	bekleyenList = [];
+	gnlMudurOnayList = [];
 	isFilterOpen = false;
 	maliyetYeri: any;
 	hareketlerTedarikci: any;
@@ -271,7 +271,7 @@ export class GridComponent implements AfterViewInit {
 	async loadList() {
 		this.selection.clear();
 		const queryParams = new QueryParamsModel();
-		if (this.model.name !== 'User') {
+		if (this.model.name === 'PaymentOrder') {
 			queryParams.sorts = this.sort.direction && this.sort.active ? [{
 				sortOrder: this.sort.direction.toUpperCase(),
 				sortBy: this.sort.active
@@ -322,7 +322,7 @@ export class GridComponent implements AfterViewInit {
 					value: this.baseService.getUser().id
 				});
 			}
-			if ((this.baseService.getUser().birim.id === 'Birimler_Loher' || this.baseService.getUser().birim.id === 'Birimler_Avelice') && this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm') {
+			if ((this.baseService.getUser().birim.id === 'Birimler_Loher' || this.baseService.getUser().birim.id === 'Birimler_Avelice' || this.baseService.getUser().birim.id === 'Birimler_SanSat') && this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm') {
 				filters.add({
 					name: 'id',
 					operator: FilterOperation.EQUALS,
@@ -399,7 +399,7 @@ export class GridComponent implements AfterViewInit {
 					value: 'Payment_Status_Bek2'
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birimler_Muh') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Muh' && this.baseService.getUserId() !== 71) {
 				filters.add({
 					name: 'muhasebeGoruntusu',
 					operator: FilterOperation.EQUALS,
@@ -412,6 +412,16 @@ export class GridComponent implements AfterViewInit {
 						'Cost_Place_Ncc' , 'Cost_Place_Cemcan' , 'Cost_Place_Mudanya' , 'Cost_Place_Simya' ,
 						'Cost_Place_Vitalyum' , 'Cost_Place_Vita' , 'Cost_Place_Tepe' , 'Cost_Place_Samanli' ,
 						'Cost_Place_Ciftlikkoy' , 'Cost_Place_Sarj' , 'Cost_Place_Charge' , 'Cost_Place_Otobil']
+				});
+			}
+			if (this.baseService.getUserId() === 71) { // Serpil TÜRKOĞLU ; Saha Primi hariç tüm talimatları görebilsin.
+				filters.add({
+					name: 'paymentSubject',
+					operator: FilterOperation.IN,
+					value: ['Payment_Sub_Avans' , 'Payment_Sub_BES' , 'Payment_Sub_Cihaz' ,
+						'Payment_Sub_Diger' , 'Payment_Sub_Fatura' , 'Payment_Sub_Iade' , 'Payment_Sub_Icra' ,
+						'Payment_Sub_Kargo' , 'Payment_Sub_Masraf' , 'Payment_Sub_On' , 'Payment_Sub_Personel' ,
+						'Payment_Sub_Prim' , 'Payment_Sub_Sehven' , 'Payment_Sub_Seyehat' , 'Payment_Sub_Sigorta' , 'Payment_Sub_Tra']
 				});
 			}
 			if (this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas') {
@@ -435,16 +445,49 @@ export class GridComponent implements AfterViewInit {
 					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir']
 				});
 			}
-			if (this.baseService.getUser().unvan.id === 'Unvanlar_Gen_Mud') {
+			if (this.baseService.getUser().birim.id === 'Birimler_SanSat') {
 				filters.add({
-					name: 'secondAssigner.id',
-					operator: FilterOperation.EQUALS,
-					value: this.baseService.getUserId()
+					name: 'cost',
+					operator: FilterOperation.IN,
+					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir']
 				});
-				filters.add({
-					name: 'status.id',
-					operator: FilterOperation.EQUALS,
-					value: 'Payment_Status_Bek2'
+			}
+			if (this.baseService.getUser().unvan.id === 'Unvanlar_Gen_Mud') {
+				this.gnlMudurOnayList = [];
+				const filters2 = new Set();
+				const queryParams2 = new QueryParamsModel(
+					Utils.makeFilter(filters2),
+					[{sortBy: 'createdDate', sortOrder: 'DESC'}],
+					0,
+					5000
+				);
+				this.baseService.find(queryParams2, 'payment_orders').subscribe(res => {
+					this.gnlMudurOnayList = res.body
+						.filter(gnl => (gnl.assigner.id === 99 && gnl.status.id === 'Payment_Status_Bek1')
+							|| (gnl.secondAssigner.id === 99 && gnl.status.id === 'Payment_Status_Bek2'))
+						.map(gnl => gnl.id);
+					if (this.gnlMudurOnayList.length === 0) {
+						this.gnlMudurOnayList[0].id = 'b55f76bf-7a0b-4675-9142-64e46c000000';
+					}
+					filters.add({
+						name: 'id',
+						operator: FilterOperation.IN,
+						value: this.gnlMudurOnayList
+					});
+					queryParams.filter = Utils.makeFilter(filters);
+					queryParams.owner = this.owner;
+					queryParams.assigner = this.assigner;
+					queryParams.other = this.other;
+					queryParams.search = this.searchStr;
+					this.dataSource.load(queryParams);
+					// tslint:disable-next-line:no-shadowed-variable
+					this.dataSource.entitySubject.subscribe(res => {
+						if (JSON.stringify(this.result) !== JSON.stringify(res)) {
+							this.result = res;
+							this.loadComplete.emit(res);
+						}
+					});
+					this.cdr.markForCheck();
 				});
 			}
 		}
@@ -477,6 +520,13 @@ export class GridComponent implements AfterViewInit {
 				});*/
 			}
 			if (this.baseService.getUser().birim.id === 'Birimler_Avelice') {
+				filters.add({
+					name: 'paymentorder.cost',
+					operator: FilterOperation.IN,
+					value: ['Cost_Place_MeteorIgdir', 'Cost_Place_Avelice']
+				});
+			}
+			if (this.baseService.getUser().birim.id === 'Birimler_SanSat') {
 				filters.add({
 					name: 'paymentorder.cost',
 					operator: FilterOperation.IN,
@@ -586,7 +636,7 @@ export class GridComponent implements AfterViewInit {
 						operator: FilterOperation.IN,
 						value: ['Dokuman_Sirketleri_Simya', 'Dokuman_Sirketleri_Genel']
 					});
-				} else if (this.baseService.getUserId() === 9 || this.baseService.getUserId() === 14 || this.baseService.getUserId() === 18 || this.baseService.getUserId() === 94) {
+				} else if (this.baseService.getUserId() === 35750 || this.baseService.getUserId() === 14 || this.baseService.getUserId() === 18 || this.baseService.getUserId() === 94) {
 					filters.add({
 						name: 'sirket',
 						operator: FilterOperation.IN,
@@ -601,7 +651,34 @@ export class GridComponent implements AfterViewInit {
 				}
 			}
 		}
-		queryParams.filter = Utils.makeFilter(filters);
+		if ((this.model.name === 'PaymentOrder' && this.baseService.getUser().unvan.id !== 'Unvanlar_Gen_Mud')
+			|| (this.model.name !== 'PaymentOrder')) {
+			queryParams.filter = Utils.makeFilter(filters);
+			queryParams.owner = this.owner;
+			queryParams.assigner = this.assigner;
+			queryParams.other = this.other;
+
+			queryParams.search = this.searchStr;
+			this.dataSource.load(queryParams);
+			this.dataSource.entitySubject.subscribe(res => {
+				if (JSON.stringify(this.result) !== JSON.stringify(res)) {
+					this.result = res;
+					if (this.model.name === 'PaymentOrder') {
+						this.result.sort((a, b) => {
+							if (a.paymentSubject.id === 'Payment_Sub_Acik') {
+								return -1;
+							} else {
+								const dateA = new Date(a.createdDate);
+								const dateB = new Date(b.createdDate);
+								return dateB.getTime() - dateA.getTime();
+							}
+						});
+					}
+					this.loadComplete.emit(res);
+				}
+			});
+		}
+		/*queryParams.filter = Utils.makeFilter(filters);
 		queryParams.owner = this.owner;
 		queryParams.assigner = this.assigner;
 		queryParams.other = this.other;
@@ -613,7 +690,7 @@ export class GridComponent implements AfterViewInit {
 				this.result = res;
 				this.loadComplete.emit(res);
 			}
-		});
+		});*/
 	}
 
 	roundUp(num: number): number {
@@ -905,8 +982,8 @@ export class GridComponent implements AfterViewInit {
 			this.displayedColumns.push('hareketlerSirket');
 			this.displayedColumns.push('hareketlerTedarikci');
 			this.displayedColumns.push('hareketlerMaliyet');
-			this.displayedColumns.push('hareketlerBorc');
-			this.displayedColumns.push('hareketlerAlacak');
+			/*this.displayedColumns.push('hareketlerBorc');
+			this.displayedColumns.push('hareketlerAlacak');*/
 			this.displayedColumns.push('hareketlerBakiye');
 		}
 		for (const field of this.model.fields) {
@@ -964,6 +1041,33 @@ export class GridComponent implements AfterViewInit {
 					tap(res => {
 						if (res) {
 							Utils.downloadFile(res, 'Excel', 'Seçili Excel Raporu');
+							this.baseService.loadingSubject.next(true);
+						}
+					}),
+					catchError(err => {
+						this.baseService.loadingSubject.next(false);
+						return err;
+					})
+				).subscribe();
+		}
+	}
+
+	selectedSpendExcelReport() {
+		const selectedData = this.result;
+
+		if (selectedData.length > 0) {
+			const selectedIds = selectedData.map(row => row.id);
+			this.baseService.loadingSubject.next(false);
+			if (this.baseService.loadingSubject.value) { return; }
+			const httpHeaders = this.httpUtils.getHTTPHeaders();
+			const url = `api/${this.model.apiName}/selectedSpendExcelReport`;
+			const requestData = { ids: selectedIds };
+
+			this.http.post(url, requestData, { headers: httpHeaders, responseType: 'blob' })
+				.pipe(
+					tap(res => {
+						if (res) {
+							Utils.downloadFile(res, 'Excel', 'Finans Ödemeler Raporu');
 							this.baseService.loadingSubject.next(true);
 						}
 					}),
@@ -1101,9 +1205,9 @@ export class GridComponent implements AfterViewInit {
 	add(presetValues?) {
 		const entity = {};
 		this.edit(entity, undefined, presetValues);
-		if (this.model.apiName === 'stores') {
+		/*if (this.model.apiName === 'stores') {
 			this.dialog.open(StoreDialogComponent, {width: '440px'});
-		}
+		}*/
 	}
 
 	edit(entity, e?, presetValues = []) {
@@ -1124,9 +1228,9 @@ export class GridComponent implements AfterViewInit {
 			this.loadList();
 			this.change.emit(this.result);
 		});
-		if (this.model.apiName === 'stores' && entity.buyowner === null) {
+		/*if (this.model.apiName === 'stores' && entity.buyowner === null) {
 			this.dialog.open(StoreDialogComponent, {width: '440px'});
-		}
+		}*/
 	}
 
 	newPerson(entity, e?, presetValues = []) {
@@ -1331,7 +1435,7 @@ export class GridComponent implements AfterViewInit {
 		for (const p of presetValues) {
 			entity[p.field] = p.value;
 		}
-		const dialogRef = this.dialog.open(ShowFuelLimitRiskDialogComponent, { data: {current: entity, model: this.model},
+		const dialogRef = this.dialog.open(ShowFuelLimitRiskDialogComponent, { data: {current: entity.curcode, model: this.model},
 			width: '1200px'
 		});
 	}
@@ -1553,7 +1657,7 @@ export class GridComponent implements AfterViewInit {
 		});
 	}
 
-	uploadBase64File(entity, e?, presetValues = []) {
+	uploadBase64File(entity, e?, presetValues = [], subject?: string) {
 		if (e) {
 			e.stopPropagation();
 		}
@@ -1565,7 +1669,7 @@ export class GridComponent implements AfterViewInit {
 		}
 		const dialogRef = this.dialog.open(Base64FileDialogComponent, {
 			width: '800px',
-			data: {current: entity, model: this.model},
+			data: {current: entity, model: this.model, subject},
 			disableClose: true,
 		});
 		dialogRef.afterClosed().subscribe(() => {
@@ -1573,13 +1677,13 @@ export class GridComponent implements AfterViewInit {
 		});
 	}
 
-	showBase64File(entity, e?, presetValues = []) {
+	showBase64File(entity, e?, presetValues = [], subject?: string) {
 		if (e) { e.stopPropagation(); }
 		const apiUrl = 'api/file_containers/showFile';
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
 		const locName = this.model.name;
 		const location = entity.id.toString();
-		this.http.get(apiUrl + `?location=${location}&locName=${locName}`, { headers: httpHeaders, responseType: 'text' }).subscribe(
+		this.http.get(apiUrl + `?location=${location}&locName=${locName}&subject=${subject}`, { headers: httpHeaders, responseType: 'text' }).subscribe(
 			response => {
 				const decodedData = atob(response);
 				const cleanData = decodedData.replace(/\s+/g, '');
@@ -1664,7 +1768,23 @@ export class GridComponent implements AfterViewInit {
 			this.change.emit(this.result);
 		});
 
-		this.loadList();
+		//this.loadList();
+	}
+	cancelBuyOwner(entity, e?, presetValues = []) {
+		if (e) { e.stopPropagation(); }
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		entity.status = this.baseService.getAttrVal('Söz_Dur_Pasif');
+		this.baseService.update(entity, 'stores').subscribe(() => {
+			this.loadList();
+			this.change.emit(this.result);
+		});
+
+		//this.loadList();
 	}
 // SATIRLARI RENKLENDİRME
 	getRowClasses(row: any, even: boolean): any {
@@ -1678,8 +1798,12 @@ export class GridComponent implements AfterViewInit {
 			priority_cancel: row['invoiceStatus'] && row['invoiceStatus'].label === 'İptal',
 			priority_spend_success: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Ödendi',
 			priority_payment_order_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Ödendi',
-			priority_spend_cancel: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Reddedildi',
 			priority_payment_order_half_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Kısmi Ödendi',
+			priority_payment_order_oto_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Otomatik Ödemede',
+			priority_payment_order_acikOdeme: this.model.name === 'PaymentOrder' && row['paymentSubject'] && row['closePdf'] === false && row['paymentSubject'].label === 'Açık Ödeme',
+			priority_payment_order_okey: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Onaylandı',
+			priority_payment_order_cancel: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Reddedildi',
+			priority_spend_cancel: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Reddedildi',
 			fuel_limit_okey: this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Onaylandı',
 			fuel_limit_cancel: this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Reddedildi'
 		};

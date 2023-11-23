@@ -148,6 +148,26 @@
 					<span *ngIf="this.tablo !== 'holidays' && this.tablo !== 'spends'">
 					{{ title ? title : model ? model.pluralTitle : '' }}
 				  </span>
+					<span *ngIf="this.tablo === 'payment_orders'">
+						<span class="payment_color_info" style="background-color: #bb7f00">
+							Otomatik Ödemede
+						</span>
+						<span class="payment_color_info" style="background-color: #7bdcff">
+							Onaylandı
+						</span>
+						<span class="payment_color_info" style="background-color: #900f13">
+							Reddedildi
+						</span>
+						<span class="payment_color_info" style="background-color: #47CEAC">
+							Kısmi Ödendi
+						</span>
+						<span class="payment_color_info" style="background-color: #00bf00">
+							Ödendi
+						</span>
+						<span class="payment_color_info" style="background-color: #8a0dff; color: white">
+							Açık Ödeme
+						</span>
+					</span>
 				</ng-container>
 			</h3>
 		</ng-container>
@@ -474,15 +494,15 @@
 			</ng-container> -->
 			<ng-container matColumnDef="paymentorder6">
 				<mat-header-cell *matHeaderCellDef>Ödenen Para Birimi</mat-header-cell>
-				<mat-cell *matCellDef="let row">{{row.paymentorder.paymentStyle.label.toString() ? row.paymentorder.paymentStyle.label.toString() : ''}}</mat-cell>
+				<mat-cell *matCellDef="let row">{{row.paymentorder.paymentStyle ? row.paymentorder.paymentStyle.label.toString() : ''}}</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="paymentorder7">
 				<mat-header-cell *matHeaderCellDef>Kur Tarihi</mat-header-cell>
-				<mat-cell *matCellDef="let row">{{row.paymentorder.exchange ? row.paymentorder.exchange.label : ' '}}</mat-cell>
+				<mat-cell *matCellDef="let row">{{row.paymentorder.exchange ? row.paymentorder.exchange.label.toString() : ' '}}</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="paymentorder8">
 				<mat-header-cell *matHeaderCellDef>Ödeme Tipi</mat-header-cell>
-				<mat-cell *matCellDef="let row">{{row.paymentorder.paymentType.label.toString()? row.paymentorder.paymentType.label.toString() : ' '}}</mat-cell>
+				<mat-cell *matCellDef="let row">{{row.paymentorder.paymentType ? row.paymentorder.paymentType.label.toString() : ' '}}</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="hareketlerSirket">
 				<mat-header-cell *matHeaderCellDef>Üst Cari</mat-header-cell>
@@ -496,14 +516,14 @@
 				<mat-header-cell *matHeaderCellDef>Maliyet Yeri</mat-header-cell>
 				<mat-cell *matCellDef="let row">{{row.motionsums.cost ? row.motionsums.cost.label : ' '}}</mat-cell>
 			</ng-container>
-			<ng-container matColumnDef="hareketlerBorc">
+			<!--<ng-container matColumnDef="hareketlerBorc">
 				<mat-header-cell *matHeaderCellDef>Borç</mat-header-cell>
 				<mat-cell style="font-weight: bold" *matCellDef="let row">{{row.motionsums.loan ? formatCurrency(row.motionsums.loan) + ' &#8378;' : ' '}}</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="hareketlerAlacak">
 				<mat-header-cell *matHeaderCellDef>Alacak</mat-header-cell>
 				<mat-cell style="font-weight: bold" *matCellDef="let row">{{row.motionsums.receive ? formatCurrency(row.motionsums.receive) + ' &#8378;' : ' '}}</mat-cell>
-			</ng-container>
+			</ng-container> -->
 			<ng-container matColumnDef="hareketlerBakiye">
 				<mat-header-cell *matHeaderCellDef>Bakiye</mat-header-cell>
 				<mat-cell style="font-weight: bold" *matCellDef="let row">{{row.motionsums.balance ? formatCurrency(row.motionsums.balance) + ' &#8378;' : ' '}}</mat-cell>
@@ -590,7 +610,7 @@
 						</button>
 						<button *ngIf="row.approvalStatus.label === 'Onaylandı' &&
 							(row.owner.id === this.baseService.getUserId() || row.user.id === this.baseService.getUserId())"
-								mat-icon-button color="secondary" matTooltip="Belge Ekle" type="button" [disabled]="loading" (click)="uploadBase64File(row, $event)">
+								mat-icon-button color="secondary" matTooltip="Belge Ekle" type="button" [disabled]="loading" (click)="uploadBase64File(row, $event, [],'İzin')">
 							<mat-icon>file_upload</mat-icon>
 						</button>
 						<!--<button *ngIf="row.approvalStatus.label === 'Onaylandı' && row.type.id === 'Izin_Turu_Rap' &&
@@ -598,8 +618,8 @@
 								mat-icon-button color="secondary" matTooltip="Rapor Yükle" type="button" [disabled]="loading" (click)="uploadBase64File(row, $event)">
 							<mat-icon>file_upload</mat-icon>
 						</button> -->
-						<button *ngIf="row.approvalStatus.label === 'Onaylandı' || this.baseService.getRoleId() === 'ROLE_IK'"
-								mat-icon-button color="secondary" matTooltip="Belge Görüntüle" type="button" (click)="showBase64File(row, $event)">
+						<button *ngIf="(row.approvalStatus.label === 'Onaylandı' || this.baseService.getRoleId() === 'ROLE_IK') && row.pdf === true"
+								mat-icon-button color="secondary" matTooltip="Belge Görüntüle" type="button" (click)="showBase64File(row, $event, [],'İzin')">
 							<mat-icon>visibility</mat-icon>
 						</button>
 						<button *ngIf="row.assigner.id === this.baseService.getUserId() &&
@@ -649,9 +669,9 @@
 						<button mat-icon-button color="secondary" matTooltip="Bilgi" type="button" (click)="infoPaymentOrder(row, $event)">
 							<mat-icon>information</mat-icon>
 						</button>
-						<button *ngIf="row.kaynak === 'MANUEL TALİMAT' && (row.status.label !== 'Reddedildi' && row.status.label !== 'Onaylandı' &&
+						<button *ngIf="row.kaynak === 'MANUEL TALİMAT' && (row.status.label !== 'Reddedildi' && row.status.label !== 'Onaylandı' && row.pdf === false &&
 						 	row.status.label !== 'Ödendi' && row.status.label !== 'Kısmi Ödendi')" mat-icon-button color="secondary" matTooltip="Fatura Ekle"
-								type="button" [disabled]="loading" (click)="uploadBase64File(row, $event)">
+								type="button" [disabled]="loading" (click)="uploadBase64File(row, $event, [],'Fatura')">
 							<ng-container *ngIf="!loading; else loadingBlock">
 								<mat-icon>file_upload</mat-icon>
 							</ng-container>
@@ -659,19 +679,30 @@
 								<mat-spinner diameter="20"></mat-spinner>
 							</ng-template>
 						</button>
-						<button mat-icon-button color="secondary" matTooltip="Fatura Görüntüle" type="button" (click)="showBase64File(row, $event)">
+						<button *ngIf="row.pdf === true" mat-icon-button color="secondary" matTooltip="Fatura Görüntüle" type="button"
+								(click)="showBase64File(row, $event, [],'Fatura')">
 							<mat-icon>visibility</mat-icon>
 						</button>
-						<button *ngIf="(row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor')
+						<button *ngIf="row.kaynak === 'MANUEL TALİMAT' && (row.status.label === 'Ödendi'
+								&& row.closePdf === false && row.paymentSubject.id === 'Payment_Sub_Acik')"
+								mat-icon-button color="secondary" matTooltip="Fatura Kapatma Görüntüsü Ekle"
+								type="button" [disabled]="loading" (click)="uploadBase64File(row, $event, [],'Açık Ödeme')">
+							<mat-icon>attach_file</mat-icon>
+						</button>
+						<button *ngIf="row.closePdf === true && row.paymentSubject.id === 'Payment_Sub_Acik'"
+								mat-icon-button color="secondary" matTooltip="Fatura Kapatma Görüntüle" type="button" (click)="showBase64File(row, $event, [],'Açık Ödeme')">
+							<mat-icon>visibility_off</mat-icon>
+						</button>
+						<button *ngIf="((row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor')
 						 	|| (row.secondAssigner.id === this.baseService.getUserId() && row.status.label === '2.Onay Bekleniyor')
-						 	|| (this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm' && row.status.label === 'Muhasebe Onayı')"
+						 	|| (this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm' && row.status.label === 'Muhasebe Onayı')) && row.pdf === true"
 								mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
 							<mat-icon>check</mat-icon>
 						</button>
-						<button *ngIf="(row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor')
+						<button *ngIf="((row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor')
 						 	|| (row.secondAssigner.id === this.baseService.getUserId() && row.status.label === '2.Onay Bekleniyor')
 						 	 || (this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm' && row.status.label === 'Muhasebe Onayı')
-						 	  || (this.baseService.getUser().birim.label === 'Finans' && row.status.label === 'Onaylandı')"
+						 	  || (this.baseService.getUser().birim.label === 'Finans' && row.status.label === 'Onaylandı')) && row.pdf === true"
 								mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
 							<mat-icon>cancel</mat-icon>
 						</button>
@@ -702,11 +733,11 @@
 						</button>
 						<button *ngIf="this.baseService.getUser().birim.id === 'Birimler_Fin' && row.status.label === 'Ödendi'
 							&& row.paymentorder.dekont === true" mat-icon-button color="success" matTooltip="Dekont Yükle"
-								type="button" (click)="uploadBase64File(row, $event)">
+								type="button" (click)="uploadBase64File(row, $event, [],'Dekont')">
 							<mat-icon>receipt</mat-icon>
 						</button>
 						<button *ngIf="row.paymentorder.dekont === true" mat-icon-button color="warn" matTooltip="Dekont Görüntüle" type="button"
-								(click)="showBase64File(row, $event)">
+								(click)="showBase64File(row, $event, [],'Dekont')">
 							<mat-icon>remove_red_eye</mat-icon>
 						</button>
 					</div>
@@ -725,6 +756,11 @@
 							&& row.buyStatus.label === 'Onay Bekliyor'" mat-icon-button color="success" matTooltip="Merkezden Tedarik Edildi" type="button"
 								(click)="changecenter(row, $event)">
 							<mat-icon>shop</mat-icon>
+						</button>
+						<button *ngIf="row.status.label === 'Onaylandı' && row.buyowner.id === this.baseService.getUserId()
+							&& row.buyStatus.label === 'Onay Bekliyor'" mat-icon-button color="success" matTooltip="Sorumluluk Reddi" type="button"
+								(click)="cancelBuyOwner(row, $event)">
+							<mat-icon>cancel</mat-icon>
 						</button>
 						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.status.label === 'Onay Bekliyor'"
 								mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
@@ -745,12 +781,17 @@
 						</button>
 					</div>
 					<div *ngIf="model.apiName == 'invoice_lists'"> <!-- FATURA LİSTESİ BUTONLARI -->
-						<button *ngIf="baseService.getUserId() === 26800 && (row.invoiceStatus.label === 'Sahipsiz' || row.invoiceStatus.label === 'Atandı'
+						<button *ngIf="baseService.getUserId() === 26800 && row.pdf === true && (row.invoiceStatus.label === 'Sahipsiz' || row.invoiceStatus.label === 'Atandı'
 							|| row.invoiceStatus.label === 'Hatalı Atama')" mat-icon-button color="success" matTooltip="Sorumlu Ata" type="button"
 								(click)="sendOwner(row, $event)">
 							<mat-icon>supervisor_account</mat-icon>
 						</button>
-						<button mat-icon-button color="success" matTooltip="Fatura Görüntüle" type="button" (click)="showBase64File(row, $event)">
+						<button *ngIf="row.pdf === false && this.baseService.getUserId() === 26800"
+								mat-icon-button color="secondary" matTooltip="Fatura PDF Ekle"
+								type="button" [disabled]="loading" (click)="uploadBase64File(row, $event, [],'E-Fatura')">
+							<mat-icon>file_upload</mat-icon>
+						</button>
+						<button *ngIf="row.pdf === true" mat-icon-button color="success" matTooltip="Fatura Görüntüle" type="button" (click)="showBase64File(row, $event)">
 							<mat-icon>visibility</mat-icon>
 						</button>
 						<button *ngIf="row.owner !== null && row.invoiceStatus.label === 'Atandı' && row.owner.login === this.baseService.getUser().login"

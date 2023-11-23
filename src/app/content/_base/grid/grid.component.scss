@@ -10,6 +10,13 @@ kt-grid {
 	.kt-nav__link {
 		cursor: pointer;
 	}
+	.payment_color_info {
+		display: inline-block;
+		color: black;
+		border: 1px solid black;
+		padding: 5px;
+		margin-left: 10px;
+	}
 	.priority_muk {
 		background-color: #000000;
 		mat-cell {
@@ -63,7 +70,33 @@ kt-grid {
 			font-weight: bold;
 		}
 	}
-	.priority_spend_cancel {
+	.priority_payment_order_okey {
+		background-color: #7bdcff;
+		mat-cell {
+			font-weight: bold;
+		}
+	}
+	.priority_payment_order_acikOdeme {
+		background-color: #8a0dff;
+		animation: blink 2s infinite;
+		border-style: solid;
+		mat-cell {
+			font-weight: bold;
+			color: white;
+		}
+	}
+	@keyframes blink {
+		0% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
+	}
+	.priority_payment_order_cancel {
 		background-color: #900f13;
 
 		mat-cell {
@@ -72,6 +105,20 @@ kt-grid {
 	}
 	.priority_payment_order_half_success {
 		background-color: #47CEAC;
+
+		mat-cell {
+			font-weight: bold;
+		}
+	}
+	.priority_payment_order_oto_success {
+		background-color: #bb7f00;
+
+		mat-cell {
+			font-weight: bold;
+		}
+	}
+	.priority_spend_cancel {
+		background-color: #900f13;
 
 		mat-cell {
 			font-weight: bold;

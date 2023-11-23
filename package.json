@@ -11,6 +11,9 @@
     "e2e": "ng e2e",
     "bundle-report": "webpack-bundle-analyzer dist/metronic/stats.json"
   },
+	"engines": {
+		"node": "16.15.1"
+	},
   "private": true,
   "dependencies": {
     "@angular/animations": "^8.0.2",

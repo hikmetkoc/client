@@ -17,7 +17,9 @@ export class ShowFuelLimitRiskDialogComponent implements OnInit {
 	@Input() model: any;
 	riskDetay = [];
 	toplamLimit = 0;
+	toplamDbsLimit = 0;
 	cariUnvani = '';
+	mevcutTuketim = 0;
 
 	constructor(
 		private cdr: ChangeDetectorRef,
@@ -40,12 +42,16 @@ export class ShowFuelLimitRiskDialogComponent implements OnInit {
 	ngOnInit() {
 		this.model = this.data.model;
 		this.current = this.data.current;
+		console.log(this.current);
 		this.riskControl();
+	}
+	onNoClick() {
+		this.dialogRef.close();
 	}
 
 	riskControl() {
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
-		const curcode = this.current.curcode;
+		const curcode = this.current;
 		const servisSifre = '14ADa23.';
 		const firmaKodu = 875257;
 		const cariKodu = curcode;
@@ -63,11 +69,13 @@ export class ShowFuelLimitRiskDialogComponent implements OnInit {
 							onayliFatura : response[i].OnayliFatura,
 							limit : response[i].KullanilabilirLimit,
 							bankaAdi : response[i].BankaAdi,
+							mevcutTuketim : response[i].MevcutTuketim,
 							nakitRisk : response[i].BankaAdi === 'GARANTİ BANKASI' || response[i].BankaAdi === 'ING BANK' ?
 								response[i].DbsLimit - response[i].OnayliFatura - response[i].BankadanGelenKullanilabilirLimit : response[i].NakitRisk,
 						});
-						//this.toplamLimit += this.riskDetay[i].limit;
+						this.toplamDbsLimit += this.riskDetay[i].dbsLimit;
 						this.toplamLimit = this.riskDetay[0].limit;
+						this.mevcutTuketim = this.riskDetay[0].mevcutTuketim;
 						this.cariUnvani = this.riskDetay[0].cariUnvan;
 					}
 					//limit : response[i].DbsLimit - response[i].NakitRisk - response[i].OnayliFatura,

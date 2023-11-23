@@ -44,6 +44,7 @@
 				<th>Talimat Oluşturulma Tarihi</th>
 				<th>1.Onay Tarihi</th>
 				<th>Muhasebe Onay Tarihi</th>
+				<th>Onay Veren Muhasebeci</th>
 				<th>2.Onay Tarihi</th>
 				<th>Reddeden</th>
 				<th>Reddetme Tarihi</th>
@@ -54,6 +55,7 @@
 				<td>{{current.createdDate ? (current.createdDate | date:'dd.MM.yyyy HH:mm') : ' '}}</td>
 				<td>{{current.okeyFirst ? (current.okeyFirst | date:'dd.MM.yyyy HH:mm') : ' '}}</td>
 				<td>{{current.okeyMuh ? (current.okeyMuh | date:'dd.MM.yyyy HH:mm') : ' '}}</td>
+				<td>{{current.onayMuh ? (current.onayMuh.firstName + ' ' + current.onayMuh.lastName) : ' '}}</td>
 				<td>{{current.okeySecond ? (current.okeySecond | date:'dd.MM.yyyy HH:mm') : ' '}}</td>
 				<td>{{current.cancelUser ? (current.cancelUser.firstName + ' ' + current.cancelUser.lastName) : ' '}}</td>
 				<td>{{current.cancelDate ? (current.cancelDate | date:'dd.MM.yyyy HH:mm') : ' '}}</td>

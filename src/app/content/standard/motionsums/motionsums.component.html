@@ -1,4 +1,4 @@
-<kt-grid #mainGrid [entity]="model.name" owner="HIERARCHY_D" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current || isCalendar || !utils.hasOperation('Hesaplar_Goruntuleme')"></kt-grid>
+<kt-grid #mainGrid [entity]="model.name" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current || isCalendar || !utils.hasOperation('Hesaplar_Goruntuleme')"></kt-grid>
 
 <ng-container *ngIf="isCalendar">
 	<kt-portlet>

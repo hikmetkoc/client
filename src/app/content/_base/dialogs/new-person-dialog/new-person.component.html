@@ -84,6 +84,14 @@
 							</mat-select>
 						</mat-form-field>
 					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Birim</mat-label>
+							<mat-select [(value)]="selectedBirimId">>
+								<mat-option *ngFor="let attr of birimList" [value]="attr.id">{{attr.label}}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</td>
 				</tr>
 				<tr>
 					<td>

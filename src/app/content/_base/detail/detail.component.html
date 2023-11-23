@@ -61,8 +61,9 @@
 					<span *ngIf="tiny">
 						<b>{{field.title}}</b>:
 					</span>
-					<span *ngIf="['integer','text','url'].indexOf(field.fieldType) > -1 && field.name !== 'password'" [class]="tiny ? '' : 'kt-widget4__title'">
-						{{current[field.name]}}
+					<span *ngIf="['integer','text','url'].indexOf(field.fieldType) > -1 && field.name !== 'password'"
+						  [class]="tiny ? '' : 'kt-widget4__title'">
+    						{{current[field.name]}}
 					</span>
 					<span *ngIf="['iban'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
 						{{current[field.name] ? current[field.name] : current[field.name]['instanceName']}}
@@ -97,7 +98,7 @@
 					</span>
 					<span *ngIf="['object'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
 						{{current[field.name] ? current[field.name]['instanceName'] : ''}}
-						<button *ngIf="current[field.name] && !tiny && field.name !== 'owner' && field.name !== 'assigner' && field.name !== 'secondAssigner' && field.name !== 'city' && field.name !== 'county' && field.name !== 'buyowner' && field.name !== 'user' && field.name !== 'muhasebeci' && field.name !== 'cancelUser' && field.name !== 'iban'" mat-icon-button [ngbPopover]="bubble" triggers="mouseenter:mouseleave" [popoverTitle]="current[field.name]['instanceName']" color="primary" (mouseenter)="bubbleOpen(current[field.name], field.objectApiName)" placement="right" container="body" [routerLink]="['/' + field.name?.toLowerCase()]" [queryParams]="{id: current[field.name].id, sourceObject: model.apiName?.toLowerCase(), sourceId: current['id']}">
+						<button *ngIf="current[field.name] && !tiny && field.name !== 'owner' && field.name !== 'assigner' && field.name !== 'secondAssigner' && field.name !== 'city' && field.name !== 'county' && field.name !== 'buyowner' && field.name !== 'user' && field.name !== 'muhasebeci' && field.name !== 'cancelUser' && field.name !== 'onayMuh' && field.name !== 'iban'" mat-icon-button [ngbPopover]="bubble" triggers="mouseenter:mouseleave" [popoverTitle]="current[field.name]['instanceName']" color="primary" (mouseenter)="bubbleOpen(current[field.name], field.objectApiName)" placement="right" container="body" [routerLink]="['/' + field.name?.toLowerCase()]" [queryParams]="{id: current[field.name].id, sourceObject: model.apiName?.toLowerCase(), sourceId: current['id']}">
 							<mat-icon>info</mat-icon>
 						</button>
 					</span>

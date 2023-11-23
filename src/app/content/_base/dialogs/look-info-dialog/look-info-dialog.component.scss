@@ -1,0 +1,49 @@
+kt-payment-order-info-dialog {
+	.kt-form .kt-form__group {
+		padding-top: unset;
+		padding-bottom: unset;
+	}
+
+	.upload-numbering {
+		margin-top: 9px;
+	}
+
+	.flex-row-between {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+
+	.flex-row-start {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+	}
+}
+
+
+
+.products-table{
+	border-collapse: collapse;
+	width: 100%;
+	text-align: center;
+	td {
+		border: 2px solid #ddd;
+		padding: 8px;
+		text-align: center;
+		vertical-align: middle;
+	}
+
+	tr:nth-child(even) {
+		background-color: #f2f2f2;
+		text-align: center;
+	}
+
+	th {
+		padding-top: 12px;
+		padding-bottom: 12px;
+		text-align: center;
+		background-color: #4CAF50;
+		color: white;
+	}
+}

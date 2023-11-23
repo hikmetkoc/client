@@ -65,8 +65,13 @@ export class PaymentOkeyComponent implements OnInit {
 		const id = this.current.id;
 		const status = this.paymentStatus;
 		const spendstatus = this.spendStatus;
-		const description = this.current.description;
-		const url = `api/payment_orders/${id}?status=${status}&description=${description}`;
+		let descriptionChange = '';
+		if (this.paymentStatus === 'Payment_Status_Red') {
+			descriptionChange = this.description;
+		} else {
+			descriptionChange = this.current.description;
+		}
+		const url = `api/payment_orders/${id}?status=${status}&description=${descriptionChange}`;
 		// PUT isteği gönderme
 		this.http.put(url, null, { headers: httpHeaders})
 			.subscribe(

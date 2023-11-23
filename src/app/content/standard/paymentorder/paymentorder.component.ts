@@ -51,6 +51,7 @@ export class PaymentOrderComponent extends BaseComponent implements OnInit, Afte
 	defaultFilter = [];
 	productUser = [];
 	defaultValues = [];
+	paymentPermList = [];
 
 	constructor(
 		private cdr: ChangeDetectorRef,
@@ -71,6 +72,7 @@ export class PaymentOrderComponent extends BaseComponent implements OnInit, Afte
 
 	ngOnInit() {
 		this.mainGrid.defaultSort = [{ sortOrder: 'DESC', sortBy: 'createdDate' }];
+		this.getPaymentPermission();
 		this.init();
 	}
 
@@ -111,14 +113,14 @@ export class PaymentOrderComponent extends BaseComponent implements OnInit, Afte
 		},
 			{
 				display: this.baseService.getPermissionRule(this.model.name, 'update'),
-				title: 'Yeni Ödeme Talimatı',
-				icon: 'add_box',
-				click: this.mainGrid.add.bind(this.mainGrid)
-			}, {
-				display: this.baseService.getPermissionRule(this.model.name, 'update'),
 				title: 'Seçili Ödeme Talimatı Raporu',
 				icon: 'insert_drive_file',
 				click: this.mainGrid.selectedRowExcelReport.bind(this.mainGrid)
+			}, {
+				display: this.baseService.getUser().birim.id === 'Birimler_Fin',
+				title: 'Finans Ödeme Raporu',
+				icon: 'insert_chart',
+				click: this.mainGrid.selectedSpendExcelReport.bind(this.mainGrid)
 			});
 	}
 
@@ -254,5 +256,28 @@ export class PaymentOrderComponent extends BaseComponent implements OnInit, Afte
 		dialogRef.afterClosed().subscribe(() => {
 		});
 	}
-
+	getPaymentPermission(): any {
+		this.paymentPermList = [];
+		const filters2 = new Set();
+		const queryParams2 = new QueryParamsModel(
+			Utils.makeFilter(filters2),
+			[{sortBy: 'createdDate', sortOrder: 'DESC'}],
+			0,
+			500
+		);
+		this.baseService.find(queryParams2, 'user_permissions').subscribe(res => {
+			this.paymentPermList = res.body
+				.filter(gnl => (gnl.user.id === this.baseService.getUserId()))
+				.map(gnl => gnl.createPayment);
+			console.log(this.paymentPermList[0]);
+			if (this.paymentPermList[0] === true) {
+				this.buttons.push({
+						display: this.baseService.getPermissionRule(this.model.name, 'update'),
+						title: 'Yeni Ödeme Talimatı',
+						icon: 'add_box',
+						click: this.mainGrid.add.bind(this.mainGrid)
+					});
+			}
+		});
+	}
 }

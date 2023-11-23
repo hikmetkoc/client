@@ -1,15 +1,16 @@
 <kt-portlet>
-	<kt-portlet-header>
-		<ng-container ktPortletTitle>
-			<h3 class="kt-portlet__head-title">
-				Ek Limit Talebi Risk Detayları
-			</h3>
-		</ng-container>
-	</kt-portlet-header>
+	<div class="modal-header">
+		<h4 class="modal-title">Ek Limit Talebi Risk Detayları</h4>
+		<div class="ml-auto">
+			<button mat-icon-button class="btn btn-danger" color="primary" matTooltip="Kapat" (click)="onNoClick()">
+				<mat-icon>close</mat-icon>
+			</button>
+		</div>
+	</div>
 	<kt-portlet-body style="font-size: 15px">
 		<br/>
 		<div style="text-align: center; background-color: #222; padding: 10px;">
-			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">CARİ UNVANI</h4>
+			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">RİSK DETAYLARI</h4>
 		</div>
 		<table class="table table-striped" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000;">
 			<thead>
@@ -33,11 +34,22 @@
 		</table>
 		<br/>
 		<div style="text-align: center; background-color: #222; padding: 10px;">
-			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">TOPLAM KULLANILABİLİR LİMİT</h4>
+			<h4 style="font-weight: bold; font-size: 20px; color: #fff;">LİMİTLER</h4>
 		</div>
 		<table class="table table-striped" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000;">
 			<tr>
-				<td style="font-weight: bold; font-size: 18px">{{ formatAmount(this.toplamLimit) + ' TL' }}</td>
+				<td style="font-weight: bold;">TOPLAM KULLANILABİLİR LİMİT</td>
+				<td style="font-weight: bold;">TOPLAM DBS LİMİTİ</td>
+				<td style="font-weight: bold;">MEVCUT TÜKETİM</td>
+				<td style="font-weight: bold;">FARK</td>
+			</tr>
+			<tr>
+				<td [style.color]="this.toplamLimit > this.toplamDbsLimit ? 'red' : 'black'" style="font-weight: bold; font-size: 18px;">
+					{{ formatAmount(this.toplamLimit) + ' TL' }}
+				</td>
+				<td style="font-weight: bold; font-size: 18px">{{ formatAmount(this.toplamDbsLimit) + ' TL' }}</td>
+				<td style="font-weight: bold; font-size: 18px">{{ formatAmount(this.mevcutTuketim) + ' TL' }}</td>
+				<td style="font-weight: bold; font-size: 18px">{{ formatAmount((this.toplamLimit - this.mevcutTuketim)) + ' TL' }}</td>
 			</tr>
 		</table>
 	</kt-portlet-body>

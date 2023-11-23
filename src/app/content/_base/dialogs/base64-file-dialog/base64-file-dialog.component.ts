@@ -15,6 +15,7 @@ export class Base64FileDialogComponent implements OnInit {
 
 	@Input() current: any;
 	@Input() model: any;
+	@Input() subject: any;
 	selectedFile: File | null = null;
 	base64String: string | null = null;
 	isUploading = true;
@@ -35,6 +36,9 @@ export class Base64FileDialogComponent implements OnInit {
 		}
 		if (data && data.current) {
 			this.current = data.current;
+		}
+		if (data && data.subject) {
+			this.subject = data.subject;
 		}
 	}
 
@@ -61,6 +65,7 @@ export class Base64FileDialogComponent implements OnInit {
 	ngOnInit() {
 		this.model = this.data.model;
 		this.current = this.data.current;
+		this.subject = this.data.subject;
 		this.isUploading = true;
 	}
 
@@ -76,7 +81,7 @@ export class Base64FileDialogComponent implements OnInit {
 			const locName = this.model.name;
 			const name = this.fileName;
 			console.log(location + ' - ' + locName + ' - ' + name);
-			this.http.post(apiUrl + `?location=${location}&locName=${locName}&name=${name}`, binaryValue, { headers: httpHeaders, responseType: 'text' }).subscribe(
+			this.http.post(apiUrl + `?location=${location}&locName=${locName}&name=${name}&subject=${this.subject}`, binaryValue, { headers: httpHeaders, responseType: 'text' }).subscribe(
 				response => {
 						Utils.showActionNotification(response, 'success', 5000, true, false, 3000, this.snackBar);
 						this.isUploading = true;
