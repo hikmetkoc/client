@@ -102,10 +102,6 @@ export class RiskAnalysisComponent extends BaseComponent implements OnInit, Afte
 		});
 	}
 
-	calendarView(isCalendar) {
-		this.evaluateButtons();
-	}
-
 	clickButton(e) {
 	}
 
