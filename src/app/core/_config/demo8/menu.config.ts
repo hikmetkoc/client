@@ -114,6 +114,13 @@ export class MenuConfig {
 						}
 					]
 				},
+				/*{
+					title: 'RİSK ANALİZ',
+					root: true,
+					alignment: 'left',
+					page: '/riskanalysis',
+					icon: 'flaticon-currency-exchange',
+				},*/
 				{
 					title: 'İNSAN KAYNAKLARI',
 					root: true,

@@ -524,10 +524,10 @@
 				<mat-header-cell *matHeaderCellDef>Alacak</mat-header-cell>
 				<mat-cell style="font-weight: bold" *matCellDef="let row">{{row.motionsums.receive ? formatCurrency(row.motionsums.receive) + ' &#8378;' : ' '}}</mat-cell>
 			</ng-container> -->
-			<ng-container matColumnDef="hareketlerBakiye">
+			<!--<ng-container matColumnDef="hareketlerBakiye">
 				<mat-header-cell *matHeaderCellDef>Bakiye</mat-header-cell>
 				<mat-cell style="font-weight: bold" *matCellDef="let row">{{row.motionsums.balance ? formatCurrency(row.motionsums.balance) + ' &#8378;' : ' '}}</mat-cell>
-			</ng-container>
+			</ng-container> -->
 			<ng-container *ngFor="let field of model?.fields">
 				<ng-container *ngIf="['integer','text','url','textarea'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
 					<mat-header-cell *matHeaderCellDef mat-sort-header [style.min-width.px]="field.name === 'invoiceNum' ? 150 : null">{{field.title}}</mat-header-cell>
@@ -727,7 +727,7 @@
 						</button>
 						<button *ngIf="this.baseService.getUser().birim.id === 'Birimler_Fin' && row.status.label === 'Ödenmedi'
 							&& (row.paymentStatus === 'Onaylandı' || row.paymentStatus === 'Kısmi Ödendi')
-							&& row.paymentorder.moneyType.label === 'Dolar' && row.paymentorder.paymentStyle.label === 'Türk Lirası'"
+							&& (row.paymentorder.moneyType.label === 'Dolar' || row.paymentorder.moneyType.label === 'Euro') && row.paymentorder.paymentStyle.label === 'Türk Lirası'"
 								mat-icon-button color="success" matTooltip="Kur Tutarı Gir" type="button" (click)="toPay(row, $event)">
 							<mat-icon>payment</mat-icon>
 						</button>

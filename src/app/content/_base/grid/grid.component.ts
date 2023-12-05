@@ -345,21 +345,21 @@ export class GridComponent implements AfterViewInit {
 					value: this.baseService.getUserId()
 				});
 			}
-			if (this.baseService.getUserId() === 29600) {
+			if (this.baseService.getUserId() === 29600) {	// Selin AKBAYIRLI => Kendisinin, Elif Küçükkurt ve Ece Önver'in girdiği faturaları görebilsin.
 				filters.add({
 					name: 'owner.id',
 					operator: FilterOperation.IN,
-					value: [this.baseService.getUserId(), 134]
+					value: [this.baseService.getUserId(), 134, 40100]
 				});
 			}
-			if (this.baseService.getUserId() === 134) {
+			if (this.baseService.getUserId() === 134 || this.baseService.getUserId() === 40100) {	// Elif Küçükkurt ve Eve Önver sadece kendisine atanan faturaları görebilsin.
 				filters.add({
 					name: 'owner.id',
 					operator: FilterOperation.EQUALS,
 					value: this.baseService.getUserId()
 				});
 			}
-			if (this.baseService.getUserId() === 133) {
+			if (this.baseService.getUserId() === 133) {	// Mustafa ÖCAL, Birimi Avelice olan fatura atanmış kişilerin tüm faturalarını görebilsin.
 				filters.add({
 					name: 'owner.birim.id',
 					operator: FilterOperation.EQUALS,
@@ -367,7 +367,7 @@ export class GridComponent implements AfterViewInit {
 				});
 			}
 			if (this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas') {
-				filters.add({
+				filters.add({	// Mustafa Karaman ve Zafer Aydın; Fatura atanmış kişilerin birimleri Löher veya Avelice ise görebilsin.
 					name: 'owner.birim.id',
 					operator: FilterOperation.IN,
 					value: ['Birimler_Loher', 'Birimler_Avelice']
@@ -399,7 +399,7 @@ export class GridComponent implements AfterViewInit {
 					value: 'Payment_Status_Bek2'
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birimler_Muh' && this.baseService.getUserId() !== 71) {
+			if (this.baseService.getUser().birim.id === 'Birimler_Muh' && this.baseService.getUserId() !== 71) {	// Serpil Hanım hariç Merkez Muhasebe Görüntüsü
 				filters.add({
 					name: 'muhasebeGoruntusu',
 					operator: FilterOperation.EQUALS,
@@ -409,7 +409,7 @@ export class GridComponent implements AfterViewInit {
 					name: 'cost',
 					operator: FilterOperation.IN,
 					value: ['Cost_Place_MeteorMerkez' , 'Cost_Place_Terminal' , 'Cost_Place_Mudanya' ,
-						'Cost_Place_Ncc' , 'Cost_Place_Cemcan' , 'Cost_Place_Mudanya' , 'Cost_Place_Simya' ,
+						'Cost_Place_Ncc' , 'Cost_Place_Cemcan' , 'Cost_Place_Birce' , 'Cost_Place_Simya' ,
 						'Cost_Place_Vitalyum' , 'Cost_Place_Vita' , 'Cost_Place_Tepe' , 'Cost_Place_Samanli' ,
 						'Cost_Place_Ciftlikkoy' , 'Cost_Place_Sarj' , 'Cost_Place_Charge' , 'Cost_Place_Otobil']
 				});
@@ -421,7 +421,7 @@ export class GridComponent implements AfterViewInit {
 					value: ['Payment_Sub_Avans' , 'Payment_Sub_BES' , 'Payment_Sub_Cihaz' ,
 						'Payment_Sub_Diger' , 'Payment_Sub_Fatura' , 'Payment_Sub_Iade' , 'Payment_Sub_Icra' ,
 						'Payment_Sub_Kargo' , 'Payment_Sub_Masraf' , 'Payment_Sub_On' , 'Payment_Sub_Personel' ,
-						'Payment_Sub_Prim' , 'Payment_Sub_Sehven' , 'Payment_Sub_Seyehat' , 'Payment_Sub_Sigorta' , 'Payment_Sub_Tra']
+						'Payment_Sub_Prim' , 'Payment_Sub_Sehven' , 'Payment_Sub_Seyehat' , 'Payment_Sub_Sigorta' , 'Payment_Sub_Tra', 'Payment_Sub_Acik']
 				});
 			}
 			if (this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas') {
@@ -983,8 +983,8 @@ export class GridComponent implements AfterViewInit {
 			this.displayedColumns.push('hareketlerTedarikci');
 			this.displayedColumns.push('hareketlerMaliyet');
 			/*this.displayedColumns.push('hareketlerBorc');
-			this.displayedColumns.push('hareketlerAlacak');*/
-			this.displayedColumns.push('hareketlerBakiye');
+			this.displayedColumns.push('hareketlerAlacak');
+			this.displayedColumns.push('hareketlerBakiye');*/
 		}
 		for (const field of this.model.fields) {
 			if (field.display) {

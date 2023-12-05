@@ -114,6 +114,7 @@ import { BehaviorComponent} from './standard/behavior/behavior.component';
 import { MotionSumsComponent} from './standard/motionsums/motionsums.component';
 import { BuyComponent } from './standard/buy/buy.component';
 import { PaymentOrderComponent } from './standard/paymentorder/paymentorder.component';
+import { RiskAnalysisComponent} from './standard/riskanalysis/riskanalysis.component';
 import { InvoiceListComponent } from './standard/invoicelist/invoicelist.component';
 import { SpendComponent } from './standard/spend/spend.component';
 import { LimitComponent } from './admin/limit/limit.component';
@@ -246,6 +247,10 @@ const routes: Routes = [
 	{
 		path: 'paymentorder',
 		component: PaymentOrderComponent
+	},
+	{
+		path: 'riskanalysis',
+		component: RiskAnalysisComponent
 	},
 	{
 		path: 'invoicelist',
@@ -446,6 +451,7 @@ const routes: Routes = [
 		MotionSumsComponent,
 		BuyComponent,
 		PaymentOrderComponent,
+		RiskAnalysisComponent,
 		InvoiceListComponent,
 		LimitComponent,
 		FuelLimitComponent,

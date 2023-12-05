@@ -56,6 +56,7 @@ export class MenuHorizontalService {
 			} else if (menuItem.page === '/motionsums' && !Utils.hasOperation('Hesaplar_Goruntuleme')) {
 			} else if (menuItem.title === 'PROJE İŞLEMLERİ' && !Utils.getDepartment()) {
 			} else if (menuItem.title === 'FATURA İŞLEMLERİ' && !Utils.hasOperation('FaturaListesi_Goruntuleme')) {
+			// } else if (menuItem.title === 'RİSK ANALİZ' && !Utils.hasOperation('RiskAnalizCari_Goruntuleme')) {
 			} else if (menuItem.title === 'TEDARİKÇİ İŞLEMLERİ' && !Utils.hasOperation('Tedarikci_Goruntuleme')) {
 			} else if (menuItem.title === 'SATIN ALMA İŞLEMLERİ' && !Utils.hasOperation('Satınalma_Goruntuleme')) {
 			} else if (menuItem.title === 'TALEPLER' && !Utils.hasOperation('Talep_Goruntuleme')) {
