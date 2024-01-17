@@ -85,6 +85,30 @@ kt-grid {
 			color: white;
 		}
 	}
+	.priority_payment_order_wait {
+		border: 3px inset transparent; /* İlk çerçeve, boyutu ayarlayabilirsiniz */
+		border-image: linear-gradient(90deg, transparent, #FFD700, transparent); /* İlk çerçeve rengi (sarı) */
+		border-image-slice: 1; /* Bu değeri çerçevenin boyutuna bağlı olarak ayarlayın */
+		animation: borderAnimation 2s linear infinite; /* Bir tam döngü için 4 saniye, ihtiyaca göre ayarlayın */
+
+	}
+	@keyframes borderAnimation {
+		0% {
+			border-image-source: linear-gradient(90deg, transparent, #FFD700, transparent); /* Kuyruk başlangıcı (sarı) */
+		}
+		25% {
+			border-image-source: linear-gradient(0deg, transparent, #FF4500, transparent); /* Sağa hareket (turuncu) */
+		}
+		50% {
+			border-image-source: linear-gradient(270deg, transparent, #FF0000, transparent); /* Aşağı hareket (kırmızı) */
+		}
+		75% {
+			border-image-source: linear-gradient(180deg, transparent, #FF4500, transparent); /* Sola hareket (turuncu) */
+		}
+		100% {
+			border-image-source: linear-gradient(90deg, transparent, #FFD700, transparent); /* Yukarı hareket (sarı), başlangıça geri dön */
+		}
+	}
 	@keyframes blink {
 		0% {
 			opacity: 1;
@@ -115,6 +139,22 @@ kt-grid {
 
 		mat-cell {
 			font-weight: bold;
+		}
+	}
+	.priority_payment_order_dbs {
+		background-color: #36344d;
+
+		mat-cell {
+			font-weight: bold;
+			color: white;
+		}
+	}
+	.priority_dbs {
+		background-color: #0f695f;
+
+		mat-cell {
+			font-weight: bold;
+			color: white;
 		}
 	}
 	.priority_spend_cancel {

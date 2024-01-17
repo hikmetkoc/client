@@ -1,12 +1,10 @@
 import {ChangeDetectorRef, Component, Inject, Input, OnInit} from '@angular/core';
 import { MatBottomSheetRef, MatDialogRef, MAT_DIALOG_DATA, DateAdapter } from '@angular/material';
-import {QueryParamsModel} from "../../models/query-params.model";
-import {Utils} from "../../utils";
-import {BaseService} from "../../base.service";
-import {HttpClient} from "@angular/common/http";
-import {HttpUtilsService} from "../../http-utils.service";
-import {MatDialog} from "@angular/material/dialog";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {BaseService} from '../../base.service';
+import {HttpClient} from '@angular/common/http';
+import {HttpUtilsService} from '../../http-utils.service';
+import {MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
 	selector: 'kt-payment-okey',
@@ -71,21 +69,23 @@ export class PaymentOkeyComponent implements OnInit {
 		} else {
 			descriptionChange = this.current.description;
 		}
-		const url = `api/payment_orders/${id}?status=${status}&description=${descriptionChange}`;
-		// PUT isteği gönderme
-		this.http.put(url, null, { headers: httpHeaders})
+		const url = `api/payment_orders/updatePaymentAndSpend`;
+		const body = { uuid: id, paymentStatus : status, description: descriptionChange };
+
+		this.http.put(url, body, { headers: httpHeaders })
 			.subscribe(
 				() => {
-					console.log('Ödeme siparişi paymentStatusu güncellendi.');
+					console.log('Ödeme talimatı durumu güncellendi.');
 					this.dialogRef.close();
 				},
 				(error) => {
 					console.error('Hata:', error);
 				}
 			);
+
 		// SPEND -> PAYMENTSTATUS güncelle
 
-		const spendurl = `api/spends/updatepaymentstatus/${id}?status=${spendstatus}`;
+		/*const spendurl = `api/spends/updatepaymentstatus/${id}?status=${spendstatus}`;
 		// PUT isteği gönderme
 		this.http.put(spendurl, null, { headers: httpHeaders})
 			.subscribe(
@@ -95,6 +95,6 @@ export class PaymentOkeyComponent implements OnInit {
 				(error) => {
 					console.error('Hata:', error);
 				}
-			);
+			);*/
 	}
 }

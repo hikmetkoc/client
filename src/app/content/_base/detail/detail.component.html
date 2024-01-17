@@ -65,7 +65,13 @@
 						  [class]="tiny ? '' : 'kt-widget4__title'">
     						{{current[field.name]}}
 					</span>
-					<span *ngIf="['iban'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
+					<span *ngIf="['iban'].indexOf(field.fieldType) > -1 && this.model.name !== 'User'" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{current[field.name] ? current[field.name] : current[field.name]['instanceName']}}
+					</span>
+					<span *ngIf="['iban'].indexOf(field.fieldType) > -1 && this.model.name === 'User'" [class]="tiny ? '' : 'kt-widget4__title'">
+						{{current[field.name]}}
+					</span>
+					<span *ngIf="['tax'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">
 						{{current[field.name] ? current[field.name] : current[field.name]['instanceName']}}
 					</span>
 					<span *ngIf="['number'].indexOf(field.fieldType) > -1" [class]="tiny ? '' : 'kt-widget4__title'">

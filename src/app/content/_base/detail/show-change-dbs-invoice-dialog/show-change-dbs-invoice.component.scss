@@ -1,0 +1,70 @@
+.contacts-table{
+	width: 100%;
+	border-collapse: collapse;
+	text-align: center;
+	&,
+	& tr,
+	& td,
+	& th{
+		border: 1px solid #ccc;
+	}
+	td,th{
+		padding: 1px;
+	}
+
+	table{
+		overflow-x: auto;
+		border-collapse: collapse;
+		margin: 7px 0;
+	}
+
+	thead {
+		background-color: #f0f0f0;
+	}
+
+	th {
+		padding: 10px;
+		text-align: left;
+		border-bottom: 1px solid #ddd;
+	}
+
+	/* Tablo içeriği stilleri */
+	tbody {
+		font-size: 14px;
+	}
+
+	tr {
+		border-bottom: 1px solid #ddd;
+	}
+
+	td {
+		padding: 3px;
+	}
+
+	/* Alternatif satır renklendirme */
+	tr:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+
+	/* Hücre içeriğini ortala */
+	td {
+		text-align: center;
+	}
+
+	/* Tablo başlıklarını ortala */
+	th {
+		text-align: center;
+	}
+
+	@media (max-width: 768px) {
+		table{
+			overflow-x: auto;
+		}
+		th, td {
+			display: block;
+		}
+		th {
+			text-align: left;
+		}
+	}
+}

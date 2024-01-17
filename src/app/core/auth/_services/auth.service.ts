@@ -44,7 +44,7 @@ export class AuthService {
     }
 
     public requestPassword(email: string): Observable<any> {
-        return this.http.get(API_USERS_URL + '/forgot?=' + email)
+        return this.http.get(API_USERS_URL + '/forgot?email=' + email)
             .pipe(catchError(this.handleError('forgot-password', []))
             );
     }

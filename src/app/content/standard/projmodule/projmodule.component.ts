@@ -1,12 +1,4 @@
-import {
-	Component,
-	OnInit,
-	ChangeDetectionStrategy,
-	ViewChild,
-	AfterViewInit,
-	ViewEncapsulation,
-	ChangeDetectorRef
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { BaseService } from '../../_base/base.service';
@@ -15,35 +7,35 @@ import { Utils } from '../../_base/utils';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QueryParamsModel } from '../../_base/models/query-params.model';
 import { Filter, FilterOperation } from '../../_base/models/filter';
-import {catchError, map, tap} from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import interactionPlugin from '@fullcalendar/interaction';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { DeleteEntityDialogComponent } from '../../_base/dialogs/delete-entity-dialog/delete-entity-dialog.component';
-import {ReportDialogComponent} from "../../_base/dialogs/report-dialog/report-dialog.component";
-import {HttpUtilsService} from "../../_base/http-utils.service";
-import {HttpClient} from "@angular/common/http";
-import {formatDate} from "@angular/common";
-import {GotoApprovalConfirmComponent} from "../../_base/dialogs/gotoapproval-confirm/gotoapproval-confirm.component";
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ReportDialogComponent } from '../../_base/dialogs/report-dialog/report-dialog.component';
+import { HttpClient } from '@angular/common/http';
+import { HttpUtilsService } from '../../_base/http-utils.service';
 
 @Component({
-	selector: 'kt-project',
-	templateUrl: './project.component.html',
+	selector: 'kt-projmodule',
+	templateUrl: './projmodule.component.html',
 	changeDetection: ChangeDetectionStrategy.Default,
-	styleUrls: ['./project.component.scss'],
+	styleUrls: ['./projmodule.component.scss'],
 	encapsulation: ViewEncapsulation.None
 })
-export class ProjectComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class ProjModuleComponent extends BaseComponent implements OnInit, AfterViewInit {
 
 	@ViewChild('calendar', undefined) calendarComponent: FullCalendarComponent;
+	@ViewChild('reportModal', undefined) reportModal;
+	defaultFilter = [];
+	defaultValues = [];
 	public visitword: string;
 	isCalendar = false;
 	calendarPlugins = [dayGridPlugin, interactionPlugin];
 	calendarApi;
 	users;
-	defaultFilter = [];
-	defaultValues = [];
 	utils = Utils;
 
 	constructor(
@@ -55,22 +47,39 @@ export class ProjectComponent extends BaseComponent implements OnInit, AfterView
 		public translate: TranslateService,
 		public route: ActivatedRoute,
 		public router: Router,
-		private cdr: ChangeDetectorRef,
 		public breakpointObserver: BreakpointObserver,
+		public modalService: NgbModal,
 	) {
 		super(baseService, dialog, snackBar, translate, route, router, breakpointObserver);
 
-		this.model = Utils.getModel('Project');
+		this.model = Utils.getModel('ProjModule');
 	}
 
 	ngOnInit() {
 		this.mainGrid.defaultSort = [{ sortOrder: 'DESC', sortBy: 'createdDate' }];
 		this.init();
+
+		const queryParams = new QueryParamsModel(
+			undefined,
+			[{ sortBy: 'fullName', sortOrder: 'ASC' }],
+			0,
+			100
+		);
+		// TODO:
+		// this.baseService.find(queryParams, 'users/hierarchical-users?id=' + this.baseService.getUser().id).subscribe(res => {
+		// 	this.users = res.body;
+		// 	for (const user of this.users) {
+		// 		user.values = '[{"FieldName":"owner.id","Operation":"EqualTo","Value":' + user.id + ',"Title":"Sahip","ValueTitle":"' + user.fullName + '"}]';
+		// 		user.id = undefined;
+		// 	}
+		// });
 	}
 
 	ngAfterViewInit() {
 		this.afterViewInit();
+
 		this.evaluateButtons();
+
 	}
 
 	rowClicked(row, reload?) {
@@ -78,15 +87,15 @@ export class ProjectComponent extends BaseComponent implements OnInit, AfterView
 			this.reloadCurrent(row.id);
 		} else {
 			this.defaultFilter = [{
-				name: 'project.id',
+				name: 'projmodule.id',
 				operator: 'EQUALS',
 				value: row.id
 			}];
 			this.defaultValues = [{
-				field: 'projectId',
+				field: 'projmoduleId',
 				value: row.id
 			}, {
-				field: 'project',
+				field: 'projmodule',
 				value: row
 			}];
 			this.current = row;
@@ -96,7 +105,7 @@ export class ProjectComponent extends BaseComponent implements OnInit, AfterView
 	evaluateButtons() {
 		this.buttons = [];
 
-		this.buttons.push({
+		this.buttons.push(/*{
 			display: !this.isCalendar,
 			title: 'Ajanda Görünümü',
 			icon: 'web',
@@ -108,15 +117,15 @@ export class ProjectComponent extends BaseComponent implements OnInit, AfterView
 			click: this.calendarView.bind(this, false)
 		}, {
 			display: this.baseService.getPermissionRule('user', 'update'),
-			title: 'Projeler Raporu',
+			title: 'Aktiviteler Raporu',
 			icon: 'cloud_download',
 			click: this.getReport.bind(this)
-		}, {
+		}/*, {
 			display: this.baseService.getPermissionRule(this.model.name, 'update'),
-			title: 'Yeni Proje',
+			title: 'Yeni İşlem',
 			icon: 'add_box',
 			click: this.mainGrid.add.bind(this.mainGrid)
-		});
+		}*/);
 	}
 
 	calendarView(isCalendar) {
@@ -125,54 +134,72 @@ export class ProjectComponent extends BaseComponent implements OnInit, AfterView
 		this.evaluateButtons();
 
 		if (this.isCalendar) {
-			//this.getEvents();
+			this.getEvents();
 		}
 	}
 
-	/*remember() {	// Mail Bildirimi için Hatırlatma Fonksiyonu
-		const apiUrl = 'api/tasks/sendnotificationmail';
-		const receiver = this.current.owner.eposta;
-		const subject = 'Talep Hatırlatması';
-		const message = this.current.assigner.firstName + ' ' + this.current.assigner.lastName + ' kullanıcısı, yapmış olduğu bir talep hakkında işlem yapmanız için hatırlatmada bulunuyor.';
-		const httpHeaders = this.httpUtils.getHTTPHeaders();
-		this.http.post(apiUrl + `?receiver=${receiver}&subject=${subject}&message=${message}`, null, { headers: httpHeaders, responseType: 'blob' }).subscribe(
-			response => {
-				Utils.showActionNotification('E-posta Gönderimi başarılı!', 'success', 10000, true, false, 3000, this.snackBar);
-			},
-			error => {
-				Utils.showActionNotification('E-posta gönderme hatası', 'warning', 10000, true, false, 3000, this.snackBar);
-			}
-		);
-	}*/
+	clickButton(e) {
+		this.getEvents(e.data._d);
+	}
 
 	eventClick(e) {
 		this.mainGrid.edit(JSON.parse(e.event.id));
 	}
 
 	dateClick(arg) {
-		this.mainGrid.add([{ field: 'dueTime', value: arg.date.toISOString() }]);
+		this.mainGrid.add([{ field: 'checkInTime', value: arg.date.toISOString() }]);
 	}
 
 	clearEvents() {
 		this.calendarApi.removeAllEvents();
 	}
 
+	getEvents(date = new Date()) {
+		const model = new QueryParamsModel();
+
+		const filters = new Set();
+		filters.add({
+			name: 'checkInTime',
+			operator: FilterOperation.GREATER_OR_EQUAL_THAN,
+			value: new Date(date.getFullYear(), date.getMonth() - 1, 1)
+		});
+		filters.add({
+			name: 'checkInTime',
+			operator: FilterOperation.LESS_THAN,
+			value: new Date(date.getFullYear(), date.getMonth() + 2, 1)
+		});
+		model.filter = Utils.makeFilter(filters);
+
+		model.size = 50;
+		model.sorts = [{ sortBy: 'createdDate', sortOrder: 'DESC' }];
+		model.owner = 'HIERARCHY_D';
+		model.assigner = 'HIERARCHY_D';
+		this.baseService.find(model, this.model.apiName).pipe(
+			tap(res => {
+				this.calendarApi = this.calendarComponent.getApi();
+				this.calendarApi.removeAllEvents();
+				for (const row of res.body) {
+					this.calendarApi.addEvent({
+						id: JSON.stringify(row),
+						title: row.subject,
+						start: row.checkInTime,
+						end: row.checkOutTime,
+						allDay: false,
+						row,
+						backgroundColor: '#c3b0ff'
+					});
+				}
+			}),
+		).subscribe();
+	}
+
 	listChange() {
 		if (this.isCalendar) {
+			this.getEvents();
 		}
 		if (this.current) {
 			this.reloadCurrent();
 		}
-	}
-
-	projTaskRowClicked(row) {
-		this.router.navigate(['/projtask'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
-	}
-	projModuleRowClicked(row) {
-		this.router.navigate(['/projmodule'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
-	}
-	projOfficerRowClicked(row) {
-		this.router.navigate(['/projofficer'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
 	}
 
 	delete(_item: any, e) {
@@ -197,8 +224,15 @@ export class ProjectComponent extends BaseComponent implements OnInit, AfterView
 			width: '440px'
 		});
 	}
+
+	projModuleOfficerRowClicked(row) {
+		this.router.navigate(['/projmoduleofficer'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
+	}
+	projModuleSprintRowClicked(row) {
+		this.router.navigate(['/projmodulesprint'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
+	}
 	getReport() {
-		const dialogRef = this.dialog.open(ReportDialogComponent, { data: { filter: 'date', title: 'Projeler Raporu' } });
+		const dialogRef = this.dialog.open(ReportDialogComponent, { data: { filter: 'date', title: 'Aktivite Raporu' } });
 		dialogRef.afterClosed().subscribe(res => {
 			if (res) {
 				if (this.baseService.loadingSubject.value) { return; }
@@ -209,7 +243,7 @@ export class ProjectComponent extends BaseComponent implements OnInit, AfterView
 				this.http.post('api/' + this.model.apiName + '/report?startDate=' + res.startDate + '&endDate=' + res.endDate, undefined, { headers: httpHeaders, responseType: 'blob' })
 					.pipe(
 						tap(res2 => {
-							Utils.downloadFile(res2, 'Excel', 'Projeler Raporu');
+							Utils.downloadFile(res2, 'Excel', 'Aktiviteler Raporu');
 							this.baseService.loadingSubject.next(false);
 						}),
 						catchError(err => {

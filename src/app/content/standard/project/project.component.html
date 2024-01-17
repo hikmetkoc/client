@@ -62,6 +62,24 @@
 		<kt-portlet-header>
 			<ng-container ktPortletTitle>
 				<h3 class="kt-portlet__head-title">
+					Modüller
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button (click)="projModuleGrid.add()" mat-raised-button matTooltip="Yeni modül oluştur" type="button">
+					Yeni Modül
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #projModuleGrid entity="ProjModule" mode="Compact" [showButtons]="true" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="projModuleRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
 					Görevler
 				</h3>
 			</ng-container>

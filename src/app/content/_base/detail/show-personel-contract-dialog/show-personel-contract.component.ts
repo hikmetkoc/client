@@ -40,7 +40,6 @@ export class ShowPersonelContractComponent implements OnInit {
 	ngOnInit() {
 		this.model = this.data.model;
 		this.current = this.data.current;
-		//this.print();
 	}
 	print(sozlesme) {
 		const apiUrl = `api/personal_contracts/download-degistirilmis-belge?sozlesme=${sozlesme}`;

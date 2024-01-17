@@ -157,26 +157,14 @@ export class MenuConfig {
 							title: 'Görevler',
 							root: true,
 							page: '/projtask',
-							icon: 'flaticon-coins',
+							icon: 'flaticon-clipboard',
 						},
 						{
-							title: 'Sorumlular',
+							title: 'Modüller',
 							root: true,
-							page: '/projofficer',
+							page: '/projmodule',
 							icon: 'flaticon-file',
 						},
-						{
-							title: 'Görev Sorumluları',
-							root: true,
-							page: '/projtaskofficer',
-							icon: 'flaticon-coins'
-						},
-						{
-							title: 'Görev İşlemleri',
-							root: true,
-							page: '/projtaskactivity',
-							icon: 'flaticon-coins'
-						}
 						]
 				},
 				{

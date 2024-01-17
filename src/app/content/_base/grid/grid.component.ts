@@ -61,8 +61,11 @@ import {SpendInfoDialogComponent} from '../dialogs/spend-info-dialog/spend-info-
 import {
 	ShowFuelLimitRiskDialogComponent
 } from '../dialogs/show-fuel-limit-risk-dialog/show-fuel-limit-risk-dialog.component';
-import {Base64FileDialogComponent} from "../dialogs/base64-file-dialog/base64-file-dialog.component";
-import {FuelLimitOkeyComponent} from "../dialogs/fuel-limit-okey-dialog/fuel-limit-okey.component";
+import {Base64FileDialogComponent} from '../dialogs/base64-file-dialog/base64-file-dialog.component';
+import {FuelLimitOkeyComponent} from '../dialogs/fuel-limit-okey-dialog/fuel-limit-okey.component';
+import {
+	ShowChangeDbsInvoiceComponent
+} from "../detail/show-change-dbs-invoice-dialog/show-change-dbs-invoice.component";
 
 @Component({
 	selector: 'kt-grid',
@@ -241,7 +244,7 @@ export class GridComponent implements AfterViewInit {
 			for (let a = 0; a <= this.hareketlerList.length - 1; a++) {
 				for (let b = 0; a <= this.hareketlerList.length - 1; b++) {
 					if (this.hareketlerList[a].id === this.hareketlerList[b].id ) {
-						this.hareketlerList.splice(a,1);
+						this.hareketlerList.splice(a, 1);
 					}
 				}
 			}
@@ -261,7 +264,7 @@ export class GridComponent implements AfterViewInit {
 			for (let a = 0; a <= this.hareketlerUstCariList.length - 1; a++) {
 				for (let b = 0; a <= this.hareketlerUstCariList.length - 1; b++) {
 					if (this.hareketlerUstCariList[a].id === this.hareketlerUstCariList[b].id ) {
-						this.hareketlerUstCariList.splice(a,1);
+						this.hareketlerUstCariList.splice(a, 1);
 					}
 				}
 			}
@@ -340,7 +343,7 @@ export class GridComponent implements AfterViewInit {
 			}
 			if (this.baseService.getUser().birim.id === 'Birimler_Fin') {
 				filters.add({
-					name: 'owner',
+					name: 'owner.id',
 					operator: FilterOperation.EQUALS,
 					value: this.baseService.getUserId()
 				});
@@ -1398,22 +1401,18 @@ export class GridComponent implements AfterViewInit {
 			});
 		}
 		if (this.model.apiName === 'spends') {
-			if (entity.paymentorder.moneyType.id === 'Par_Bir_Dl' && entity.paymentorder.paymentStyle.id === 'Payment_Style_Tl' && entity.payTl === 0) {
-				Utils.showActionNotification('Lütfen Kur Tutarını girip Ödenen Tl Tutarını bildiriniz!', 'warning', 3000, true, false, 3000, this.snackBar);
-			} else {
-				const dialogRef = this.dialog.open(SpendOkeyComponent, {
-					data: {
-						current: entity.id,
-						model: this.model,
-						durum: 'Spend_Status_Red'
-					}, disableClose: true
-				});
-				dialogRef.afterClosed().subscribe(res => {
-					// Utils.showActionNotification('Reddedildi', 'success', 3000, true, false, 3000, this.snackBar);
-					this.loadList();
-					this.change.emit(this.result);
-				});
-			}
+			const dialogRef = this.dialog.open(SpendOkeyComponent, {
+				data: {
+					current: entity.id,
+					model: this.model,
+					durum: 'Spend_Status_Red'
+				}, disableClose: true
+			});
+			dialogRef.afterClosed().subscribe(res => {
+				// Utils.showActionNotification('Reddedildi', 'success', 3000, true, false, 3000, this.snackBar);
+				this.loadList();
+				this.change.emit(this.result);
+			});
 		}
 		if (this.model.apiName === 'fuellimits') {
 			entity.status = this.baseService.getAttrVal('Fuel_Dur_Red');
@@ -1472,6 +1471,45 @@ export class GridComponent implements AfterViewInit {
 		});
 	}
 
+	async changeDbsInvoice(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		await this.showBase64File(entity, e, presetValues = [], '');
+		const dialogRef = this.dialog.open(ShowChangeDbsInvoiceComponent, { data: {current: entity}
+		});
+		dialogRef.afterClosed().subscribe(res => {
+			if (res === true) {
+				Utils.showActionNotification('Kaydedildi', 'success', 3000, true, false, 3000, this.snackBar);
+				this.loadList();
+				this.change.emit(this.result);
+			}
+		});
+	}
+
+	spendTotalNotPaid() {
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		const url = 'api/spends/totalnotpaid';
+
+		this.http.post(url, null, { headers: httpHeaders }).subscribe(
+			res => {
+				console.log(res);
+			}),
+			catchError(err => {
+				return err;
+			});
+		/*const dialogRef = this.dialog.open(SpendToTlComponent, {data: { model: this.model}, disableClose: true });
+		dialogRef.afterClosed().subscribe(res => {
+			Utils.showActionNotification('Veriler güncellendi!', 'success', 3000, true, false, 3000, this.snackBar);
+		});*/
+	}
+
 	toPay(entity, e?, presetValues = []) {
 		if (e) {
 			e.stopPropagation();
@@ -1483,7 +1521,7 @@ export class GridComponent implements AfterViewInit {
 			entity[p.field] = p.value;
 		}
 
-		const dialogRef = this.dialog.open(SpendToTlComponent, {data: {current: entity.id, model: this.model}, disableClose: true });
+		const dialogRef = this.dialog.open(SpendToTlComponent, {data: {current: entity, model: this.model}, disableClose: true });
 		dialogRef.afterClosed().subscribe(res => {
 			Utils.showActionNotification('Kaydedildi', 'success', 3000, true, false, 3000, this.snackBar);
 			this.loadList();
@@ -1568,6 +1606,24 @@ export class GridComponent implements AfterViewInit {
 				this.change.emit(this.result);
 			});
 		}
+	}
+
+	addBehavior(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		const id = entity.id;
+		const url = `api/invoice_lists/addBehaviorAndChangeValue?uuid=${id}`;
+		this.http.post(url, null, { headers: httpHeaders})
+			.subscribe(
+				() => {
+
+				},
+				(error) => {
+
+				}
+			);
 	}
 
 	connectStore(entity, e?, presetValues = []) {
@@ -1677,50 +1733,53 @@ export class GridComponent implements AfterViewInit {
 		});
 	}
 
-	showBase64File(entity, e?, presetValues = [], subject?: string) {
+	async showBase64File(entity, e?, presetValues = [], subject?: string) {
 		if (e) { e.stopPropagation(); }
-		const apiUrl = 'api/file_containers/showFile';
-		const httpHeaders = this.httpUtils.getHTTPHeaders();
-		const locName = this.model.name;
-		const location = entity.id.toString();
-		this.http.get(apiUrl + `?location=${location}&locName=${locName}&subject=${subject}`, { headers: httpHeaders, responseType: 'text' }).subscribe(
-			response => {
-				const decodedData = atob(response);
-				const cleanData = decodedData.replace(/\s+/g, '');
-				const fileSignature = decodedData.substring(0, 4);
-				console.log(fileSignature);
-				let fileType: string;
 
-				if (fileSignature === '%PDF') {
-					fileType = 'application/pdf';
-				} else if (fileSignature === 'ÿØÿâ' || fileSignature === 'ÿÛÿà' || fileSignature === '/9j/' || fileSignature === 'ÿØÿà') {
-					fileType = 'image/jpeg';
-				} else if (fileSignature === 'PNG') {
-					fileType = 'image/png';
-				} else if (fileSignature === 'GIF8') {
-					fileType = 'image/gif';
-				} else if (fileSignature === 'RIFF' && decodedData.substr(8, 4) === 'WEBP') {
-					fileType = 'image/webp';
-				} else if (fileSignature === 'II*\x00' || fileSignature === 'MM\x00*') {
-					fileType = 'image/tiff';
-				} else {
-					Utils.showActionNotification('Dosya eksik veya hatalı yüklendi!', 'warning', 10000, true, false, 3000, this.snackBar);
-					return;
-				}
+		try {
+			const apiUrl = 'api/file_containers/showFile';
+			const httpHeaders = this.httpUtils.getHTTPHeaders();
+			const locName = this.model.name;
+			const location = entity.id.toString();
 
-				const uint8Array = new Uint8Array(decodedData.length);
-				for (let i = 0; i < decodedData.length; ++i) {
-					uint8Array[i] = decodedData.charCodeAt(i);
-				}
-				const blob = new Blob([uint8Array], { type: fileType });
-				const fileUrl = URL.createObjectURL(blob);
-				window.open(fileUrl, '_blank');
-			},
-			error => {
-				Utils.showActionNotification('Dosya bulunamadı!', 'warning', 10000, true, false, 3000, this.snackBar);
+			const response = await this.http.get(apiUrl + `?location=${location}&locName=${locName}&subject=${subject}`, { headers: httpHeaders, responseType: 'text' }).toPromise();
+
+			const decodedData = atob(response);
+			const cleanData = decodedData.replace(/\s+/g, '');
+			const fileSignature = decodedData.substring(0, 4);
+			console.log(fileSignature);
+			let fileType: string;
+
+			if (fileSignature === '%PDF') {
+				fileType = 'application/pdf';
+			} else if (fileSignature === 'ÿØÿâ' || fileSignature === 'ÿÛÿà' || fileSignature === '/9j/' || fileSignature === 'ÿØÿà') {
+				fileType = 'image/jpeg';
+			} else if (fileSignature === 'PNG') {
+				fileType = 'image/png';
+			} else if (fileSignature === 'GIF8') {
+				fileType = 'image/gif';
+			} else if (fileSignature === 'RIFF' && decodedData.substr(8, 4) === 'WEBP') {
+				fileType = 'image/webp';
+			} else if (fileSignature === 'II*\x00' || fileSignature === 'MM\x00*') {
+				fileType = 'image/tiff';
+			} else {
+				Utils.showActionNotification('Dosya eksik veya hatalı yüklendi!', 'warning', 10000, true, false, 3000, this.snackBar);
+				return;
 			}
-		);
+
+			const uint8Array = new Uint8Array(decodedData.length);
+			for (let i = 0; i < decodedData.length; ++i) {
+				uint8Array[i] = decodedData.charCodeAt(i);
+			}
+
+			const blob = new Blob([uint8Array], { type: fileType });
+			const fileUrl = URL.createObjectURL(blob);
+			window.open(fileUrl, '_blank');
+		} catch (error) {
+			Utils.showActionNotification('Dosya bulunamadı!', 'warning', 10000, true, false, 3000, this.snackBar);
+		}
 	}
+
 
 	sendOwner(entity, e?, presetValues = []) {
 		if (e) { e.stopPropagation(); }
@@ -1767,8 +1826,6 @@ export class GridComponent implements AfterViewInit {
 			this.loadList();
 			this.change.emit(this.result);
 		});
-
-		//this.loadList();
 	}
 	cancelBuyOwner(entity, e?, presetValues = []) {
 		if (e) { e.stopPropagation(); }
@@ -1783,8 +1840,6 @@ export class GridComponent implements AfterViewInit {
 			this.loadList();
 			this.change.emit(this.result);
 		});
-
-		//this.loadList();
 	}
 // SATIRLARI RENKLENDİRME
 	getRowClasses(row: any, even: boolean): any {
@@ -1793,16 +1848,25 @@ export class GridComponent implements AfterViewInit {
 			priority_low: row['invoiceStatus'] && row['invoiceStatus'].label === 'Kabul Edilmedi',
 			priority_medium: row['invoiceStatus'] && row['invoiceStatus'].label === 'Atandı',
 			priority_high: row['invoiceStatus'] && row['invoiceStatus'].label === 'Talimata Dönüştürüldü',
-			priority_muk: row['invoiceStatus'] && row['invoiceStatus'].label === 'Mükerrer Fatura',
+			priority_muk: row['invoiceStatus'] && row['invoiceStatus'].label === 'Ö.Talimatı Manuel Oluşturuldu',
+			priority_dbs: row['invoiceStatus'] && row['invoiceStatus'].id === 'Fatura_Durumlari_Dbs',
 			priority_error: row['invoiceStatus'] && row['invoiceStatus'].label === 'Hatalı Atama',
 			priority_cancel: row['invoiceStatus'] && row['invoiceStatus'].label === 'İptal',
-			priority_spend_success: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Ödendi',
 			priority_payment_order_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Ödendi',
 			priority_payment_order_half_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Kısmi Ödendi',
-			priority_payment_order_oto_success: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Otomatik Ödemede',
+			priority_payment_order_oto_success:
+				(this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Otomatik Ödemede') ||
+				(this.model.name === 'Spend' && row['status'] && row['status'].label === 'Otomatik Ödemede'),
+			priority_payment_order_dbs:
+				(this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Onaylandı' && row['paymentType'].label === 'Dbs') ||
+				(this.model.name === 'Spend' && row['status'] && row['status'].label === 'Dbs Ödemeli'),
 			priority_payment_order_acikOdeme: this.model.name === 'PaymentOrder' && row['paymentSubject'] && row['closePdf'] === false && row['paymentSubject'].label === 'Açık Ödeme',
 			priority_payment_order_okey: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Onaylandı',
 			priority_payment_order_cancel: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Reddedildi',
+			priority_payment_order_wait:
+				(this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === '1.Onay Bekleniyor' && row['assigner'].id === this.baseService.getUserId()) ||
+				(this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === '2.Onay Bekleniyor' && row['secondAssigner'].id === this.baseService.getUserId()),
+			priority_spend_success: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Ödendi',
 			priority_spend_cancel: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Reddedildi',
 			fuel_limit_okey: this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Onaylandı',
 			fuel_limit_cancel: this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Reddedildi'

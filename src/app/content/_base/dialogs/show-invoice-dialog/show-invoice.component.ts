@@ -42,6 +42,50 @@ export class ShowInvoiceComponent implements OnInit {
 	onNoClick() {
 		this.dialogRef.close();
 	}
+	async showInvoice() {
+		try {
+			const apiUrl = 'api/file_containers/showFile';
+			const httpHeaders = this.httpUtils.getHTTPHeaders();
+			const locName = this.model.name;
+			const location = this.current.id.toString();
+
+			const response = await this.http.get(apiUrl + `?location=${location}&locName=${locName}&subject=E-Fatura`, { headers: httpHeaders, responseType: 'text' }).toPromise();
+
+			const decodedData = atob(response);
+			const cleanData = decodedData.replace(/\s+/g, '');
+			const fileSignature = decodedData.substring(0, 4);
+			console.log(fileSignature);
+			let fileType: string;
+
+			if (fileSignature === '%PDF') {
+				fileType = 'application/pdf';
+			} else if (fileSignature === 'ÿØÿâ' || fileSignature === 'ÿÛÿà' || fileSignature === '/9j/' || fileSignature === 'ÿØÿà') {
+				fileType = 'image/jpeg';
+			} else if (fileSignature === 'PNG') {
+				fileType = 'image/png';
+			} else if (fileSignature === 'GIF8') {
+				fileType = 'image/gif';
+			} else if (fileSignature === 'RIFF' && decodedData.substr(8, 4) === 'WEBP') {
+				fileType = 'image/webp';
+			} else if (fileSignature === 'II*\x00' || fileSignature === 'MM\x00*') {
+				fileType = 'image/tiff';
+			} else {
+				Utils.showActionNotification('Dosya eksik veya hatalı yüklendi!', 'warning', 10000, true, false, 3000, this.snackBar);
+				return;
+			}
+
+			const uint8Array = new Uint8Array(decodedData.length);
+			for (let i = 0; i < decodedData.length; ++i) {
+				uint8Array[i] = decodedData.charCodeAt(i);
+			}
+
+			const blob = new Blob([uint8Array], { type: fileType });
+			const fileUrl = URL.createObjectURL(blob);
+			window.open(fileUrl, '_blank');
+		} catch (error) {
+			Utils.showActionNotification('Dosya bulunamadı!', 'warning', 10000, true, false, 3000, this.snackBar);
+		}
+	}
 
 	formatDate(date: string): string {
 		if (!date) {

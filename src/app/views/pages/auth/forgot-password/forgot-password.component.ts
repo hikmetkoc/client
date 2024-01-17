@@ -9,6 +9,9 @@ import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 // Auth
 import { AuthNoticeService, AuthService } from '../../../../core/auth';
+import {HttpClient} from '@angular/common/http';
+import {Utils} from '../../../../content/_base/utils';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
 	selector: 'kt-forgot-password',
@@ -18,8 +21,10 @@ import { AuthNoticeService, AuthService } from '../../../../core/auth';
 export class ForgotPasswordComponent implements OnInit, OnDestroy {
 	// Public params
 	forgotPasswordForm: FormGroup;
-	loading = false;
+	verificationCodeSent = false;
+	// loading = false;
 	errors: any = [];
+	buttonLoading = false;
 
 	private unsubscribe: Subject<any>; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
 
@@ -39,6 +44,8 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 		private translate: TranslateService,
 		private router: Router,
 		private fb: FormBuilder,
+		private http: HttpClient,
+		public snackBar: MatSnackBar,
 		private cdr: ChangeDetectorRef
 	) {
 		this.unsubscribe = new Subject();
@@ -61,7 +68,6 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 	ngOnDestroy(): void {
 		this.unsubscribe.next();
 		this.unsubscribe.complete();
-		this.loading = false;
 	}
 
 	/**
@@ -70,20 +76,62 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 	 */
 	initRegistrationForm() {
 		this.forgotPasswordForm = this.fb.group({
-			email: ['', Validators.compose([
+			id: ['', Validators.compose([
 				Validators.required,
-				Validators.email,
-				Validators.minLength(3),
-				Validators.maxLength(320) // https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
-			])
-			]
+				Validators.minLength(6),
+				Validators.maxLength(320)
+			])],
+			verificationCode: ['', Validators.compose([
+				Validators.required,
+				Validators.minLength(6),
+				Validators.maxLength(320)
+			])],
+			newPassword: ['', Validators.compose([
+				Validators.required,
+				Validators.minLength(6),
+				Validators.maxLength(320)
+			])],
+			confirmPassword: ['', Validators.compose([
+				Validators.required,
+				Validators.minLength(6),
+				Validators.maxLength(320)
+			])],
 		});
 	}
+
 
 	/**
 	 * Form Submit
 	 */
-	submit() {
+	async submit() {
+		const controls = this.forgotPasswordForm.controls;
+
+		/** check form */
+		/*if (this.forgotPasswordForm.invalid) {
+			Object.keys(controls).forEach(controlName =>
+				controls[controlName].markAsTouched()
+			);
+			return;
+		}*/
+
+		const id = controls['id'].value;
+		const url = `api/users/forgot?id=${id}`;
+		this.buttonLoading = true;
+
+		try {
+			const res = await this.http.get(url).toPromise();
+			if (res === 1) {
+				this.verificationCodeSent = true;
+				this.cdr.detectChanges();
+			} else {
+				this.buttonLoading = false;
+			}
+		} catch (error) {
+			this.buttonLoading = false;
+		}
+	}
+
+	submit2() {
 		const controls = this.forgotPasswordForm.controls;
 		/** check form */
 		if (this.forgotPasswordForm.invalid) {
@@ -92,25 +140,28 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 			);
 			return;
 		}
+		const id = controls['id'].value;
+		const verificationCode = controls['verificationCode'].value;
+		const newPassword = controls['newPassword'].value;
+		const confirmPassword = controls['confirmPassword'].value;
 
-		this.loading = true;
-
-		const email = controls['email'].value;
-		this.authService.requestPassword(email).pipe(
-			tap(response => {
-				if (response) {
-					this.authNoticeService.setNotice(this.translate.instant('AUTH.FORGOT.SUCCESS'), 'success');
-					this.router.navigateByUrl('/auth/login');
-				} else {
-					this.authNoticeService.setNotice(this.translate.instant('AUTH.VALIDATION.NOT_FOUND', {name: this.translate.instant('AUTH.INPUT.EMAIL')}), 'danger');
+		if (newPassword !== confirmPassword) {
+			console.error('Şifreler uyuşmuyor');
+			return;
+		}
+		const url = `api/users/changePw?id=${id}&pw=${newPassword}&code=${verificationCode}`;
+		this.http.get(url)
+			.subscribe(
+				(res) => {
+					this.router.navigate(['/auth/login']);
+					this.cdr.detectChanges();
+					Utils.showActionNotification('Şifreniz başarıyla değiştirilmiştir!', 'success', 2000, true, true, 2000, this.snackBar);
+					},
+				(error) => {
+					Utils.showActionNotification('Hatalı işlem!', 'success', 2000, true, true, 2000, this.snackBar);
+					return;
 				}
-			}),
-			takeUntil(this.unsubscribe),
-			finalize(() => {
-				this.loading = false;
-				this.cdr.markForCheck();
-			})
-		).subscribe();
+			);
 	}
 
 	/**

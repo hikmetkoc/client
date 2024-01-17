@@ -44,11 +44,14 @@ export class SpendToTlComponent implements OnInit {
 		if (this.baseService.loadingSubject.value) { return; }
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
 		const money = this.money;
-		const id = this.current;
-		console.log(this.current);
-		const url = `api/spends/paytotl/${id}?money=${money}`;
+		const id = this.current.id;
+		const amount = this.current.amount;
+		const amountString: string = amount.toString();
+		console.log(amount);
+		const body = { uuid: id, exchangeMoney: money, payAmount: amountString};
+		const url = 'api/spends/paytotl';
 
-		this.http.put(url, null, { headers: httpHeaders, responseType: 'text' }).subscribe(
+		this.http.put(url, body, { headers: httpHeaders, responseType: 'text' }).subscribe(
 			res => {
 				this.baseService.loadingSubject.next(true);
 				this.isLoading = false;

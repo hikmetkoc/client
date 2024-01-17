@@ -9,6 +9,7 @@ export class Utils {
 
     static phoneMask = ['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
 	static ibanMask: Array<RegExp | string> = ['T', 'R', /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/];
+	static taxMask: Array<RegExp | string> = [ /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
 	static userDepartment = '';
 
 	static currencyMask = createNumberMask({
@@ -179,6 +180,8 @@ export class Utils {
 						field['fieldType'] = 'disabled';
 					} else if (field['type'] === 'iban') {
 						field['fieldType'] = 'iban';
+					} else if (field['type'] === 'Tax') {
+						field['fieldType'] = 'tax';
 					}
                     model.fields.push(field);
                 }
@@ -714,6 +717,15 @@ export class Utils {
 		return iban;
 	}
 
+	public static taxClean(tax) {
+		if (!tax || tax === null) { return tax; }
+		if (tax.length < 11) { tax = ''; }
+		if (tax.length > 11) { tax = tax.split('-')[0]; }
+		tax = tax.replace(/\D+/g, '');
+		if (tax.length > 11) { tax = tax.substr(0, 11); } else { tax = tax.substr(0, 11); }
+		return tax;
+	}
+
     public static phoneClean(phone) {
         if (!phone || phone === null) { return phone; }
         if (phone.length < 7) { phone = ''; }
@@ -767,6 +779,30 @@ export class Utils {
 			iban = 'TR' + iban.substring(0, 2) + ' ' + iban.substring(2, 6) + ' ' + iban.substring(6, 10) + ' ' + iban.substring(10, 14) + ' ' + iban.substring(14, 18) + ' ' + iban.substring(18, 22) + ' ' + iban.substring(22, 26) + ' ' + iban.substring(26, 28);
 		}
 		return iban;
+	}
+
+	public static taxZeroPad(tax) {
+		if (!tax) {
+			return tax;
+		}
+		tax = this.taxClean(tax);
+		if (tax.length > 11) {
+			tax = '0' + tax;
+		}
+		return tax;
+	}
+
+	public static taxFormat(tax) {
+		if (!tax) {
+			return tax;
+		}
+		tax = this.taxClean(tax);
+		if (tax.length === 11) {
+			tax = tax.substring(0, 10);
+		} else {
+			tax = tax.substring(0, 10);
+		}
+		return tax;
 	}
 
 	public static compareObjects(o1: any, o2: any) {

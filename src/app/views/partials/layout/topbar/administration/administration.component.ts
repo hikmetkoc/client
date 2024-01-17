@@ -1,5 +1,6 @@
 // Angular
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import {Utils} from '../../../../../content/_base/utils';
 
 @Component({
 	selector: 'kt-administration',
@@ -8,7 +9,7 @@ import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 })
 export class AdministrationComponent implements OnInit, AfterViewInit {
 	// Public properties
-
+	utils = Utils;
 	// Set icon class name
 	@Input() icon = 'flaticon2-gear';
 

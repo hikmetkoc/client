@@ -1,0 +1,49 @@
+<kt-portlet>
+	<div class="modal-header">
+		<h4 class="modal-title">Opet/Aygaz/Total - Dbs'li Ödeme Onayı</h4>
+	</div>
+	<kt-portlet-body style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+		<style>
+			.modal-header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 10px 20px;
+				background-color: #f8f9fa; /* Hafif gri arka plan */
+				color: #007bff; /* Mavi renk başlık */
+			}
+
+			.modal-title {
+				margin: 0;
+			}
+
+			.button-container {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin-top: 10px;
+			}
+
+			.button-container button {
+				margin: 0 5px;
+			}
+		</style>
+
+		<div class="button-container">
+			<button mat-raised-button
+					color="primary"
+					matTooltip="Dbs'li Faturaya Dönüştür"
+					type="button"
+					(click)="changeDbs()">
+				Dbs'li Faturaya Dönüştür
+			</button>
+			<button mat-raised-button
+					color="warn"
+					matTooltip="Vazgeç"
+					type="button"
+					(click)="onNoClick()">
+				Vazgeç
+			</button>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

@@ -1,5 +1,5 @@
 <!--begin: Quick actions -->
-<div ngbDropdown placement="bottom-right" class="kt-header__topbar-item">
+<div *ngIf="this.utils.hasOperation('AdminPanel_Goruntuleme')" ngbDropdown placement="bottom-right" class="kt-header__topbar-item">
 	<div ngbDropdownToggle class="kt-header__topbar-wrapper" matTooltip="Yönetimsel Araçlar">
 		<span class="kt-header__topbar-icon" [ngClass]="{ 'kt-header__topbar-icon--warning': iconType === 'warning' }">
 			<i *ngIf="!useSVG" [ngClass]="icon"></i>

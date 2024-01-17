@@ -21,6 +21,9 @@
 						  style="display: inline-block; color: darkgreen; border: 1px solid darkgreen; padding: 5px; margin-left: 10px;">
 					Kalan Yıllık İzniniz: {{ this.kalanizin }} <span style="font-size: 16px;">GÜN</span>
 				  </span>
+					<!--<button type="button" (click)="spendTotalNotPaid()">
+						<mat-icon>arrow_downward</mat-icon>
+					</button> -->
 					<!--<span *ngIf="this.tablo === 'spends' && this.baseService.getUser().birim.id === 'Birimler_Fin'"
 						  style="display: inline-block; color: darkred; border: 1px solid darkred; padding: 5px; margin-bottom: 10px; white-space: nowrap;">
 					Ödeme Yapılacak TL Tutarı: {{ formatCurrency(this.toplamtlodeme) }} <span style="font-size: 16px;"> TL (GÜNCELLEME YAPILACAK)</span>
@@ -29,7 +32,7 @@
 						  style="display: inline-block; color: darkgreen; border: 1px solid darkgreen; padding: 5px; margin-left: 10px;">
 					Ödeme Yapılacak Dolar Tutarı: {{ formatCurrency(this.toplamdlodeme) }} <span style="font-size: 16px;"> DOLAR (GÜNCELLEME YAPILACAK)</span>
 				  </span> -->
-					<table *ngIf="this.tablo === 'spends' && this.baseService.getUser().birim.id === 'Birimler_Fin'" class = "my-custom-table">
+					<!--<table *ngIf="this.tablo === 'spends' && this.baseService.getUser().birim.id === 'Birimler_Fin'" class = "my-custom-table">
 						<style>
 							/* Tablo başlık stilleri */
 							table.my-custom-table {
@@ -140,7 +143,7 @@
 							<td>{{formatCurrency(this.avelicedlodeme)}}</td>
 						</tr>
 						</tbody>
-					</table>
+					</table>-->
 					<span *ngIf="this.tablo === 'spends' && this.baseService.getUser().birim.id !== 'Birimler_Fin'"
 						  style="display: inline-block; color: darkgreen; border: 1px solid darkgreen; padding: 5px; margin-left: 10px;">
 					ÖDEMELER
@@ -545,11 +548,15 @@
 					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
 					<mat-cell *matCellDef="let row">{{utils.ibanFormat(row[field.name])}}</mat-cell>
 				</ng-container>
-				<ng-container *ngIf="['currency'].indexOf(field.fieldType) > -1 && field.display && (model.apiName === 'invoice_lists' || model.apiName === 'payment_orders' || model.apiName === 'spends')" matColumnDef="{{field.name}}">
-					<mat-header-cell *matHeaderCellDef mat-sort-header [style.min-width.px]="field.name === 'amount' ? 150 : null">{{field.title}}</mat-header-cell>
-					<mat-cell *matCellDef="let row" [style.min-width.px]="field.name === 'amount' ? 150 : null" style="font-weight: bold; font-size: 15px; margin-left: 20px;">{{row[field.name] ? formatCurrency(row[field.name]) + symbol(row,field) : '0,00' + symbol(row,field)}}</mat-cell>
+				<ng-container *ngIf="['tax'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row">{{utils.taxFormat(row[field.name])}}</mat-cell>
 				</ng-container>
-				<ng-container *ngIf="['currency'].indexOf(field.fieldType) > -1 && field.display && model.apiName !== 'invoice_lists' && model.apiName !== 'payment_orders' && model.apiName !== 'spends'" matColumnDef="{{field.name}}">
+				<ng-container *ngIf="['currency'].indexOf(field.fieldType) > -1 && field.display && (model.apiName === 'invoice_lists' || model.apiName === 'payment_orders' || model.apiName === 'spends' || model.apiName === 'buys' || model.apiName === 'stores')" matColumnDef="{{field.name}}">
+					<mat-header-cell *matHeaderCellDef mat-sort-header [style.min-width.px]="field.name === 'amount' || field.name === 'fuelTl' ? 150 : null">{{field.title}}</mat-header-cell>
+					<mat-cell *matCellDef="let row" [style.min-width.px]="field.name === 'amount' || field.name === 'fuelTl' ? 150 : null" style="font-weight: bold; font-size: 15px; margin-left: 20px;">{{row[field.name] ? formatCurrency(row[field.name]) + symbol(row,field) : '0,00' + symbol(row,field)}}</mat-cell>
+				</ng-container>
+				<ng-container *ngIf="['currency'].indexOf(field.fieldType) > -1 && field.display && model.apiName !== 'invoice_lists' && model.apiName !== 'payment_orders' && model.apiName !== 'spends' && model.apiName !== 'buys' && model.apiName !== 'stores'" matColumnDef="{{field.name}}">
 					<mat-header-cell *matHeaderCellDef mat-sort-header [style.min-width.px]="field.name === 'amount' ? 150 : null">{{field.title}}</mat-header-cell>
 					<mat-cell *matCellDef="let row" [style.min-width.px]="field.name === 'amount' ? 150 : null" style="font-weight: bold; font-size: 15px; margin-left: 20px;">{{row[field.name] ? formatCurrency(row[field.name]) + ' &#8378;': '0,00 &#8378;'}}</mat-cell>
 				</ng-container>
@@ -702,7 +709,7 @@
 						<button *ngIf="((row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor')
 						 	|| (row.secondAssigner.id === this.baseService.getUserId() && row.status.label === '2.Onay Bekleniyor')
 						 	 || (this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm' && row.status.label === 'Muhasebe Onayı')
-						 	  || (this.baseService.getUser().birim.label === 'Finans' && row.status.label === 'Onaylandı')) && row.pdf === true"
+						 	  || (this.baseService.getUser().birim.label === 'Finans' && row.status.label === 'Onaylandı' && row.paymentType.label !== 'Dbs')) && row.pdf === true"
 								mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
 							<mat-icon>cancel</mat-icon>
 						</button>
@@ -794,9 +801,20 @@
 						<button *ngIf="row.pdf === true" mat-icon-button color="success" matTooltip="Fatura Görüntüle" type="button" (click)="showBase64File(row, $event)">
 							<mat-icon>visibility</mat-icon>
 						</button>
-						<button *ngIf="row.owner !== null && row.invoiceStatus.label === 'Atandı' && row.owner.login === this.baseService.getUser().login"
+						<button *ngIf="row.owner !== null && row.invoiceStatus.label === 'Atandı' && row.owner.id === this.baseService.getUser().id"
 								mat-icon-button color="basic" matTooltip="Fatura Onayı" type="button" (click)="correct(row, $event)">
 							<mat-icon>check_circle</mat-icon>
+						</button>
+						<!--<button *ngIf="row.owner !== null && this.baseService.getUser().id === 32 && row.invoiceStatus.label === 'Talimata Dönüştürüldü'
+								&& row.owner.id === 18 && row.behavior === false"
+								mat-icon-button color="secondary" matTooltip="Harekete Dönüştür" type="button" (click)="addBehavior(row, $event)">
+							<mat-icon>check_box</mat-icon>
+						</button> -->
+						<button *ngIf="row.owner !== null && this.baseService.getUser().id === row.owner.id && row.invoiceStatus.label === 'Atandı'
+								&& (row.owner.id === 5 || row.owner.id === 6 || row.owner.id === 12030)
+								&& (row.customer.id === '33062c37-e51b-4fdf-acdb-e99d5f0a036b' || row.customer.id === 'd22ec4cb-7e0d-4a0a-a791-7d608ff140a5' || row.customer.id === 'e1d77480-5d72-4f62-9777-5f74bc1c3a9c')"
+								mat-icon-button color="warn" matTooltip="Dbs'li Faturaya Dönüştür" type="button" (click)="changeDbsInvoice(row, $event)">
+							<mat-icon>account_balance</mat-icon>
 						</button>
 					</div>
 					<div *ngIf="model.apiName == 'users'"> <!-- PERSONELLER ADMIN BUTONLARI -->

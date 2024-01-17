@@ -42,7 +42,7 @@
 					<input matInput type="password" placeholder="Şifre" formControlName="password" autocomplete="off"
 						   style="font-size: 16px; padding: 12px 20px;" />
 					<mat-error *ngIf="isControlHasError('password','required')">
-						<strong>{{ 'AUTH.VALIDATION.REQUIRED_FIELD' | translate }}</strong>
+						<strong>Zorunlu alan</strong>
 					</mat-error>
 					<mat-error *ngIf="isControlHasError('password','minLength')">
 						<strong>{{ 'AUTH.VALIDATION.MIN_LENGTH_FIELD' | translate }} 3</strong>
@@ -59,9 +59,9 @@
 			</div>
 			<!--begin::Action-->
 			<div class="kt-login__actions">
-				<!--<a href="javascript:;" routerLink="/auth/forgot-password" class="kt-link kt-login__link-forgot">
+				<a href="javascript:;" routerLink="/auth/forgot-password" class="btn btn-secondary kt-link kt-login__link-forgot">
 					Şifremi Unuttum
-				</a> -->
+				</a>
 				<button (click)="submit()" [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}" id="kt_login_signin_submit" class="btn btn-primary btn-elevate kt-login__btn-primary">Giriş Yap</button>
 			</div>
 			<!--end::Action-->

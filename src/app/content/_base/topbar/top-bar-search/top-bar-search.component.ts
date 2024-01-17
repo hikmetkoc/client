@@ -29,7 +29,7 @@ export class TopBarSearchComponent implements OnInit {
 	timer: any;
 
 	/**
-	 * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks 
+	 * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks
 	 */
 
 	constructor(
@@ -77,6 +77,34 @@ export class TopBarSearchComponent implements OnInit {
 							id: x.id,
 							route: Utils.getModel('Customer').name,
 							icon: '<i class="flaticon-suitcase kt-font-primary"></i>',
+							text: x.name,
+							type: 1
+						}));
+						if (value['paymentOrderList'].length > 0) {
+							this.result.push({
+								icon: '',
+								text: Utils.getModel('PaymentOrder').pluralTitle,
+								type: 0
+							});
+						}
+						value['paymentOrderList'].map(x => this.result.push({
+							id: x.id,
+							route: Utils.getModel('PaymentOrder').name,
+							icon: '<i class="flaticon-coins kt-font-primary"></i>',
+							text: x.name,
+							type: 1
+						}));
+						if (value['taskList'].length > 0) {
+							this.result.push({
+								icon: '',
+								text: Utils.getModel('Task').pluralTitle,
+								type: 0
+							});
+						}
+						value['taskList'].map(x => this.result.push({
+							id: x.id,
+							route: Utils.getModel('Task').name,
+							icon: '<i class="flaticon-edit kt-font-primary"></i>',
 							text: x.name,
 							type: 1
 						}));

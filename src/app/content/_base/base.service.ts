@@ -380,18 +380,6 @@ export class BaseService {
 				return true;
 			});*/
 	}
-	/*getIzinCheck(): Observable<boolean> {
-		const url = `api/user_permissions/controlholiday/${this.getUserId()}`;
-
-		return this.http.get(url).pipe(
-			map((response: any) => {
-				// Burada HTTP yanıtını işleyip kullanıcının izinlerini kontrol edebilirsiniz.
-				console.log(response);
-				const izin = response; // Örneğin, HTTP yanıtında izin nesnesi varsa
-				return izin;
-			})
-		);
-	}*/
 }
 
 export class PendingRequest {

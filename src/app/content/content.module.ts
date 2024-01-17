@@ -108,6 +108,9 @@ import { ProjTaskComponent} from './standard/projtask/projtask.component';
 import { ProjOfficerComponent} from './standard/projofficer/projofficer.component';
 import { ProjTaskOfficerComponent} from './standard/projtaskofficer/projtaskofficer.component';
 import { ProjTaskActivityComponent} from './standard/projtaskactivity/projtaskactivity.component';
+import { ProjModuleComponent} from './standard/projmodule/projmodule.component';
+import { ProjModuleOfficerComponent} from './standard/projmoduleofficer/projmoduleofficer.component';
+import { ProjModuleSprintComponent} from './standard/projmodulesprint/projmodulesprint.component';
 import { CustomTaskComponent } from './standard/customtask/customtask.component';
 import { OfferComponent } from './standard/offer/offer.component';
 import { BehaviorComponent} from './standard/behavior/behavior.component';
@@ -163,6 +166,8 @@ import { SpendInfoDialogComponent} from './_base/dialogs/spend-info-dialog/spend
 import { ContinueConfirmComponent } from './_base/dialogs/continue-confirm/continue-confirm.component';
 import { LeadComponent } from './standard/lead/lead.component';
 import { UserGuideComponent } from './standard/user-guide/user-guide.component';
+import {ShowChangeDbsInvoiceComponent} from './_base/detail/show-change-dbs-invoice-dialog/show-change-dbs-invoice.component';
+import {ChangePasswordDialogComponent} from './_base/dialogs/change-password-dialog/change-password-dialog.component';
 
 
 
@@ -229,6 +234,10 @@ const routes: Routes = [
 		component: ProjTaskComponent
 	},
 	{
+		path: 'projmodule',
+		component: ProjModuleComponent
+	},
+	{
 		path: 'projofficer',
 		component: ProjOfficerComponent
 	},
@@ -239,6 +248,14 @@ const routes: Routes = [
 	{
 		path: 'projtaskactivity',
 		component: ProjTaskActivityComponent
+	},
+	{
+		path: 'projmoduleofficer',
+		component: ProjModuleOfficerComponent
+	},
+	{
+		path: 'projmodulesprint',
+		component: ProjModuleSprintComponent
 	},
 	{
 		path: 'buy',
@@ -407,6 +424,7 @@ const routes: Routes = [
 		ReportManagerComponent,
 		ActionNotificationComponent,
 		DeleteEntityDialogComponent,
+		ChangePasswordDialogComponent,
 		UpdateStatusDialogComponent,
 		EditEntityDialogComponent,
 		FilterDialogComponent,
@@ -441,9 +459,12 @@ const routes: Routes = [
 		TaskComponent,
 		ProjectComponent,
 		ProjTaskComponent,
+		ProjModuleComponent,
 		ProjOfficerComponent,
 		ProjTaskOfficerComponent,
 		ProjTaskActivityComponent,
+		ProjModuleOfficerComponent,
+		ProjModuleSprintComponent,
 		TinymceComponent,
 		CustomTaskComponent,
 		OfferComponent,
@@ -512,6 +533,7 @@ const routes: Routes = [
 		ShowInvoiceComponent,
 		ShowResignComponent,
 		ShowPersonelContractComponent,
+		ShowChangeDbsInvoiceComponent,
 		PaymentOrderInfoDialogComponent,
 		LookInfoDialogComponent,
 		SpendInfoDialogComponent,
@@ -522,6 +544,7 @@ const routes: Routes = [
 	entryComponents: [
 		ActionNotificationComponent,
 		DeleteEntityDialogComponent,
+		ChangePasswordDialogComponent,
 		UpdateStatusDialogComponent,
 		EditEntityDialogComponent,
 		FilterDialogComponent,
@@ -560,6 +583,7 @@ const routes: Routes = [
 		ShowInvoiceComponent,
 		ShowResignComponent,
 		ShowPersonelContractComponent,
+		ShowChangeDbsInvoiceComponent,
 		PaymentOrderInfoDialogComponent,
 		LookInfoDialogComponent,
 		SpendInfoDialogComponent,

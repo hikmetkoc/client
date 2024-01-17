@@ -37,7 +37,7 @@
 					<mat-icon>keyboard_arrow_left</mat-icon>
 				</button>
 				<h3 class="kt-portlet__head-title">
-					<span>Görev Detayı <span style="color: #999999">&nbsp;({{current.instanceName}})</span></span>
+					<span>Modül Detayı <span style="color: #999999">&nbsp;({{current.instanceName}})</span></span>
 				</h3>
 			</ng-container>
 			<ng-container ktPortletTools>
@@ -65,17 +65,17 @@
 		<kt-portlet-header>
 			<ng-container ktPortletTitle>
 				<h3 class="kt-portlet__head-title">
-					Görev Sorumluları
+					Modül Sorumluları
 				</h3>
 			</ng-container>
 			<ng-container ktPortletTools>
-				<button (click)="projTaskOfficerGrid.add()" mat-raised-button matTooltip="Yeni görev sorumlusu oluştur" type="button">
-					Yeni Görev Sorumlusu
+				<button (click)="projModuleOfficerGrid.add()" mat-raised-button matTooltip="Yeni modül sorumlusu oluştur" type="button">
+					Yeni Modül Sorumlusu
 				</button>
 			</ng-container>
 		</kt-portlet-header>
 		<kt-portlet-body>
-			<kt-grid #projTaskOfficerGrid entity="ProjTaskOfficer" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="projTaskOfficerRowClicked($event, true)"></kt-grid>
+			<kt-grid #projModuleOfficerGrid entity="ProjModuleOfficer" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="projModuleOfficerRowClicked($event, true)"></kt-grid>
 		</kt-portlet-body>
 	</kt-portlet>
 
@@ -83,17 +83,17 @@
 		<kt-portlet-header>
 			<ng-container ktPortletTitle>
 				<h3 class="kt-portlet__head-title">
-					Görev İşlemleri
+					Sprintler
 				</h3>
 			</ng-container>
 			<ng-container ktPortletTools>
-				<button (click)="projTaskActivityGrid.add()" mat-raised-button matTooltip="Yeni görev işlemi oluştur" type="button">
-					Yeni Görev İşlemi
+				<button (click)="projModuleSprintGrid.add()" mat-raised-button matTooltip="Yeni sprint oluştur" type="button">
+					Yeni Sprint
 				</button>
 			</ng-container>
 		</kt-portlet-header>
 		<kt-portlet-body>
-			<kt-grid #projTaskActivityGrid entity="ProjTaskActivity" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="projTaskActivityRowClicked($event, true)"></kt-grid>
+			<kt-grid #projModuleSprintGrid entity="ProjModuleSprint" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="projModuleSprintRowClicked($event, true)"></kt-grid>
 		</kt-portlet-body>
 	</kt-portlet>
 

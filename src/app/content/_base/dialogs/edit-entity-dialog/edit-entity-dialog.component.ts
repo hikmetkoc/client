@@ -133,6 +133,7 @@ export class EditEntityDialogComponent implements OnInit {
 
 	showInvoice() {
 		const values = {
+			id: this.entityForm.controls.id.value,
 			invoiceDate : this.entityForm.controls.invoiceDate.value,
 			invoiceNum : this.entityForm.controls.invoiceNum.value,
 			customer : this.entityForm.controls.customer.value.name,
@@ -339,7 +340,7 @@ export class EditEntityDialogComponent implements OnInit {
 		this.baseService.loadingSubject.next(true);
 		this.hasFormErrors = false;
 		const controls = this.entityForm.controls;
-		if (this.entityForm.invalid) {
+		if (this.entityForm.invalid && this.model.name !== 'User') {
 			Object.keys(controls).forEach(controlName =>
 				controls[controlName].markAsTouched()
 			);
@@ -658,7 +659,7 @@ export class EditEntityDialogComponent implements OnInit {
 			this.entityForm.get('comeDate' + 'Minute').disable();
 			this.entityForm.get('comeDate' + 'Hour').setValue('30');*/
 			return;
-		} else if (field.name === 'paymentStyle' && value === 'Payment_Style_Tl' && this.entityForm.get('moneyType').value === 'Par_Bir_Dl' && (this.model.apiName === 'invoice_lists' || this.model.apiName === 'payment_orders')) {
+		} else if (field.name === 'paymentStyle' && value === 'Payment_Style_Tl' && (this.entityForm.get('moneyType').value === 'Par_Bir_Dl' || this.entityForm.get('moneyType').value === 'Par_Bir_Euro') && (this.model.apiName === 'invoice_lists' || this.model.apiName === 'payment_orders')) {
 			this.gizlilik = true;
 			this.gizlilik2 = true;
 		} else if (field.name === 'paymentStyle' && value === 'Payment_Style_Doviz' && (this.model.apiName === 'invoice_lists' || this.model.apiName === 'payment_orders')) {
@@ -888,7 +889,7 @@ export class EditEntityDialogComponent implements OnInit {
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
 		const id = this.entityForm.controls.id.value;
 		const status = this.baseService.getAttrVal('Fatura_Durumlari_Mukerrer').id;
-		const description = this.baseService.getUserFullName() + ' tarafından mükerrer fatura olduğu belirtildi. ' + this.entityForm.controls.description.value;
+		const description = this.baseService.getUserFullName() + ' tarafından faturanın ödeme talimatında manuel olarak oluşturulduğu belirtildi. ' + this.entityForm.controls.description.value;
 		console.log(id + ' - ' + status + ' - ' + description);
 		const url = `api/invoice_lists/${id}?status=${status}&description=${description}`;
 		//`?receiver=${receiver}&subject=${subject}&message=${message}`

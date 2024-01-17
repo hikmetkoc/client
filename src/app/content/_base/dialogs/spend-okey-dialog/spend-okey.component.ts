@@ -59,10 +59,12 @@ export class SpendOkeyComponent implements OnInit {
 		this.onayla = true;
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
 		const id = this.current;
-		const status = this.durum;
-		const url = `api/spends/${id}?status=${status}&description=${this.description}`;
+		const spendStatus = this.durum;
+		const description = this.description;
+		const url = 'api/spends/updateSpend';
+		const body = { uuid: id, status: spendStatus, descriptionString: description };
 		// PUT isteği gönderme
-		this.http.put(url, null, { headers: httpHeaders})
+		this.http.put(url, body, { headers: httpHeaders})
 			.subscribe(
 				() => {
 					this.dialogRef.close();
