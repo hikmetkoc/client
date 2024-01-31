@@ -63,7 +63,18 @@
 					</span>
 					<span *ngIf="['integer','text','url'].indexOf(field.fieldType) > -1 && field.name !== 'password'"
 						  [class]="tiny ? '' : 'kt-widget4__title'">
-    						{{current[field.name]}}
+    						{{field.name === 'paymentOrder' && model.name === 'Store' && current[field.name] ? getPaymentOrder(current[field.name]) :
+								field.name === 'store' && model.name === 'PaymentOrder' && current[field.name] ? getStore(current[field.name]) : current[field.name]}}
+						<button *ngIf="(field.name === 'paymentOrder' && model.name === 'Store' && current[field.name])
+									|| (field.name === 'store' && model.name === 'PaymentOrder' && current[field.name])"
+								mat-icon-button [ngbPopover]="bubble" triggers="mouseenter:mouseleave"
+								[popoverTitle]="current[field.name]" color="primary"
+								(mouseenter)="bubbleOpen(current[field.name], field.objectApiName)"
+								placement="right" container="body"
+								[routerLink]="['/' + field.name?.toLowerCase()]"
+								[queryParams]="{id: current[field.name], sourceObject: model.apiName?.toLowerCase(), sourceId: current[field.name]}">
+							<mat-icon>info</mat-icon>
+						</button>
 					</span>
 					<span *ngIf="['iban'].indexOf(field.fieldType) > -1 && this.model.name !== 'User'" [class]="tiny ? '' : 'kt-widget4__title'">
 						{{current[field.name] ? current[field.name] : current[field.name]['instanceName']}}

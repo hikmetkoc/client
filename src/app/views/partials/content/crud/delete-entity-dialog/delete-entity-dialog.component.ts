@@ -13,7 +13,7 @@ export class DeleteEntityDialogComponent implements OnInit {
 	/**
 	 * Component constructor
 	 *
-	 * @param dialogRef: MatDialogRef<ChangePasswordDialogComponent>
+	 * @param dialogRef: MatDialogRef<FullTextDialogComponent>
 	 * @param data: any
 	 */
 	constructor(

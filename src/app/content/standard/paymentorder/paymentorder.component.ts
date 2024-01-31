@@ -31,6 +31,8 @@ import {
 import {
 	BuyReportManagerDialogComponent
 } from "../../_base/detail/reportmanager/buyreport-manager-dialog/buyreport-manager-dialog.component";
+import {AddIbanComponent} from "../../_base/dialogs/add-iban-dialog/add-iban.component";
+import {AddSpendComponent} from "../../_base/dialogs/add-spend-dialog/add-spend.component";
 
 @Component({
 	selector: 'kt-paymentorder',
@@ -106,11 +108,17 @@ export class PaymentOrderComponent extends BaseComponent implements OnInit, Afte
 		this.buttons = [];
 
 		this.buttons.push({
-			display: this.baseService.getPermissionRule('user', 'update') && (this.baseService.getUser().birim.id !== 'Birimler_Muh'),
+			display: this.baseService.getUser().id !== 32 && this.baseService.getUser().birim.id !== 'Birimler_Muh',
 			title: 'Ödeme Talimatı Raporu',
 			icon: 'cloud_download',
 			click: this.getReport.bind(this)
 		},
+			{
+				display: this.baseService.getUser().id === 32,
+				title: 'İnşaat Ödeme Talimatı Raporu',
+				icon: 'cloud_download',
+				click: this.getInsaatReport.bind(this)
+			},
 			{
 				display: this.baseService.getPermissionRule(this.model.name, 'update'),
 				title: 'Seçili Ödeme Talimatı Raporu',
@@ -124,6 +132,18 @@ export class PaymentOrderComponent extends BaseComponent implements OnInit, Afte
 			});
 	}
 
+	addNewSpend() {
+		const paymentOrder = this.current;
+		const dialogRef = this.dialog.open(AddSpendComponent, {
+			width: '800px',
+			data: {current: paymentOrder, model: null}
+		});
+		dialogRef.afterClosed().subscribe((result) => {
+			if (result !== '') {
+				// ÖDEMEYİ TABLOYA EKLE
+			}
+		});
+	}
 	calendarView(isCalendar) {
 		this.isCalendar = isCalendar;
 
@@ -237,6 +257,30 @@ export class PaymentOrderComponent extends BaseComponent implements OnInit, Afte
 					.pipe(
 						tap(res2 => {
 							Utils.downloadFile(res2, 'Excel', 'Ödeme Talimatı Raporu');
+							this.baseService.loadingSubject.next(false);
+						}),
+						catchError(err => {
+							this.baseService.loadingSubject.next(false);
+							return err;
+						})
+					).subscribe();
+			}
+		});
+	}
+
+	getInsaatReport() {
+		const dialogRef = this.dialog.open(ReportDialogComponent, { data: { filter: 'date', title: 'İnşaat Ödeme Talimatı Raporu' } });
+		dialogRef.afterClosed().subscribe(res => {
+			if (res) {
+				if (this.baseService.loadingSubject.value) { return; }
+				this.baseService.loadingSubject.next(true);
+				res.startDate = Utils.dateFormatForApi(res.startDate);
+				res.endDate = Utils.dateFormatForApi(res.endDate);
+				const httpHeaders = this.httpUtils.getHTTPHeaders();
+				this.http.post('api/' + this.model.apiName + '/reportInsaat?startDate=' + res.startDate + '&endDate=' + res.endDate, undefined, { headers: httpHeaders, responseType: 'blob' })
+					.pipe(
+						tap(res2 => {
+							Utils.downloadFile(res2, 'Excel', 'İnşaat Ödeme Talimatı Raporu');
 							this.baseService.loadingSubject.next(false);
 						}),
 						catchError(err => {

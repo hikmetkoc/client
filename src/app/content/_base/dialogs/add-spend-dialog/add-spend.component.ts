@@ -27,21 +27,19 @@ import {AreYouOkeyComponent} from "../are-you-okey-dialog/are-you-okey.component
 
 
 @Component({
-	selector: 'kt-resign',
-	templateUrl: 'add-iban.component.html',
+	selector: 'kt-add-spend',
+	templateUrl: 'add-spend.component.html',
 })
-export class AddIbanComponent implements OnInit {
+export class AddSpendComponent implements OnInit {
 	@Input() current: any;
 	@Input() model: any;
-	bankList = [];
+	exchangeList = [];
 	typeList = [];
-	countryList = [];
-	moneyTypeList = [];
-	iban = '';
-	selectedBankId: any;
+	description = '';
 	selectedTypeId: any;
-	selectedCountryId: any;
-	selectedMoneyTypeId: any;
+	selectedDate: any;
+	selectedAmount: any;
+	selectedExchangeId: any;
 	utils = Utils;
 
 	constructor(
@@ -66,18 +64,8 @@ export class AddIbanComponent implements OnInit {
 
 	filterOptions(name: any) {
 		if (name === 'type') {
-			if (this.selectedTypeId === 'Iban_Type_I') {
-				this.utils.setIbanMask('TR');
-			} else {
-				this.utils.setIbanMask('EN');
-			}
 		}
 		if (name === 'country') {
-			if (this.selectedCountryId === 'Iban_Country_TR') {
-				this.utils.setIbanMask('CTR');
-			} else {
-				this.utils.setIbanMask('COT');
-			}
 		}
 	}
 
@@ -86,7 +74,7 @@ export class AddIbanComponent implements OnInit {
 	}
 
 	onYesClick() {
-		if (this.selectedBankId === undefined || this.selectedMoneyTypeId === undefined || this.selectedTypeId === undefined || this.selectedCountryId === undefined) {
+		if (this.selectedTypeId === undefined || this.selectedDate === undefined || this.selectedAmount === undefined) {
 			Utils.showActionNotification('Lütfen tüm alanları doldurun!', 'error', 2000, true, false, 3000, this.snackBar);
 		} else {
 			const dialogRef = this.dialog.open(AreYouOkeyComponent, {
@@ -94,11 +82,11 @@ export class AddIbanComponent implements OnInit {
 			});
 			dialogRef.afterClosed().subscribe((result) => {
 				if (result === 'yes') {
-					const url = '/api/ibans/newIban';
+					/*const url = '/api/spends/addSpend';
 					const httpHeaders = this.httpUtils.getHTTPHeaders();
-					this.http.put(url + `?bank=${this.selectedBankId}&moneyType=${this.selectedMoneyTypeId}&customer=${this.current}&name=${this.iban}&type=${this.selectedTypeId}&country=${this.selectedCountryId}` , null, {headers: httpHeaders, responseType: 'text'}).subscribe(
+					this.http.put(url + `?bank=${this.selectedTypeId}&moneyType=${this.selectedExchangeId}&customer=${this.current}&name=${this.description}&type=${this.selectedDate}&country=${this.selectedAmount}` , null, {headers: httpHeaders, responseType: 'text'}).subscribe(
 						(res: any) => {
-							this.dialogRef.close(this.iban);
+							this.dialogRef.close(this.description);
 							Utils.showActionNotification('Kayıt Başarılı!', 'success', 10000, true, false, 3000, this.snackBar);
 							},
 						(error) => {
@@ -106,7 +94,8 @@ export class AddIbanComponent implements OnInit {
 							console.error('Hata:', error);
 							Utils.showActionNotification('Bu Ödeme Bilgisi zaten kayıtlıdır!.', 'error', 10000, true, false, 3000, this.snackBar);
 						}
-					);
+					);*/
+					this.dialogRef.close(); // DENEMEDİR
 				}
 			});
 		}
@@ -127,10 +116,8 @@ export class AddIbanComponent implements OnInit {
 			3000
 		);
 		this.baseService.find(queryParams, 'attribute-values').subscribe(res => {
-			this.bankList = res.body.filter(hld => hld.attribute.id === 'Müş_Bnk');
-			this.typeList = res.body.filter(hld => hld.attribute.id === 'Iban_Type');
-			this.countryList = res.body.filter(hld => hld.attribute.id === 'Iban_Country');
-			this.moneyTypeList = res.body.filter(hld => hld.attribute.id === 'Par_Bir');
+			this.exchangeList = res.body.filter(hld => hld.attribute.id === 'Exchange_Date');
+			this.typeList = res.body.filter(hld => hld.attribute.id === 'PaymentType');
 			this.cdr.markForCheck();
 		});
 	}

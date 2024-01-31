@@ -92,7 +92,9 @@
 				<th>Ödeme Şekli</th>
 				<th>Ödeme Yapılacak Para Birimi</th>
 				<th>Kur Tarihi</th>
-				<th>IBAN</th>
+				<th>Ödeme Bilgisi</th>
+				<th>Numara Türü</th>
+				<th *ngIf="current.swiftCode != null || current.swiftCode !== ''">Swift Kodu</th>
 				<th>Ödeme Durumu</th>
 			</tr>
 			</thead>
@@ -102,6 +104,8 @@
 				<td>{{current.paymentStyle ? current.paymentStyle.label : ' '}}</td>
 				<td>{{current.exchange ? current.exchange.label : ' '}}</td>
 				<td>{{current.strIban ? current.strIban : ' '}}</td>
+				<td>{{current.strIban ? current.iban.type.label : ' '}}</td>
+				<td *ngIf="current.swiftCode != null || current.swiftCode !== ''">{{current.strIban && current.swiftCode ? current.swiftCode : ' '}}</td>
 				<td>{{current.success === true ? 'Ödendi olarak işaretlendi' : current.autopay === true ? 'Otomatik Ödemede' : current.kismi === true ? 'Kısmi Ödeme' : 'Tek Ödeme'}}</td>
 			</tr>
 			</tbody>

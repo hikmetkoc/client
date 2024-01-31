@@ -1,7 +1,7 @@
 <kt-portlet>
 	<kt-portlet-body>
 		<div id="print-section">
-			<p style="text-align: center; font-size: large; font-weight: bold">YENİ ÖDEME BİLGİSİ EKLE</p>
+			<p style="text-align: center; font-size: large; font-weight: bold">YENİ ÖDEME EKLE</p>
 			<br />
 			<div style="overflow-y: hidden; overflow: auto; white-space: nowrap;">
 				<style>
@@ -22,45 +22,45 @@
 				<tr>
 					<td>
 						<mat-form-field>
-							<mat-label>Numara Türü</mat-label>
-							<mat-select [(ngModel)]="selectedTypeId" (ngModelChange)="filterOptions('type')">
+							<mat-label>Ödeme Tipi</mat-label>
+							<mat-select [(value)]="selectedTypeId">
 								<mat-option *ngFor="let attr of typeList" [value]="attr.id">{{attr.label}}</mat-option>
 							</mat-select>
 						</mat-form-field>
 					</td>
 					<td>
 						<mat-form-field>
-							<mat-label>Ülke</mat-label>
-							<mat-select [(ngModel)]="selectedCountryId" (ngModelChange)="filterOptions('country')">
-								<mat-option *ngFor="let attr of countryList" [value]="attr.id">{{attr.label}}</mat-option>
-							</mat-select>
+							<mat-label>Vade Tarihi</mat-label>
+							<input matInput [matDatepicker]="picker" placeholder="Vade Tarihi" [(ngModel)]="selectedDate" (ngModelChange)="filterOptions('type')">
+							<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+							<mat-datepicker #picker></mat-datepicker>
 						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Ödenecek Tutar</mat-label>
+							<input matInput [textMask]="{mask: utils.currencyMask}" [(ngModel)]="selectedAmount">
+						</mat-form-field>
+
 					</td>
 				</tr>
 					<tr>
 					<td>
-						<mat-form-field>
-							<mat-label>Ödeme Numarası:</mat-label>
-							<input matInput [textMask]="{mask: utils.ibanMask}" [(ngModel)]="iban">
+						<mat-form-field style="width: 100%">
+							<mat-label>Açıklama</mat-label>
+							<input matInput [(ngModel)]="description">
 							<mat-icon matSuffix>credit_card</mat-icon>
 						</mat-form-field>
 					</td>
-					<td>
+
+					<!--<td>
 						<mat-form-field>
-							<mat-label>Banka</mat-label>
-							<mat-select [(value)]="selectedBankId">
-								<mat-option *ngFor="let attr of bankList" [value]="attr.id">{{attr.label}}</mat-option>
+							<mat-label>Kur Tarihi</mat-label>
+							<mat-select [(value)]="selectedExchangeId">
+								<mat-option *ngFor="let attr of exchangeList" [value]="attr.id">{{attr.label}}</mat-option>
 							</mat-select>
 						</mat-form-field>
-					</td>
-					<td>
-						<mat-form-field>
-							<mat-label>Ödeme Para Birimi</mat-label>
-							<mat-select [(value)]="selectedMoneyTypeId">
-								<mat-option *ngFor="let attr of moneyTypeList" [value]="attr.id">{{attr.label}}</mat-option>
-							</mat-select>
-						</mat-form-field>
-					</td>
+					</td>-->
 				</tr>
 			</table>
 		</div>

@@ -127,6 +127,31 @@ export class Utils {
             title: 'Ortalama'
         }
     ];
+	public static setIbanMask(countryCode: string) {
+		// Customize the ibanMask based on the selected country code
+		// Add additional cases as needed for different countries
+		switch (countryCode) {
+			case 'TR':
+				this.ibanMask = ['T', 'R', /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/];
+				break;
+			// Add more cases for other countries if needed
+			// case 'US':
+			//     this.ibanMask = ...;
+			//     break;
+			case 'EN':
+				// Set a default mask or handle unknown countries
+				this.ibanMask = [/[A-Za-z0-9]/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
+				break;
+			case 'CTR':
+				// Set a default mask or handle unknown countries
+				this.ibanMask = ['T', 'R', /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/];
+				break;
+			case 'COT':
+				// Set a default mask or handle unknown countries
+				this.ibanMask = [/[A-Za-z0-9]/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
+				break;
+		}
+	}
 
     public static getModels() {
         if (!this.models) {

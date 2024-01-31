@@ -65,7 +65,8 @@ import {Base64FileDialogComponent} from '../dialogs/base64-file-dialog/base64-fi
 import {FuelLimitOkeyComponent} from '../dialogs/fuel-limit-okey-dialog/fuel-limit-okey.component';
 import {
 	ShowChangeDbsInvoiceComponent
-} from "../detail/show-change-dbs-invoice-dialog/show-change-dbs-invoice.component";
+} from '../detail/show-change-dbs-invoice-dialog/show-change-dbs-invoice.component';
+import {FullTextDialogComponent} from "../dialogs/full-text-dialog/full-text-dialog.component";
 
 @Component({
 	selector: 'kt-grid',
@@ -325,7 +326,11 @@ export class GridComponent implements AfterViewInit {
 					value: this.baseService.getUser().id
 				});
 			}
-			if ((this.baseService.getUser().birim.id === 'Birimler_Loher' || this.baseService.getUser().birim.id === 'Birimler_Avelice' || this.baseService.getUser().birim.id === 'Birimler_SanSat') && this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm') {
+			if ((this.baseService.getUser().birim.id === 'Birimler_Loher'
+					|| this.baseService.getUser().birim.id === 'Birimler_Avelice'
+					|| this.baseService.getUser().birim.id === 'Birimler_SanSat')
+				&& this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm'
+				&& this.baseService.getUser().id !== 40100) {
 				filters.add({
 					name: 'id',
 					operator: FilterOperation.EQUALS,
@@ -1569,17 +1574,40 @@ export class GridComponent implements AfterViewInit {
 		if (e) {
 			e.stopPropagation();
 		}
-		for (const defaultValue of this.defaultValues) {
-			entity[defaultValue.field] = defaultValue.value;
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		const id = entity.id;
+		const storeId = entity.store.id;
+		const url = `api/buys/okey-quote-status?uuid=${id}&storeId=${storeId}`;
+		this.http.post(url, null, { headers: httpHeaders})
+			.subscribe(
+				() => {
+					this.loadList();
+					this.change.emit(this.result);
+				},
+				(error) => {
+					Utils.showActionNotification(JSON.stringify(error.error), 'warning', 10000, true, false, 3000, this.snackBar);
+				}
+			);
+	}
+
+	changeSuggest(entity, e?, presetValues = [], suggestValue?: any) {
+		if (e) {
+			e.stopPropagation();
 		}
-		for (const p of presetValues) {
-			entity[p.field] = p.value;
-		}
-		entity.preparation = this.baseService.getAttrVal('Tek_Dur_Tam');
-		this.baseService.update(entity, 'buys').subscribe((res) => {
-			this.loadList();
-			this.change.emit(this.result);
-		});
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		const id = entity.id;
+		const suggest = suggestValue;
+		const url = `api/buys/change-suggest?uuid=${id}&suggest=${suggest}`;
+		this.http.post(url, null, { headers: httpHeaders})
+			.subscribe(
+				() => {
+					this.loadList();
+					this.change.emit(this.result);
+				},
+				(error) => {
+					Utils.showActionNotification(JSON.stringify(error.error), 'warning', 10000, true, false, 3000, this.snackBar);
+				}
+			);
 	}
 
 	correct(entity, e?, presetValues = []) {
@@ -1625,6 +1653,28 @@ export class GridComponent implements AfterViewInit {
 				}
 			);
 	}
+	shortenText(text: string): string {
+		const maxLength = 50; // Kısaltılacak maksimum uzunluk
+		if (text.length > maxLength) {
+			return text.substring(0, maxLength) + '...';
+		}
+		return text;
+	}
+
+	openFullText(e?, text?: string): void {
+		if (e) {
+			e.stopPropagation();
+		}
+		const dialogRef = this.dialog.open(FullTextDialogComponent, {
+			width: '600px', // İsterseniz modal pencerenin genişliğini buradan ayarlayabilirsiniz
+			data: { fullText: text }
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			// Modal pencere kapandığında yapılacak işlemleri burada tanımlayabilirsiniz
+			console.log('Modal pencere kapandı:', result);
+		});
+	}
 
 	connectStore(entity, e?, presetValues = []) {
 		if (e) {
@@ -1638,10 +1688,46 @@ export class GridComponent implements AfterViewInit {
 		}
 		const dialogRef = this.dialog.open(ConnectStoreDialogComponent, {data: {current: entity, model: this.model}});
 		dialogRef.afterClosed().subscribe(res => {
+
+			const httpHeaders = this.httpUtils.getHTTPHeaders();
+			const paymentOrder = entity;
+			const url = `api/stores/add-payment-order?storeid=${entity.store}`;
+			console.log(url);
+			this.http.put(url, paymentOrder, { headers: httpHeaders, responseType: 'text' })
+				.subscribe(
+					(res2 => {
+					}),
+					catchError(err => {
+						return err;
+					}));
 			Utils.showActionNotification('Kaydedildi', 'success', 10000, true, false, 3000, this.snackBar);
 			this.loadList();
 			this.change.emit(this.result);
 		});
+	}
+
+	deleteBase64(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		const url = `api/invoice_lists/deleteBase64?id=${entity.id}`;
+		console.log(url);
+		this.http.post(url, null, { headers: httpHeaders, responseType: 'text' })
+			.subscribe(
+				(res2 => {
+					this.loadList();
+					this.change.emit(this.result);
+				}),
+				catchError(err => {
+					return err;
+				}));
 	}
 
 	showFiles(entity, e?, presetValues = []) {
@@ -1821,7 +1907,8 @@ export class GridComponent implements AfterViewInit {
 		for (const p of presetValues) {
 			entity[p.field] = p.value;
 		}
-		entity.status = this.baseService.getAttrVal('Söz_Dur_Kar');
+		entity.deliveryStatus = this.baseService.getAttrVal('Store_Delivery_Tes');
+		entity.buyStatus = this.baseService.getAttrVal('Buy_Status_Merkezden');
 		this.baseService.update(entity, 'stores').subscribe(() => {
 			this.loadList();
 			this.change.emit(this.result);
@@ -1835,7 +1922,35 @@ export class GridComponent implements AfterViewInit {
 		for (const p of presetValues) {
 			entity[p.field] = p.value;
 		}
-		entity.status = this.baseService.getAttrVal('Söz_Dur_Pasif');
+		entity.status = this.baseService.getAttrVal('Store_Status_Bek');
+		this.baseService.update(entity, 'stores').subscribe(() => {
+			this.loadList();
+			this.change.emit(this.result);
+		});
+	}
+	deliveryStatusSatBuyOwner(entity, e?, presetValues = []) {
+		if (e) { e.stopPropagation(); }
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		entity.deliveryStatus = this.baseService.getAttrVal('Store_Delivery_Sat');
+		this.baseService.update(entity, 'stores').subscribe(() => {
+			this.loadList();
+			this.change.emit(this.result);
+		});
+	}
+	deliveryStatusTesBuyOwner(entity, e?, presetValues = []) {
+		if (e) { e.stopPropagation(); }
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		entity.deliveryStatus = this.baseService.getAttrVal('Store_Delivery_Tes');
 		this.baseService.update(entity, 'stores').subscribe(() => {
 			this.loadList();
 			this.change.emit(this.result);
@@ -1846,8 +1961,10 @@ export class GridComponent implements AfterViewInit {
 		return {
 			gray: even,
 			priority_low: row['invoiceStatus'] && row['invoiceStatus'].label === 'Kabul Edilmedi',
-			priority_medium: row['invoiceStatus'] && row['invoiceStatus'].label === 'Atandı',
-			priority_high: row['invoiceStatus'] && row['invoiceStatus'].label === 'Talimata Dönüştürüldü',
+			priority_medium: (row['invoiceStatus'] && row['invoiceStatus'].label === 'Atandı') ||
+				(this.model.name === 'Task' && row['status'] && (row['status'].label === 'Devam Ediyor' || row['status'].label === 'Yeni')),
+			priority_high: row['invoiceStatus'] && row['invoiceStatus'].label === 'Talimata Dönüştürüldü' ||
+				(this.model.name === 'Task' && row['status'] && row['status'].label === 'Tamamlandı'),
 			priority_muk: row['invoiceStatus'] && row['invoiceStatus'].label === 'Ö.Talimatı Manuel Oluşturuldu',
 			priority_dbs: row['invoiceStatus'] && row['invoiceStatus'].id === 'Fatura_Durumlari_Dbs',
 			priority_error: row['invoiceStatus'] && row['invoiceStatus'].label === 'Hatalı Atama',
@@ -1865,11 +1982,17 @@ export class GridComponent implements AfterViewInit {
 			priority_payment_order_cancel: this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === 'Reddedildi',
 			priority_payment_order_wait:
 				(this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === '1.Onay Bekleniyor' && row['assigner'].id === this.baseService.getUserId()) ||
-				(this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === '2.Onay Bekleniyor' && row['secondAssigner'].id === this.baseService.getUserId()),
+				(this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === '2.Onay Bekleniyor' && row['secondAssigner'].id === this.baseService.getUserId()) ||
+				(this.model.name === 'Store' && row['status'] && row['status'].label === 'Onay Bekliyor' && row['assigner'].id === this.baseService.getUserId()) ||
+				(this.model.name === 'Store' && row['deliveryStatus'] && row['deliveryStatus'].id === 'Store_Delivery_Tek ' && row['buyowner'].id === this.baseService.getUserId()) ||
+				(this.model.name === 'Store' && row['deliveryStatus'] && row['deliveryStatus'].id === 'Store_Delivery_Sat' && row['buyowner'].id === this.baseService.getUserId()),
 			priority_spend_success: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Ödendi',
 			priority_spend_cancel: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Reddedildi',
-			fuel_limit_okey: this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Onaylandı',
-			fuel_limit_cancel: this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Reddedildi'
+			store_delivery_status_tes: (this.model.name === 'Store' && row['buyStatus'] && row['buyStatus'].id === 'Buy_Status_Merkezden')
+				|| (this.model.name === 'Store' && row['buyStatus'] && row['buyStatus'].id === 'Buy_Status_Onay' && row['deliveryStatus'] && row['deliveryStatus'].id === 'Store_Delivery_Tes'),
+			fuel_limit_okey: (this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Onaylandı'),
+			fuel_limit_cancel: (this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Reddedildi')
+				|| (this.model.name === 'Task' && row['status'] && row['status'].label === 'Reddedildi')
 		};
 	}
 

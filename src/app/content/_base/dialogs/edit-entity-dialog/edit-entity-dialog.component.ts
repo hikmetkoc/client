@@ -553,6 +553,20 @@ export class EditEntityDialogComponent implements OnInit {
 			this.cdr.markForCheck();
 		});
 	}
+	changeIbanMask(maskType: any) {
+		if (maskType === 'ibanI') {
+			this.utils.setIbanMask('TR');
+		}
+		if (maskType === 'ibanH') {
+			this.utils.setIbanMask('EN');
+		}
+		if (maskType === 'ibanCTR') {
+			this.utils.setIbanMask('CTR');
+		}
+		if (maskType === 'ibanOT') {
+			this.utils.setIbanMask('COT');
+		}
+	}
 	filterOptions(field: any, value: any) {
 		this.filteredOptionss[field.name] = [];
 		if (this.timer) {
@@ -598,6 +612,25 @@ export class EditEntityDialogComponent implements OnInit {
 				}
 			}
 		}
+		if (this.model.name === 'Iban') {
+			if (field.name === 'type') {
+				if (value === 'Iban_Type_I') {
+					this.changeIbanMask('ibanI');
+				} else {
+					this.changeIbanMask('ibanH');
+				}
+			}
+			if (field.name === 'country') {
+				if (value === 'Iban_Country_TR') {
+					this.changeIbanMask('ibanCTR');
+				} else {
+					this.changeIbanMask('ibanOT');
+				}
+			}
+		}
+		/*if (field.name === 'moneyType' && value === 'Par_Bir_Tl') {
+			this.entityForm.get('swiftCode').enable();
+		}*/
 		if (field.name !== 'iban' && field.name !== 'customer' && !(value.length > 0)) { return; }
 		this.timer = setTimeout(function () {
 			const filters = new Set();

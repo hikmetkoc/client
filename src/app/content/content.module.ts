@@ -56,6 +56,7 @@ import { FileManagerDialogComponent } from './_base/detail/filemanager/file-mana
 import { ReportManagerToolComponent } from './_base/detail/reportmanager/reportmanagertool/reportmanagertool.component';
 import { ReportManagerDialogComponent } from './_base/detail/reportmanager/report-manager-dialog/report-manager-dialog.component';
 import { IkReportManagerDialogComponent } from './_base/detail/reportmanager/ikreport-manager-dialog/ikreport-manager-dialog.component';
+import { FullTextDialogComponent } from './_base/dialogs/full-text-dialog/full-text-dialog.component';
 import { BuyReportManagerDialogComponent } from './_base/detail/reportmanager/buyreport-manager-dialog/buyreport-manager-dialog.component';
 import { HolidayDetailDialogComponent } from './_base/detail/reportmanager/holiday-detail-dialog/holiday-detail-dialog.component';
 import { UpdateStatusDialogComponent } from './_base/dialogs/update-status-dialog/update-status-dialog.component';
@@ -168,6 +169,7 @@ import { LeadComponent } from './standard/lead/lead.component';
 import { UserGuideComponent } from './standard/user-guide/user-guide.component';
 import {ShowChangeDbsInvoiceComponent} from './_base/detail/show-change-dbs-invoice-dialog/show-change-dbs-invoice.component';
 import {ChangePasswordDialogComponent} from './_base/dialogs/change-password-dialog/change-password-dialog.component';
+import {AddSpendComponent} from './_base/dialogs/add-spend-dialog/add-spend.component';
 
 
 
@@ -443,6 +445,7 @@ const routes: Routes = [
 		ReportManagerDialogComponent,
 		IkReportManagerDialogComponent,
 		BuyReportManagerDialogComponent,
+		FullTextDialogComponent,
 		HolidayDetailDialogComponent,
 		ExuseHolidayComponent,
 		AnnouncementComponent,
@@ -521,6 +524,7 @@ const routes: Routes = [
 		ResignComponent,
 		NewPersonComponent,
 		AddIbanComponent,
+		AddSpendComponent,
 		AreYouOkeyComponent,
 		PaymentOkeyComponent,
 		LoadInvoiceComponent,
@@ -557,6 +561,7 @@ const routes: Routes = [
 		ReportManagerDialogComponent,
 		IkReportManagerDialogComponent,
 		BuyReportManagerDialogComponent,
+		FullTextDialogComponent,
 		HolidayDetailDialogComponent,
 		ReportDialogComponent,
 		HolidayReportDialogComponent,
@@ -571,6 +576,7 @@ const routes: Routes = [
 		ResignComponent,
 		NewPersonComponent,
 		AddIbanComponent,
+		AddSpendComponent,
 		AreYouOkeyComponent,
 		PaymentOkeyComponent,
 		LoadInvoiceComponent,

@@ -1,4 +1,14 @@
-import { Component, ChangeDetectionStrategy, Input, AfterViewInit, OnInit, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
+import {
+	Component,
+	ChangeDetectionStrategy,
+	Input,
+	AfterViewInit,
+	OnInit,
+	ViewEncapsulation,
+	Output,
+	EventEmitter,
+	ChangeDetectorRef
+} from '@angular/core';
 import { Utils } from '../utils';
 import { BaseService } from '../base.service';
 import { MatSnackBar, MatDialog } from '@angular/material';
@@ -8,6 +18,9 @@ import {ReportManagerDialogComponent} from "./reportmanager/report-manager-dialo
 import {HolidayDetailDialogComponent} from "./reportmanager/holiday-detail-dialog/holiday-detail-dialog.component";
 import {ResignComponent} from "../dialogs/resign-dialog/resign.component";
 import {ShowResignComponent} from "./show-resign-dialog/show-resign.component";
+import {QueryParamsModel} from "../models/query-params.model";
+import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
 
 @Component({
 	selector: 'kt-detail',
@@ -40,6 +53,7 @@ export class DetailComponent implements AfterViewInit, OnInit {
 		public snackBar: MatSnackBar,
 		public route: ActivatedRoute,
 		public dialog: MatDialog,
+		private cdr: ChangeDetectorRef,
 		private router: Router
 	) {
 	}
@@ -63,6 +77,24 @@ export class DetailComponent implements AfterViewInit, OnInit {
 			this.modelRows[i % 4].push(field);
 			i++;
 		}
+	}
+
+	getPaymentOrder(uuid?: string) {
+		/*const filters = new Set();
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
+			0,
+			10000
+		);
+
+		const response = this.baseService.find(queryParams, 'payment_orders').pipe(
+			map(res => res.body.filter(hld => hld.id === uuid))
+		);*/
+		return 'Görüntüle =>';
+	}
+	getStore(uuid?: string) {
+		return 'Görüntüle =>';
 	}
 
 	roundUp(num: number): number {

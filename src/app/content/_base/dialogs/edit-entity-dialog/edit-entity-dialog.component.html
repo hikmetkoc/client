@@ -17,8 +17,8 @@
 				<button mat-button class="fa-info" style="color: #0f695f; background-color: #d7dbf7" matTooltip="Bilgi" *ngIf="model.name === 'InvoiceList' || model.name === 'PaymentOrder'" (click)="lookInfo()">
 					<i class="fas fa-info" style="margin-top:-2px; font-weight: bold">  BİLGİ</i>
 				</button>
-				<button mat-button matTooltip="IBAN Ekle" *ngIf="model.name === 'InvoiceList' || model.name === 'PaymentOrder'" (click)="addIban()">
-					<i class="fas fa-credit-card" style="margin-top:-2px;"></i>&nbsp;IBAN Ekle
+				<button mat-button matTooltip="Ödeme Bilgisi Ekle" *ngIf="model.name === 'InvoiceList' || model.name === 'PaymentOrder'" (click)="addIban()">
+					<i class="fas fa-credit-card" style="margin-top:-2px;"></i>&nbsp;Ödeme Bilgisi Ekle
 				</button>
 				<button class="btn btn-success" mat-button matTooltip="Fatura Detayları" *ngIf="model.name === 'InvoiceList'" (click)="showInvoice()">
 					<i class="fas fa-glasses" style="margin-top:-2px;"></i>&nbsp;Fatura Detayları
@@ -59,7 +59,11 @@
 			</kt-dialog-alert>
 			<div class="form-group kt-form__group row">
 				<ng-container *ngFor="let field of model.fields">
-					<div *ngIf="['text','email','number'].indexOf(field.fieldType) > -1 && field.title !== 'Kullanılan İzin Günü'" [hidden]="field.readOnly || !field.active || (this.model.name === 'User' && this.baseService.getUserId() !== 2 && (field.name === 'login' || field.name === 'email' || field.name === 'password' || field.name === 'eposta'))" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
+					<div *ngIf="['text','email','number'].indexOf(field.fieldType) > -1 && field.title !== 'Kullanılan İzin Günü'"
+						 [hidden]="field.readOnly || !field.active ||
+						 (this.model.name === 'User' && this.baseService.getUserId() !== 2 &&
+						 	(field.name === 'login' || field.name === 'email' || field.name === 'password' || field.name === 'eposta'))
+								" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
 						<mat-form-field class="mat-form-field-fluid">
 							<input type="{{field.fieldType}}" matInput [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}" [errorStateMatcher]="matcher" />
 							<mat-error *ngIf="field.required">{{field.title}}
@@ -93,7 +97,7 @@
 					</div>
 					<div *ngIf="['tax'].indexOf(field.fieldType) > -1" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
 						<mat-form-field class="mat-form-field-fluid">
-							<input type="text" [textMask]="{mask: utils.taxMask}" matInput [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}" />
+							<input type="text" [textMask]="field.textMask" matInput [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}" />
 							<mat-icon matSuffix>numbers</mat-icon>
 							<mat-error *ngIf="field.required">{{field.title}} <strong>zorunludur</strong></mat-error>
 						</mat-form-field>
@@ -151,7 +155,10 @@
 					</div>
 					<div *ngIf="['select'].indexOf(field.fieldType) > -1 && field.name !== 'taskType' && !((field.readOnly || !field.active ||
 					 (this.model.name === 'Task' && (entityForm.controls['id'].value === null && field.name === 'status')) ||
+					 (this.model.name === 'Store' && (entityForm.controls['id'].value === null && field.name === 'sirket')) ||
+					 (this.model.name === 'Store' && (entityForm.controls['id'].value === null && field.name === 'maliyet')) ||
 					 (this.model.name === 'Store' && (entityForm.controls['id'].value === null && field.name === 'status')) ||
+					 (this.model.name === 'Store' && (entityForm.controls['id'].value === null && field.name === 'approvalGroup')) ||
 					 (this.model.name === 'Holiday' && (entityForm.controls['id'].value === null && field.name === 'approvalStatus')) ||
 					 ( field.name === 'exchange' && this.gizlilik === false) ) ||
 					 (field.name === 'haftalikGun' && (this.baseService.getIzinCheck() === false &&
@@ -160,8 +167,13 @@
 						 class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
 						<mat-form-field class="mat-form-field-fluid">
 							<mat-select [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}" (ngModelChange)="filterOptions(field, $event);" [multiple]="field.multiple">
-								<mat-option *ngFor="let option of baseService.getAttr(field.attributeName)?.values" [value]="option.id">{{option.label}}</mat-option>
+								<ng-container *ngFor="let option of baseService.getAttr(field.attributeName)?.values">
+									<mat-option [value]="option.id" *ngIf="option.id !== 'PaymentType_Dbs'">
+										{{option.label}}
+									</mat-option>
+								</ng-container>
 							</mat-select>
+
 							<mat-error *ngIf="field.required">{{field.title}} <strong>zorunludur</strong></mat-error>
 						</mat-form-field>
 					</div>

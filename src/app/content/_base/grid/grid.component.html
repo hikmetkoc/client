@@ -534,7 +534,11 @@
 			<ng-container *ngFor="let field of model?.fields">
 				<ng-container *ngIf="['integer','text','url','textarea'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
 					<mat-header-cell *matHeaderCellDef mat-sort-header [style.min-width.px]="field.name === 'invoiceNum' ? 150 : null">{{field.title}}</mat-header-cell>
-					<mat-cell *matCellDef="let row" [style.min-width.px]="field.name === 'invoiceNum' ? 150 : null">{{row[field.name]}}</mat-cell>
+					<mat-cell *matCellDef="let row" [style.min-width.px]="field.name === 'invoiceNum' ? 150 : null">
+						<div class="short-text" [matTooltip]="row[field.name]">
+							<span *ngIf="row[field.name]" (click)="openFullText($event, row[field.name])">{{ shortenText(row[field.name]) }}</span>
+						</div>
+					</mat-cell>
 				</ng-container>
 				<ng-container *ngIf="['number'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
 					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
@@ -546,7 +550,7 @@
 				</ng-container>
 				<ng-container *ngIf="['iban'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
 					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
-					<mat-cell *matCellDef="let row">{{utils.ibanFormat(row[field.name])}}</mat-cell>
+					<mat-cell *matCellDef="let row">{{row[field.name]}}</mat-cell>
 				</ng-container>
 				<ng-container *ngIf="['tax'].indexOf(field.fieldType) > -1 && field.display" matColumnDef="{{field.name}}">
 					<mat-header-cell *matHeaderCellDef mat-sort-header>{{field.title}}</mat-header-cell>
@@ -650,12 +654,13 @@
 								(click)="okeyQuote(row, $event)">
 							<mat-icon>check_circle</mat-icon>
 						</button>
-						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.suggest === false" mat-icon-button color="primary" matTooltip="Öner"
-								(click)="okey2(row, $event)">
+						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.suggest === false && row.quoteStatus.id === 'Buy_Status_Onay'"
+								mat-icon-button color="primary" matTooltip="Öner"
+								(click)="changeSuggest(row, $event, null, true)">
 							<mat-icon>thumb_up</mat-icon>
 						</button>
-						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.suggest === true"
-								mat-icon-button color="warn" matTooltip="Önerme" type="button" (click)="cancel2(row, $event)">
+						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.suggest === true && row.quoteStatus.id === 'Buy_Status_Onay'"
+								mat-icon-button color="warn" matTooltip="Önerme" type="button" (click)="changeSuggest(row, $event, null, false)">
 							<mat-icon>thumb_down</mat-icon>
 						</button>
 						<button *ngIf="row.secondAssigner.id === this.baseService.getUserId() && row.quoteStatus.label === 'Onay Bekliyor'"
@@ -759,17 +764,27 @@
 						</button>
 					</div>
 					<div *ngIf="model.apiName === 'stores'"> <!-- SATIN ALMA BUTONLARI -->
-						<button *ngIf="row.status.label === 'Onaylandı' && row.buyowner.id === this.baseService.getUserId()
-							&& row.buyStatus.label === 'Onay Bekliyor'" mat-icon-button color="success" matTooltip="Merkezden Tedarik Edildi" type="button"
+						<button *ngIf="row.status.id === 'Store_Status_Onay' && row.buyowner.id === this.baseService.getUserId()
+							&& row.buyStatus.id === 'Buy_Status_Bek'" mat-icon-button color="success" matTooltip="Merkezden Tedarik Edildi" type="button"
 								(click)="changecenter(row, $event)">
 							<mat-icon>shop</mat-icon>
 						</button>
-						<button *ngIf="row.status.label === 'Onaylandı' && row.buyowner.id === this.baseService.getUserId()
-							&& row.buyStatus.label === 'Onay Bekliyor'" mat-icon-button color="success" matTooltip="Sorumluluk Reddi" type="button"
+						<button *ngIf="row.status.id === 'Store_Status_Onay' && row.buyowner.id === this.baseService.getUserId()
+							&& row.buyStatus.id === 'Buy_Status_Bek'" mat-icon-button color="success" matTooltip="Sorumluluk Reddi" type="button"
 								(click)="cancelBuyOwner(row, $event)">
 							<mat-icon>cancel</mat-icon>
 						</button>
-						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.status.label === 'Onay Bekliyor'"
+						<button *ngIf="row.deliveryStatus.id === 'Store_Delivery_Tek' && row.buyowner.id === this.baseService.getUserId()
+							&& row.buyStatus.label === 'Onaylandı'" mat-icon-button color="success" matTooltip="Satın Alındı" type="button"
+								(click)="deliveryStatusSatBuyOwner(row, $event)">
+							<mat-icon>local_shipping</mat-icon>
+						</button>
+						<button *ngIf="row.deliveryStatus.id === 'Store_Delivery_Sat' && row.buyowner.id === this.baseService.getUserId()"
+								mat-icon-button color="primary" matTooltip="Teslim Edildi" type="button"
+								(click)="deliveryStatusTesBuyOwner(row, $event)">
+							<mat-icon>shopping_cart</mat-icon>
+						</button>
+						<button *ngIf="row.assigner.id === this.baseService.getUserId() && row.status.label === 'Onay Bekliyor'"
 								mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
 							<mat-icon>create</mat-icon>
 						</button>
@@ -792,6 +807,11 @@
 							|| row.invoiceStatus.label === 'Hatalı Atama')" mat-icon-button color="success" matTooltip="Sorumlu Ata" type="button"
 								(click)="sendOwner(row, $event)">
 							<mat-icon>supervisor_account</mat-icon>
+						</button>
+						<button *ngIf="row.pdf === true && this.baseService.getUserId() === 2"
+								mat-icon-button color="secondary" matTooltip="Fatura Sil"
+								type="button" [disabled]="loading" (click)="deleteBase64(row, $event, [])">
+							<mat-icon>delete</mat-icon>
 						</button>
 						<button *ngIf="row.pdf === false && this.baseService.getUserId() === 26800"
 								mat-icon-button color="secondary" matTooltip="Fatura PDF Ekle"

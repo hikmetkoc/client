@@ -98,7 +98,7 @@ export class IbanComponent extends BaseComponent implements OnInit, AfterViewIni
 
 		this.buttons.push({
 			display: this.baseService.getPermissionRule(this.model.name, 'update'),
-			title: 'Yeni IBAN',
+			title: 'Yeni Ödeme Bilgisi',
 			icon: 'add_box',
 			click: this.mainGrid.add.bind(this.mainGrid)
 		});

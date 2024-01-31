@@ -45,13 +45,13 @@ export class ConnectStoreDialogComponent implements OnInit {
 	onYesClick() {
 		this.onayla = true;
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
-		console.log(this.paymentOrderId + '  -  ' + this.selectedStoreId);
-		const url = `api/payment_orders/changeStore?id=${this.paymentOrderId}&storeid=${this.selectedStoreId}`;
+		const paymentOrder = this.current;
+		const url = `api/payment_orders/changeStore?storeid=${this.selectedStoreId}`;
 		console.log(url);
-		this.http.put(url, null, { headers: httpHeaders, responseType: 'text' })
+		this.http.put(url, paymentOrder, { headers: httpHeaders, responseType: 'text' })
 			.subscribe(
 				(res => {
-					this.dialogRef.close();
+					this.dialogRef.close(this.selectedStoreId);
 				}),
 				catchError(err => {
 					return err;
