@@ -58,11 +58,36 @@ export class MenuHorizontalService {
 			} else if (menuItem.title === 'FATURA İŞLEMLERİ' && !Utils.hasOperation('FaturaListesi_Goruntuleme')) {
 			// } else if (menuItem.title === 'RİSK ANALİZ' && !Utils.hasOperation('RiskAnalizCari_Goruntuleme')) {
 			} else if (menuItem.title === 'TEDARİKÇİ İŞLEMLERİ' && !Utils.hasOperation('Tedarikci_Goruntuleme')) {
+			} else if (menuItem.title === 'Hareketler' && Utils.getUserPermission('behaviorView')) {
 			} else if (menuItem.title === 'SATIN ALMA İŞLEMLERİ' && !Utils.hasOperation('Satınalma_Goruntuleme')) {
 			} else if (menuItem.title === 'TALEPLER' && !Utils.hasOperation('Talep_Goruntuleme')) {
 			} else if (menuItem.title === 'Dashboard' && !Utils.hasOperation('Talep_Goruntuleme')) {
 			} else {
 				filteredItems.push(menuItem);
+			}
+		}
+
+		for (let i = 0; i < filteredItems.length; i++) {
+			const menuItem = filteredItems[i];
+			// Eğer ana menü öğesi alt menüye sahipse
+			if (menuItem.submenu) {
+				// Alt menüdeki her bir öğeyi kontrol ediyoruz
+				for (let j = 0; j < menuItem.submenu.length; j++) {
+					const subMenuItem = menuItem.submenu[j];
+					// Eğer alt menü öğesi 'Hareketler' ise ve kullanıcı 'behaviorView' yetkisine sahip değilse
+					if (subMenuItem.title === 'Hareketler' && !Utils.getUserPermission('behaviorView')) {
+						// Alt menü öğesini 'filteredItems' dizisinden çıkarıyoruz
+						menuItem.submenu.splice(j, 1);
+						// Döngüyü bir geriye alıyoruz çünkü bir öğe çıkardık
+						j--;
+					}
+					if (subMenuItem.page === '/buy' && !Utils.getUserPermission('buyView')) {
+						// Alt menü öğesini 'filteredItems' dizisinden çıkarıyoruz
+						menuItem.submenu.splice(j, 1);
+						// Döngüyü bir geriye alıyoruz çünkü bir öğe çıkardık
+						j--;
+					}
+				}
 			}
 		}
 

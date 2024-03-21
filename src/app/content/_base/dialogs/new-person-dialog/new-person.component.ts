@@ -13,17 +13,11 @@ import { MatBottomSheetRef, MatDialogRef, MAT_DIALOG_DATA, DateAdapter } from '@
 import {QueryParamsModel} from '../../models/query-params.model';
 import {Utils} from '../../utils';
 import {BaseService} from '../../base.service';
-import {catchError, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {HttpUtilsService} from '../../http-utils.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {ShowResignComponent} from "../../detail/show-resign-dialog/show-resign.component";
-import {MatDialog} from "@angular/material/dialog";
-import {
-	ShowPersonelContractComponent
-} from "../../detail/show-personel-contract-dialog/show-personel-contract.component";
-import {AreYouOkeyComponent} from "../are-you-okey-dialog/are-you-okey.component";
+import {MatDialog} from '@angular/material/dialog';
+import {AreYouOkeyComponent} from '../are-you-okey-dialog/are-you-okey.component';
 
 
 @Component({
@@ -40,10 +34,12 @@ export class NewPersonComponent implements OnInit {
 	cinsiyetList = [];
 	ehliyetList = [];
 	birimList = [];
+	insuranceCompanyList = [];
 	ad = '';
 	soyad = '';
 	tc = '';
 	cep = '';
+	email = '';
 	acilAdSoyad = '';
 	acilYakinlik = '';
 	acilNo = '';
@@ -61,7 +57,9 @@ export class NewPersonComponent implements OnInit {
 	escalisma: any;
 	tcv: any = true;
 	mybelgesi = false;
+	whiteCollar = false;
 	selectedEgitimId: any;
+	selectedInsuranceCompanyId: any;
 	selectedSirketId: any;
 	selectedUnvanId: any;
 	selectedAskerlikId: any;
@@ -99,7 +97,7 @@ export class NewPersonComponent implements OnInit {
 	onYesClick() {
 		if (this.tc.length !== 11) {
 			Utils.showActionNotification('TC 11 hane olmak zorundadır!', 'error', 2000, true, false, 3000, this.snackBar);
-		} else if (this.cep === '' || this.ad === '' || this.soyad === '' || this.selectedSirketId === undefined ||
+		} else if (this.cep === '' || this.ad === '' || this.soyad === ''  || this.email === '' || this.selectedSirketId === undefined || this.selectedInsuranceCompanyId === undefined ||
 			this.selectedUnvanId === undefined || this.birthDate === undefined || this.startDate === undefined ||
 			this.selectedEgitimId === undefined || this.selectedAskerlikId === undefined || this.selectedCinsiyetId === undefined ||
 			this.selectedEhliyetId === undefined || this.selectedBirimId === undefined || this.mezunKurum === ''  || this.mezunBolum === ''  || this.acilAdSoyad === '' ||
@@ -123,6 +121,7 @@ export class NewPersonComponent implements OnInit {
 						tck: this.tc,
 						birthDate: this.birthDate,
 						sgkStartDate: this.startDate,
+						email: this.email,
 						aciladsoyad: this.acilAdSoyad,
 						acilyakinlik: this.acilYakinlik,
 						acilno: this.acilNo,
@@ -142,9 +141,8 @@ export class NewPersonComponent implements OnInit {
 						kan: this.kangrubu,
 						aciklama: this.aciklamaAlani,
 					};
-
-					this.http.put(url + `?unvan=${this.selectedUnvanId}&sgkSirket=${this.selectedSirketId}
-					&egitim=${this.selectedEgitimId}&askerlik=${this.selectedAskerlikId}&cinsiyet=${this.selectedCinsiyetId}&ehliyet=${this.selectedEhliyetId}&birim=${this.selectedBirimId}` , user, {headers: httpHeaders, responseType: 'text'}).subscribe(
+					this.http.put(url + `?unvan=${this.selectedUnvanId}&sgkSirket=${this.selectedInsuranceCompanyId}&sirket=${this.selectedSirketId}
+					&egitim=${this.selectedEgitimId}&askerlik=${this.selectedAskerlikId}&cinsiyet=${this.selectedCinsiyetId}&ehliyet=${this.selectedEhliyetId}&birim=${this.selectedBirimId}&whiteCollar=${this.whiteCollar}` , user, {headers: httpHeaders, responseType: 'text'}).subscribe(
 						(res: any) => {
 								if (res === 'Kayıt Başarılı') {
 									this.dialogRef.close();
@@ -223,17 +221,19 @@ export class NewPersonComponent implements OnInit {
 			this.cinsiyetList = res.body.filter(hld => hld.attribute.id === 'Cinsiyetler');
 			this.ehliyetList = res.body.filter(hld => hld.attribute.id === 'Ehliyet_Siniflari');
 			this.birimList = res.body.filter(hld => hld.attribute.id === 'Birimler');
+			this.sirketList = res.body.filter(hld => hld.attribute.id === 'Sirketler');
 			this.cdr.markForCheck();
 		});
 		const filters2 = new Set();
 		const queryParams2 = new QueryParamsModel(
 			Utils.makeFilter(filters2),
-			[{sortBy: 'weight', sortOrder: 'ASC'}],
+			[{sortBy: 'name', sortOrder: 'ASC'}],
 			0,
-			10000
+			100
 		);
-		this.baseService.find(queryParams2, 'attribute-values').subscribe(res => {
-			this.sirketList = res.body.filter(hld => hld.attribute.id === 'Sirketler');
+		this.baseService.find(queryParams2, 'insurance_companies').subscribe(res => {
+			this.insuranceCompanyList = res.body;
+			console.log(this.insuranceCompanyList);
 			this.cdr.markForCheck();
 		});
 	}

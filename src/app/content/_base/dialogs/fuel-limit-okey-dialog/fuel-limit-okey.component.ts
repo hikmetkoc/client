@@ -209,7 +209,7 @@ export class FuelLimitOkeyComponent implements OnInit {
 		const servisSifre = '14ADa23.';
 		const firmaKodu = 875257;
 		const cariKodu = curcode;
-		const apiUrl = `https://srv.nccpetrol.com/DisServis/riskdetayget?ServisSifre=${servisSifre}&CariKodu=${cariKodu}&FirmaKodu=${firmaKodu}`;
+		const apiUrl = `https://srv.meteorpetrol.com/disservis/riskdetaygetLog?ServisSifre=${servisSifre}&CariKodu=${cariKodu}&FirmaKodu=${firmaKodu}`;
 		this.http.get(apiUrl, { headers: httpHeaders, responseType: 'json' })
 			.subscribe(
 				(response) => {

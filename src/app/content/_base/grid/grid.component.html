@@ -651,24 +651,24 @@
 					<div *ngIf="model.apiName == 'buys'"> <!-- TEKLİF BUTONLARI -->
 						<button *ngIf="row.owner.id === this.baseService.getUserId() &&
 							row.preparation.id === 'Tek_Dur_Haz'" mat-icon-button color="success" matTooltip="Teklifi Tamamla" type="button"
-								(click)="okeyQuote(row, $event)">
+								(click)="buyOkeyQuoteStatus(row, $event)">
 							<mat-icon>check_circle</mat-icon>
 						</button>
-						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.suggest === false && row.quoteStatus.id === 'Buy_Status_Onay'"
+						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.suggest === false && row.preparation.id === 'Tek_Dur_Tam' && row.store.buyStatus.id === 'Buy_Status_Bek'"
 								mat-icon-button color="primary" matTooltip="Öner"
 								(click)="changeSuggest(row, $event, null, true)">
 							<mat-icon>thumb_up</mat-icon>
 						</button>
-						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.suggest === true && row.quoteStatus.id === 'Buy_Status_Onay'"
+						<button *ngIf="row.owner.id === this.baseService.getUserId() && row.suggest === true && row.preparation.id === 'Tek_Dur_Tam' && row.store.buyStatus.id === 'Buy_Status_Bek'"
 								mat-icon-button color="warn" matTooltip="Önerme" type="button" (click)="changeSuggest(row, $event, null, false)">
 							<mat-icon>thumb_down</mat-icon>
 						</button>
-						<button *ngIf="row.secondAssigner.id === this.baseService.getUserId() && row.quoteStatus.label === 'Onay Bekliyor'"
-								mat-icon-button color="primary" matTooltip="Onayla" (click)="okey(row, $event)">
+						<button *ngIf="row.secondAssigner.id === this.baseService.getUserId() && row.quoteStatus.id === 'Buy_Status_Bek'"
+								mat-icon-button color="primary" matTooltip="Onayla" (click)="buyOkeyQuote(row, $event)">
 							<mat-icon>check</mat-icon>
 						</button>
-						<button *ngIf="row.secondAssigner.id === this.baseService.getUserId() && row.quoteStatus.label === 'Onay Bekliyor'"
-								mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
+						<button *ngIf="row.secondAssigner.id === this.baseService.getUserId() && row.quoteStatus.id === 'Buy_Status_Bek'"
+								mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="buyCancelQuote(row, $event)">
 							<mat-icon>cancel</mat-icon>
 						</button>
 						<button *ngIf="(row.owner.id === this.baseService.getUserId() && row.preparation.id === 'Tek_Dur_Haz') ||
@@ -707,13 +707,15 @@
 						</button>
 						<button *ngIf="((row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor')
 						 	|| (row.secondAssigner.id === this.baseService.getUserId() && row.status.label === '2.Onay Bekleniyor')
-						 	|| (this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm' && row.status.label === 'Muhasebe Onayı')) && row.pdf === true"
+						 	|| (this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm' && row.status.label === 'Muhasebe Onayı')
+						 	|| (this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Mud' && row.status.label === 'Muhasebe Onayı')) && row.pdf === true"
 								mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okey(row, $event)">
 							<mat-icon>check</mat-icon>
 						</button>
 						<button *ngIf="((row.assigner.id === this.baseService.getUserId() && row.status.label === '1.Onay Bekleniyor')
 						 	|| (row.secondAssigner.id === this.baseService.getUserId() && row.status.label === '2.Onay Bekleniyor')
 						 	 || (this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm' && row.status.label === 'Muhasebe Onayı')
+						 	 || (this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Mud' && row.status.label === 'Muhasebe Onayı')
 						 	  || (this.baseService.getUser().birim.label === 'Finans' && row.status.label === 'Onaylandı' && row.paymentType.label !== 'Dbs')) && row.pdf === true"
 								mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancel(row, $event)">
 							<mat-icon>cancel</mat-icon>
@@ -764,6 +766,11 @@
 						</button>
 					</div>
 					<div *ngIf="model.apiName === 'stores'"> <!-- SATIN ALMA BUTONLARI -->
+						<button *ngIf="row.status.id === 'Store_Status_Bek' && row.owner.id === this.baseService.getUser().id"
+								mat-icon-button color="success" matTooltip="İptal Et" type="button"
+								(click)="cancelStore(row, $event)">
+							<mat-icon>cancel</mat-icon>
+						</button>
 						<button *ngIf="row.status.id === 'Store_Status_Onay' && row.buyowner.id === this.baseService.getUserId()
 							&& row.buyStatus.id === 'Buy_Status_Bek'" mat-icon-button color="success" matTooltip="Merkezden Tedarik Edildi" type="button"
 								(click)="changecenter(row, $event)">
@@ -799,6 +806,12 @@
 					<div *ngIf="model.apiName === 'activities'"> <!-- TALEP VE İŞLEMLER -->
 						<button *ngIf="(row.task.status.label === 'Yeni' || row.task.status.label === 'Devam Ediyor')
 							&& row.owner.id === this.baseService.getUserId()" mat-icon-button color="primary" matTooltip="Düzenle" (click)="edit(row, $event)">
+							<mat-icon>create</mat-icon>
+						</button>
+					</div>
+					<div *ngIf="model.apiName === 'behaviors' || model.apiName === 'motion_sums'"> <!-- HAREKETLER -->
+						<button mat-icon-button color="primary" matTooltip="Düzenle"
+								(click)="edit(row, $event)">
 							<mat-icon>create</mat-icon>
 						</button>
 					</div>
@@ -838,19 +851,11 @@
 						</button>
 					</div>
 					<div *ngIf="model.apiName == 'users'"> <!-- PERSONELLER ADMIN BUTONLARI -->
-						<button *ngIf="this.baseService.getUser().unvan.id === 'Unvanlar_Ist_Amr' || this.baseService.getUser().unvan.id === 'Unvanlar_Ist_On'
-			|| this.baseService.getUser().unvan.id === 'Unvanlar_Isl_Mud' || this.baseService.getUser().id === 2000 || this.baseService.getUser().id === 2
-			|| this.baseService.getUser().unvan.id === 'Unvanlar_Ins_Muh' || this.baseService.getUser().unvan.id === 'Unvanlar_Fin_Den'
-			|| this.baseService.getUser().unvan.id === 'Unvanlar_Yon_Ast' || this.baseService.getUser().unvan.id === 'Unvanlar_Sts_Mud'
-			|| this.baseService.getUser().unvan.id === 'Unvanlar_IK_Uzm' || this.baseService.getUser().unvan.id === 'Unvanlar_On_Muh'"
+						<button *ngIf="utils.getUserPermission('addNewPerson')"
 								mat-icon-button color="success" matTooltip="Sözleşme Oluştur" type="button" (click)="createPersonelContract(row, $event)">
 							<mat-icon>description</mat-icon>
 						</button>
-						<button *ngIf="this.baseService.getUser().unvan.id === 'Unvanlar_Ist_Amr' || this.baseService.getUser().unvan.id === 'Unvanlar_Ist_On'
-			|| this.baseService.getUser().unvan.id === 'Unvanlar_Isl_Mud' || this.baseService.getUser().id === 2000 || this.baseService.getUser().id === 2
-			|| this.baseService.getUser().unvan.id === 'Unvanlar_Ins_Muh' || this.baseService.getUser().unvan.id === 'Unvanlar_Fin_Den'
-			|| this.baseService.getUser().unvan.id === 'Unvanlar_Yon_Ast' || this.baseService.getUser().unvan.id === 'Unvanlar_Sts_Mud'
-			|| this.baseService.getUser().unvan.id === 'Unvanlar_IK_Uzm' || this.baseService.getUser().unvan.id === 'Unvanlar_On_Muh'"
+						<button *ngIf="utils.getUserPermission('addNewPerson')"
 								mat-icon-button color="primary" matTooltip="Düzenle" type="button" (click)="edit(row, $event)">
 							<mat-icon>create</mat-icon>
 						</button>
@@ -865,6 +870,12 @@
 						<button *ngIf="baseService.getUserId() === 2" mat-icon-button color="warn" matTooltip="Pasife Al" type="button"
 								(click)="changeUserActivate(row, $event)">
 							<mat-icon>block</mat-icon>
+						</button>
+					</div>
+					<div *ngIf="model.apiName == 'user_trial_forms'"> <!-- 2 AYLIK FORM BUTONLARI -->
+						<button *ngIf="row.assigner.id === this.baseService.getUserId() && row.okeyDate === null"
+								mat-icon-button color="primary" matTooltip="Düzenle" type="button" (click)="edit(row, $event)">
+							<mat-icon>create</mat-icon>
 						</button>
 					</div>
 					<!-- DÜZENLE VE SİL BUTONLARI -->

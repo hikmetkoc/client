@@ -57,7 +57,43 @@
 			<kt-grid #ikfileGrid entity="Ikfile" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="ikfileRowClicked($event, true)"></kt-grid>
 		</kt-portlet-body>
 	</kt-portlet>
-	<!--</div> -->
+	<kt-portlet *ngIf="current.id !== baseService.getUserId()">
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					2 Aylık Deneme Formu
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<!--<button (click)="evaluationGrid.add()" mat-raised-button matTooltip="Yeni FORM Oluştur" type="button">
+					2 Aylık Form Oluştur
+				</button> -->
+				<button class="btn btn-danger" (click)="printUserEvaluationForm()" mat-raised-button matTooltip="2 Aylık Deneme Formunu Yazdır" type="button">
+					Formu Yazdır
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid #evaluationGrid entity="UserEvaluationForm" [showButtons]="true" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="userEvaluationFormRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
+	<kt-portlet *ngIf="current.id !== baseService.getUserId()">
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<h3 class="kt-portlet__head-title">
+					Değerlendirme Formları
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<button class="btn btn-danger" (click)="printUserTrialForm()" mat-raised-button matTooltip="Değerlendirme Formunu Yazdır" type="button">
+					Formu Yazdır
+				</button>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-grid entity="UserTrialForm" [showButtons]="true" mode="Compact" [defaultFilter]="defaultFilter" [defaultValues]="defaultValues" (rowClick)="userTrialFormRowClicked($event, true)"></kt-grid>
+		</kt-portlet-body>
+	</kt-portlet>
 	<kt-portlet>
 		<kt-portlet-header>
 			<ng-container ktPortletTitle>

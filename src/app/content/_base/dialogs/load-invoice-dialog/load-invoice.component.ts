@@ -16,6 +16,9 @@ export class LoadInvoiceComponent implements OnInit {
 
 	@Input() current: any;
 	@Input() model: any;
+	dbList = [];
+	selectedDbName;
+	clickedButton = false;
 
 	constructor(
 		private cdr: ChangeDetectorRef,
@@ -38,16 +41,18 @@ export class LoadInvoiceComponent implements OnInit {
 	ngOnInit() {
 		this.model = this.data.model;
 		this.current = this.data.current;
-		this.runInvoiceService();
+		// this.runInvoiceService();
+		this.getDbNames();
 	}
 
 	runInvoiceService() {
+		this.clickedButton = true;
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
-		this.http.post('api/' + this.model.apiName + '/soapservice', {}, {headers: httpHeaders, responseType: 'blob', observe: 'response'}).subscribe(
+		this.http.post('api/' + this.model.apiName + '/soapservice?dbSirket=' + this.selectedDbName, {}, {headers: httpHeaders, responseType: 'blob', observe: 'response'}).subscribe(
 			res => {
 				if (res) {
 					Utils.showActionNotification('Faturalar başarıyla yüklendi.', 'success', 10000, true, false, 3000, this.snackBar);
-					this.dialogRef.close();
+					this.clickedButton = false;
 				}
 			},
 			err => {
@@ -55,5 +60,22 @@ export class LoadInvoiceComponent implements OnInit {
 				Utils.showActionNotification('Faturalar yüklenirken hata oluştu.', 'error', 10000, true, false, 3000, this.snackBar);
 			}
 		);
+	}
+
+	getDbNames() {
+		const filters = new Set();
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{ sortBy: 'weight', sortOrder: 'ASC' }],
+			0,
+			10000
+		);
+		this.baseService.find(queryParams, 'attribute-values').subscribe(res => {
+			this.dbList = res.body.filter(hld => hld.attribute.id === 'SapDbNames');
+			this.cdr.markForCheck();
+		});
+	}
+	onNoClick() {
+		this.dialogRef.close();
 	}
 }

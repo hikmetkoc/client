@@ -62,7 +62,7 @@
 					<div *ngIf="['text','email','number'].indexOf(field.fieldType) > -1 && field.title !== 'Kullanılan İzin Günü'"
 						 [hidden]="field.readOnly || !field.active ||
 						 (this.model.name === 'User' && this.baseService.getUserId() !== 2 &&
-						 	(field.name === 'login' || field.name === 'email' || field.name === 'password' || field.name === 'eposta'))
+						 	(field.name === 'login' || field.name === 'password'))
 								" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
 						<mat-form-field class="mat-form-field-fluid">
 							<input type="{{field.fieldType}}" matInput [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}" [errorStateMatcher]="matcher" />
@@ -97,7 +97,7 @@
 					</div>
 					<div *ngIf="['tax'].indexOf(field.fieldType) > -1" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
 						<mat-form-field class="mat-form-field-fluid">
-							<input type="text" [textMask]="field.textMask" matInput [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}" />
+							<input type="text" [textMask]="{mask: utils.taxMask}" matInput [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}" />
 							<mat-icon matSuffix>numbers</mat-icon>
 							<mat-error *ngIf="field.required">{{field.title}} <strong>zorunludur</strong></mat-error>
 						</mat-form-field>
@@ -156,14 +156,12 @@
 					<div *ngIf="['select'].indexOf(field.fieldType) > -1 && field.name !== 'taskType' && !((field.readOnly || !field.active ||
 					 (this.model.name === 'Task' && (entityForm.controls['id'].value === null && field.name === 'status')) ||
 					 (this.model.name === 'Store' && (entityForm.controls['id'].value === null && field.name === 'sirket')) ||
-					 (this.model.name === 'Store' && (entityForm.controls['id'].value === null && field.name === 'maliyet')) ||
+					 (this.model.name === 'Store' && (entityForm.controls['id'].value === null && field.name === 'cost')) ||
 					 (this.model.name === 'Store' && (entityForm.controls['id'].value === null && field.name === 'status')) ||
 					 (this.model.name === 'Store' && (entityForm.controls['id'].value === null && field.name === 'approvalGroup')) ||
 					 (this.model.name === 'Holiday' && (entityForm.controls['id'].value === null && field.name === 'approvalStatus')) ||
 					 ( field.name === 'exchange' && this.gizlilik === false) ) ||
-					 (field.name === 'haftalikGun' && (this.baseService.getIzinCheck() === false &&
-					 !(this.baseService.getRoleId() === 'ROLE_MAVI' || this.baseService.getRoleId() === 'ROLE_BEYAZ_MAVI'))
-					 || (this.baseService.getIzinCheck() === true && (this.baseService.getRoleId() === 'ROLE_MAVI' || this.baseService.getRoleId() === 'ROLE_BEYAZ_MAVI'))))"
+					 (field.name === 'haftalikGun' && !this.utils.getUserPermission('holidayView')))"
 						 class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
 						<mat-form-field class="mat-form-field-fluid">
 							<mat-select [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}" (ngModelChange)="filterOptions(field, $event);" [multiple]="field.multiple">
@@ -177,9 +175,11 @@
 							<mat-error *ngIf="field.required">{{field.title}} <strong>zorunludur</strong></mat-error>
 						</mat-form-field>
 					</div>
-					<div *ngIf="['select'].indexOf(field.fieldType) > -1 && field.name === 'taskType' && !(field.readOnly || !field.active)" class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
+					<div *ngIf="['select'].indexOf(field.fieldType) > -1 && field.name === 'taskType' && !(field.readOnly || !field.active)"
+						 class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
 						<mat-form-field class="mat-form-field-fluid">
-							<mat-select [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}" (ngModelChange)="filterOptions(field, $event);" [multiple]="field.multiple">
+							<mat-select [placeholder]="field.title + (field.required ? ' *' : '')" formControlName="{{field.name}}"
+										(ngModelChange)="filterOptions(field, $event);" [multiple]="field.multiple">
 								<mat-option *ngFor="let option of konularList" [value]="option.id">{{option.label}}</mat-option>
 							</mat-select>
 							<mat-error *ngIf="field.required">{{field.title}} <strong>zorunludur</strong></mat-error>
@@ -190,8 +190,11 @@
 					(this.model.name === 'Store' && (entityForm.controls['id'].value === null && field.name === 'buyowner'))"
 						 class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
 						<mat-form-field class="mat-form-field-fluid">
-							<input type="text" autocomplete="disabled" #objectSelectInput [placeholder]="field.title + (field.required ? ' *' : '')" matInput formControlName="{{field.name}}" [matAutocomplete]="auto" (focus)="filterOptions(field, $event)" (ngModelChange)="filterOptions(field, $event); fieldChange(field, $event)">
-							<button mat-button *ngIf="entityForm.controls[field.name].value && entityForm.controls[field.name].value.id; else searchIcon" matSuffix mat-icon-button aria-label="Clear" (click)="clearObjectSelect(field, objectSelectInput)">
+							<input type="text" autocomplete="disabled" #objectSelectInput [placeholder]="field.title + (field.required ? ' *' : '')"
+								   matInput formControlName="{{field.name}}" [matAutocomplete]="auto" (focus)="filterOptions(field, $event)"
+								   (ngModelChange)="filterOptions(field, $event); fieldChange(field, $event)">
+							<button mat-button *ngIf="entityForm.controls[field.name].value && entityForm.controls[field.name].value.id;
+							else searchIcon" matSuffix mat-icon-button aria-label="Clear" (click)="clearObjectSelect(field, objectSelectInput)">
 								<mat-icon>close</mat-icon>
 							</button>
 							<ng-template #searchIcon>
@@ -249,7 +252,13 @@
 							</mat-error>
 						</mat-form-field>
 					</div>
-					<div *ngIf="['boolean'].indexOf(field.fieldType) > -1" [hidden]="(field.readOnly || !field.active) || (model.name === 'Holiday' && (field.name === 'haftalikIzin' || !(this.baseService.getRoleId() === 'ROLE_MAVI' || this.baseService.getRoleId() === 'ROLE_BEYAZ_MAVI' || this.baseService.getIzinCheck())))"
+					<div *ngIf="['boolean'].indexOf(field.fieldType) > -1 && field.name !== 'secret'"
+						 [hidden]="(field.readOnly || !field.active) || (model.name === 'Holiday' && field.name === 'haftalikizin' && !this.utils.getUserPermission('holidayView'))"
+						 class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
+						<mat-checkbox formControlName="{{field.name}}">{{field.title + (field.required ? ' *' : '')}}
+						</mat-checkbox>
+					</div>
+					<div *ngIf="['boolean'].indexOf(field.fieldType) > -1 && (model.name === 'Customer' && field.name === 'secret' && utils.getUserPermission('secretCustomerView'))"
 						 class="col-xs-12 col-md-6 col-lg-4 col-xl-4 kt-margin-bottom-10">
 						<mat-checkbox formControlName="{{field.name}}">{{field.title + (field.required ? ' *' : '')}}
 						</mat-checkbox>

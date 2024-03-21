@@ -79,6 +79,7 @@ export class EditEntityDialogComponent implements OnInit {
 	complateHidden: boolean;
 	isButtonClicked = false;
 	konularList = [];
+	secret: boolean;
 
 	constructor(
 		private cdr: ChangeDetectorRef,
@@ -108,7 +109,15 @@ export class EditEntityDialogComponent implements OnInit {
 		this.current = this.data.current;
 		this.model = JSON.parse(JSON.stringify(this.data.model));
 		this.createForm();
+		this.secret = false;
 	}
+
+	/*public customerView(): boolean {
+		this.secret = this.baseService.getCustomerView(this.baseService.getUserId());
+		console.log(this.secret);
+		return this.secret;
+	}*/
+
 	createForm() {
 		const formFields = {};
 		for (const field of this.model.fields) {

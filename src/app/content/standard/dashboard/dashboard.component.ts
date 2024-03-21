@@ -1,4 +1,12 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+	Component,
+	OnInit,
+	ChangeDetectorRef,
+	ChangeDetectionStrategy,
+	ViewChild,
+	ViewEncapsulation,
+	Input
+} from '@angular/core';
 import { LayoutConfigService } from '../../../core/_base/layout';
 import { BaseService } from '../../_base/base.service';
 import { QueryParamsModel } from '../../_base/models/query-params.model';
@@ -7,9 +15,15 @@ import { FilterOperation } from '../../_base/models/filter';
 import { formatDate } from '@angular/common';
 import { tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
-import { Router } from '@angular/router';
-import {HttpClient} from "@angular/common/http";
-import {HttpUtilsService} from "../../_base/http-utils.service";
+import {ActivatedRoute, Router} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {HttpUtilsService} from '../../_base/http-utils.service';
+import {BaseComponent} from '../../_base/base.component';
+import {MatDialog} from '@angular/material/dialog';
+import {TranslateService} from '@ngx-translate/core';
+import {BreakpointObserver} from '@angular/cdk/layout';
+import {EditEntityDialogComponent} from '../../_base/dialogs/edit-entity-dialog/edit-entity-dialog.component';
+import {PaymentOkeyComponent} from '../../_base/dialogs/payment-okey-dialog/payment-okey.component';
 
 @Component({
 	selector: 'kt-dashboard',
@@ -18,13 +32,14 @@ import {HttpUtilsService} from "../../_base/http-utils.service";
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	encapsulation: ViewEncapsulation.None,
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent extends BaseComponent implements OnInit {
 	@ViewChild('salesWidget', undefined) salesWidget;
 	announcements = [];
 	tasks = [];
 	usersContact = [];
 	usersBirth = [];
-	targets = [];
+	bubbleObject: any;
+	bubbleModel: any;
 
 	paymentStat = 'VERİLER YÜKLENİYOR...';
 
@@ -39,6 +54,7 @@ export class DashboardComponent implements OnInit {
 	activityWidget4Data;
 
 	invoiceList = [];
+	formList = [];
 	paymentOrder = [];
 	bekleyenList = [];
 	holidayList = [];
@@ -49,46 +65,38 @@ export class DashboardComponent implements OnInit {
 	pendingQuotes = [];
 	chartYear = 2022;
 	utils = Utils;
+	@Input() defaultValues = [];
 
 	constructor(
 		private cdr: ChangeDetectorRef,
 		private layoutConfigService: LayoutConfigService,
 		public baseService: BaseService,
 		public snackBar: MatSnackBar,
+		public dialog: MatDialog,
+		public translate: TranslateService,
+		public route: ActivatedRoute,
+		public router: Router,
+		public breakpointObserver: BreakpointObserver,
 		private http: HttpClient,
 		private httpUtils: HttpUtilsService,
-		public router: Router,
 	) {
+		super(baseService, dialog, snackBar, translate, route, router, breakpointObserver);
+
+		this.model = Utils.getModel('InvoiceList');
 	}
 
 	ngOnInit(): void {
-
+		this.getFormList();
 		this.getChangePage();
-
-		this.getCharts();
-
-		this.getAnnouncements();
-
+		// this.getCharts();
 		this.getTasks();
-
 		this.getTaskStatus();
-
 		this.getCont();
-
-		this.getRequestWebPush();
-
 		this.getInvoiceList();
-
 		this.getPaymentOrder();
-
 		this.getHolidayList();
-
 		this.getWaitHolidayList();
-
 		this.getBirthDay();
-		//this.getBirth();
-
-		//this.getTargets();
 
 	}
 
@@ -97,30 +105,38 @@ export class DashboardComponent implements OnInit {
 			this.router.navigate(['/holiday']);
 		}
 	}
-
-	getRequestWebPush() {
-		if ('Notification' in window && Notification.permission === 'granted') {
-			// Kullanıcı izni zaten alındı, bildirim gönder
-			this.sendNotification('Başlık', 'Bildirim metni');
-		} else if ('Notification' in window) {
-			// Kullanıcı izni alınmamış, izin iste
-			Notification.requestPermission().then(permission => {
-				if (permission === 'granted') {
-					// Kullanıcı izni verildi, bildirim gönder
-					this.sendNotification('Başlık', 'Bildirim metni');
-				}
-			});
-		}
+	getFormList() {
+		const filters = new Set();
+		filters.add({
+			name: 'assigner.id',
+			operator: FilterOperation.EQUALS,
+			value: this.baseService.getUserId()
+		});
+		filters.add({
+			name: 'okeyDate',
+			operator: FilterOperation.EQUALS,
+			value: null
+		});
+		const queryParams = new QueryParamsModel(
+			Utils.makeFilter(filters),
+			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
+			0,
+			50000
+		);
+		this.formList = [];
+		this.baseService.find(queryParams, 'user_trial_forms').subscribe(res => {
+			if (res) {
+				this.formList = res.body;
+			}
+			this.cdr.markForCheck();
+		});
+		this.baseService.find(queryParams, 'user_evaluation_forms').subscribe(res2 => {
+			if (res2) {
+				this.formList = this.formList.concat(res2.body);
+			}
+			this.cdr.markForCheck();
+		});
 	}
-
-	sendNotification(title: string, message: string) {
-		if (Notification.permission === 'granted') {
-			const notification = new Notification(title, {
-				body: message
-			});
-		}
-	}
-
 	getInvoiceList() {
 		if (!this.utils.hasOperation('FaturaListesi_Goruntuleme')) { return 0; }
 		const filters = new Set();
@@ -142,19 +158,120 @@ export class DashboardComponent implements OnInit {
 		);
 		this.baseService.find(queryParams, 'invoice_lists').subscribe(res => {
 			this.invoiceList = [];
-			for (const ivl of res.body) {
-				this.invoiceList.push({
-					sendDate: ivl.sendDate,
-					customer: ivl.customer.name,
-					amount: ivl.amount,
-					invoiceDate: ivl.invoiceDate,
-					invoiceNum: ivl.invoiceNum,
-					moneyType: ivl.moneyType.label,
-					faturaSirket: ivl.sirket.label
-				});
-			}
+			this.invoiceList = res.body;
 			this.cdr.markForCheck();
 		});
+	}
+
+	correct(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const dialogRef = this.dialog.open(EditEntityDialogComponent, {data: {entity, model: this.model}});
+		dialogRef.afterClosed().subscribe(res => {
+			if (res) {
+				Utils.showActionNotification('Kaydedildi', 'success', 10000, true, false, 3000, this.snackBar);
+				this.getInvoiceList();
+			}
+		});
+	}
+
+	okeyPayment(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+
+		let status = '';
+		let spendstatus = '';
+
+		if (entity.status.id === 'Payment_Status_Bek1' && entity.paymentSubject.id !== 'Payment_Sub_Saha') {
+			status = this.baseService.getAttrVal('Payment_Status_Muh').id;
+			spendstatus = this.baseService.getAttrVal('Payment_Status_Muh').label;
+		}
+
+		if (entity.status.id === 'Payment_Status_Bek1' && entity.paymentSubject.id === 'Payment_Sub_Saha') {
+			status = this.baseService.getAttrVal('Payment_Status_Bek2').id;
+			spendstatus = this.baseService.getAttrVal('Payment_Status_Bek2').label;
+		}
+
+		if (entity.status.id === 'Payment_Status_Muh') {
+			status = this.baseService.getAttrVal('Payment_Status_Bek2').id;
+			spendstatus = this.baseService.getAttrVal('Payment_Status_Bek2').label;
+		}
+
+		if (entity.status.id === 'Payment_Status_Bek2') {
+			status = this.baseService.getAttrVal('Payment_Status_Onay').id;
+			spendstatus = this.baseService.getAttrVal('Payment_Status_Onay').label;
+		}
+
+		if (entity.status.id === 'Payment_Status_Onay') {
+			status = this.baseService.getAttrVal('Payment_Status_Ode').id;
+			spendstatus = this.baseService.getAttrVal('Payment_Status_Ode').label;
+		}
+
+		const dialogRef = this.dialog.open(PaymentOkeyComponent, {data: {current: entity, model: this.model, paymentStatus: status, spendStatus: spendstatus}, disableClose: true });
+		dialogRef.afterClosed().subscribe(res => {
+			Utils.showActionNotification('Kaydedildi', 'success', 10000, true, false, 3000, this.snackBar);
+			this.getPaymentOrder();
+		});
+	}
+	cancelPayment(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+
+		const status = 'Payment_Status_Red';
+		const spendstatus = this.baseService.getAttrVal('Payment_Status_Red').label;
+		const dialogRef = this.dialog.open(PaymentOkeyComponent, {
+			data: {
+				current: entity,
+				model: this.model,
+				paymentStatus: status,
+				spendStatus: spendstatus
+			}, disableClose: true
+		});
+		dialogRef.afterClosed().subscribe(res => {
+			Utils.showActionNotification('Kaydedildi', 'success', 10000, true, false, 3000, this.snackBar);
+			this.getPaymentOrder();
+		});
+	}
+
+	changeHoliday(entity, e?, presetValues = [], approvalStatus?: string) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		entity.approvalStatus = this.baseService.getAttrVal(approvalStatus);
+		this.baseService.update(entity, 'holidays').subscribe(() => {
+			Utils.showActionNotification('Kaydedildi', 'success', 10000, true, false, 3000, this.snackBar);
+			this.getWaitHolidayList();
+		});
+	}
+	taskInfoClicked(row) {
+		this.router.navigate(['/task'], { queryParams: { id: row.id, sourceObject: 'task', sourceId: row.id } });
 	}
 	getPaymentOrder() {
 		if (!this.utils.hasOperation('Talimat_Goruntuleme')) {
@@ -168,26 +285,29 @@ export class DashboardComponent implements OnInit {
 			0,
 			5000
 		);
+
 		this.baseService.find(queryParams2, 'payment_orders').subscribe(res => {
 			this.paymentOrder = [];
-			for (const ivl of res.body) {
-				if (ivl.status.id === 'Payment_Status_Muh' || ivl.status.id === 'Payment_Status_Onay' || ivl.status.id === 'Payment_Status_Kismi' || ivl.status.id === 'Payment_Status_Red' || ivl.status.id === 'Payment_Status_Ode') { continue;}
-				if ((ivl.assigner.id === this.baseService.getUserId() && ivl.status.id === 'Payment_Status_Bek1') ||
-					(ivl.secondAssigner.id === this.baseService.getUserId() && ivl.status.id === 'Payment_Status_Bek2')) {
-					this.paymentOrder.push({
-						status: ivl.status.label,
-						customer: ivl.customer.name,
-						amount: ivl.amount,
-						assigner: ivl.assigner.firstName + ' ' + ivl.assigner.lastName,
-						secondAssigner: ivl.secondAssigner.firstName + ' ' + ivl.secondAssigner.lastName,
-						invoiceNum: ivl.invoiceNum,
-						moneyType: ivl.moneyType.label,
-						faturaSirket: ivl.sirket.label
-					});
-				}
-			}
-			this.cdr.markForCheck();
+			this.paymentOrder = res.body
+				.filter(flt =>
+					(flt.assigner.id === this.baseService.getUserId() && flt.status.id === 'Payment_Status_Bek1') ||
+					(flt.secondAssigner.id === this.baseService.getUserId() && flt.status.id === 'Payment_Status_Bek2'))
+				.map(item => {
+					return {
+						id: item.id,
+						assigner: item.assigner,
+						secondAssigner: item.secondAssigner,
+						status: item.status,
+						description: item.description,
+						customer: item.customer,
+						sirket: item.sirket,
+						moneyType: item.moneyType,
+						amount: item.amount,
+						paymentSubject: item.paymentSubject
+					};
+				});
 			this.paymentStat = 'VERİLER YÜKLENDİ!';
+			this.cdr.markForCheck();
 		});
 	}
 	getHolidayList() {
@@ -213,6 +333,7 @@ export class DashboardComponent implements OnInit {
 			0,
 			50000
 		);
+		queryParams.owner = 'HIERARCHY_D';
 		this.baseService.find(queryParams, 'holidays').subscribe(res => {
 			this.holidayList = [];
 			for (const ivl of res.body) {
@@ -239,24 +360,16 @@ export class DashboardComponent implements OnInit {
 			operator: FilterOperation.EQUALS,
 			value: 'Izin_Dur_Pasif'
 		});
-		const queryParams = new QueryParamsModel(
+		const queryParams3 = new QueryParamsModel(
 			Utils.makeFilter(filters),
 			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
 			0,
 			50000
 		);
-		this.baseService.find(queryParams, 'holidays').subscribe(res => {
+		this.baseService.find(queryParams3, 'holidays').subscribe(res => {
 			this.waitHolidayList = [];
-			for (const ivl of res.body) {
-				this.waitHolidayList.push({
-					owner: ivl.owner.firstName + ' ' + ivl.owner.lastName,
-					assigner: ivl.assigner.firstName + ' ' + ivl.assigner.lastName,
-					start: ivl.startDate,
-					end: ivl.endDate,
-					come: ivl.comeDate,
-					tur: ivl.type.label
-				});
-			}
+			this.waitHolidayList = res.body;
+			this.paymentStat = 'VERİLER YÜKLENDİ!';
 			this.cdr.markForCheck();
 		});
 	}
@@ -332,7 +445,7 @@ export class DashboardComponent implements OnInit {
 		});
 	}
 	formatDate(date: string): string {
-		if (!date) return '';
+		if (!date) { return ''; }
 
 		const formattedDate = new Date(date);
 		const day = ('0' + formattedDate.getDate()).slice(-2);
@@ -342,7 +455,7 @@ export class DashboardComponent implements OnInit {
 		return `${day}-${month}-${year}`;
 	}
 	formatBirthDate(date: string): string {
-		if (!date) return '';
+		if (!date) { return ''; }
 
 		const formattedDate = new Date(date);
 		const day = (formattedDate.getDate());
@@ -367,73 +480,27 @@ export class DashboardComponent implements OnInit {
 			console.error(e);
 		}
 	}
-	getAnnouncements() {
-		const filters = new Set();
-		filters.add({
-			name: 'active',
-			operator: FilterOperation.EQUALS,
-			value: true
-		});
-		const queryParams = new QueryParamsModel(
-			Utils.makeFilter(filters),
-			[{ sortBy: 'createdDate', sortOrder: 'DESC' }],
-			0,
-			5
-		);
-		this.baseService.find(queryParams, 'announcements').subscribe(res => {
-			this.announcements = [];
-			for (const ann of res.body) {
-				this.announcements.push({
-					icon: ann.type ?
-						(this.baseService.getAttrVal(ann.type.id).label === 'Başarı' ? 'flaticon2-checkmark kt-font-success' :
-							(this.baseService.getAttrVal(ann.type.id).label === 'Uyarı' ? 'flaticon2-information kt-font-warning' : 'flaticon2-information kt-font-danger')) : 'flaticon2-checkmark kt-font-success',
-					title: ann.title,
-					id: ann.id,
-					value: ann.createdDate,
-					valueColor: ann.type ?
-						(this.baseService.getAttrVal(ann.type.id).label === 'Başarı' ? 'kt-font-success' :
-							(this.baseService.getAttrVal(ann.type.id).label === 'Uyarı' ? 'kt-font-warning' : 'kt-font-danger')) : 'kt-font-success',
-					desc: ann.description
-				});
-			}
-			this.cdr.markForCheck();
-		});
-	}
-
 	getTasks() {
 		const filters = new Set();
 		filters.add({
-			name: 'dueTime',
-			operator: FilterOperation.GREATER_OR_EQUAL_THAN,
-			value: new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate())
-		});
-		filters.add({
-			name: 'dueTime',
-			operator: FilterOperation.LESS_THAN,
-			value: new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate() + 1)
-		});
-		filters.add({
 			name: 'owner.id',
-			operator: 'EQUALS',
-			value: this.baseService.getUser().id
+			operator: FilterOperation.EQUALS,
+			value: this.baseService.getUserId()
 		});
-		const queryParams = new QueryParamsModel(
+		filters.add({
+			name: 'status.id',
+			operator: FilterOperation.IN,
+			value: ['Gör_Dur_Yeni', 'Gör_Dur_Devam_Ediyor']
+		});
+		const queryParams3 = new QueryParamsModel(
 			Utils.makeFilter(filters),
 			[{ sortBy: 'dueTime', sortOrder: 'ASC' }],
 			0,
-			100
+			50000
 		);
-		this.baseService.find(queryParams, 'tasks').subscribe(res => {
+		this.baseService.find(queryParams3, 'tasks').subscribe(res => {
 			this.tasks = [];
-			for (const tsk of res.body) {
-				if (tsk.taskType === null) { continue; }
-				this.tasks.push({
-					time: formatDate(tsk.dueTime, 'HH:mm', 'tr-TR'),
-					icon: 'fa fa-genderless' + (tsk.status && this.baseService.getAttrVal(tsk.status.id).label === 'Reddedildi' ? ' kt-font-danger' : (tsk.status && this.baseService.getAttrVal(tsk.status.id).label === 'Tamamlandı' ? ' ' : ' kt-font-success')),
-					text: tsk.assigner.firstName + ' ' + tsk.assigner.lastName + ' - ' + tsk.type.label  + ' - ' + tsk.status.label +  ' - ' + tsk.importance.label + ' - ' + (tsk.description ? tsk.description : ''),
-					id: tsk.id
-				});
-			}
+			this.tasks = res.body;
 			this.cdr.markForCheck();
 		});
 	}
@@ -495,57 +562,6 @@ export class DashboardComponent implements OnInit {
 			this.cdr.markForCheck();
 		});
 	}
-
-	getTargets() {
-		const filters = new Set();
-		filters.add({
-			name: 'termStart',
-			operator: FilterOperation.GREATER_OR_EQUAL_THAN,
-			value: new Date(this.date.getFullYear(), this.date.getMonth(), 1)
-		});
-		filters.add({
-			name: 'termStart',
-			operator: FilterOperation.LESS_THAN,
-			value: new Date(this.date.getFullYear(), this.date.getMonth() + 1, 1)
-		});
-		filters.add({
-			name: 'owner.id',
-			operator: 'EQUALS',
-			value: this.baseService.getUser().id
-		});
-		const queryParams = new QueryParamsModel(
-			Utils.makeFilter(filters),
-			[{ sortBy: 'termStart', sortOrder: 'ASC' }],
-			0,
-			100
-		);
-		this.baseService.find(queryParams, 'targets').subscribe(res => {
-			this.targets = [];
-			for (const target of res.body) {
-				this.targets.push({
-					title: 'Hedef',
-					value: target.amount,
-					valueClass: '',
-					type: 'currency'
-				});
-				this.targets.push({
-					title: 'Satış',
-					value: target.realizedAmount,
-					valueClass: '',
-					type: 'currency'
-				});
-				const percent = target.amount ? (target.realizedAmount) / target.amount : 0;
-				this.targets.push({
-					title: 'Gerçekleşme',
-					value: percent,
-					valueClass: percent < 0.70 ? 'kt-font-danger' : percent < 1 ? 'kt-font-warning' : 'kt-font-success',
-					type: 'percent'
-				});
-			}
-			this.cdr.markForCheck();
-		});
-	}
-
 	getCharts() {
 		this.baseService.find(undefined, 'dashboards?userId=' + this.baseService.getUserId() + '&year=' + this.chartYear).pipe(
 			tap(res => {

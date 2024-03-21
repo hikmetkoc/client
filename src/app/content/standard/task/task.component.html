@@ -41,10 +41,11 @@
 			</ng-container>
 			<ng-container ktPortletTools>
 				<div class="page-header-buttons">
-					<button mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Hatırlat" (click)="remember()">
+					<button *ngIf="current.status.id === 'Gör_Dur_Yeni' || current.status.id === 'Gör_Dur_Devam_Ediyor'" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Hatırlat" (click)="remember()">
 						<mat-icon>notifications</mat-icon>
 					</button>
-					<button *ngIf="baseService.getPermissionRule(model.name,'update')" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Düzenle" (click)="mainGrid.edit(current)">
+					<button *ngIf="(current.status.label === 'Yeni' || current.status.label === 'Devam Ediyor')
+							&& current.birim.ilgilibirim === this.baseService.getUserId().toString()" mat-icon-button class="btn btn-label-brand kt-margin-l-10" color="primary" matTooltip="Düzenle" (click)="mainGrid.edit(current)">
 						<mat-icon>create</mat-icon>
 					</button>
 

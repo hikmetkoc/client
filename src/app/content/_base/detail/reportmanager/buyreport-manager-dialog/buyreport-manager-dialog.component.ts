@@ -103,10 +103,10 @@ export class BuyReportManagerDialogComponent implements OnInit {
 				this.stores.push({
 					icon: 'kt-font-success',
 					nu: hld.stcode,
-					talepeden: hld.assigner.firstName + ' ' + hld.assigner.lastName,
-					onaykisisi: hld.owner.firstName + ' ' + hld.owner.lastName,
+					talepeden: hld.owner.firstName + ' ' + hld.owner.lastName,
+					onaykisisi: hld.assigner.firstName + ' ' + hld.assigner.lastName,
 					sirket: hld.sirket.label,
-					maliyet: hld.maliyet.label,
+					maliyet: hld.cost.label,
 					sontarih: hld.endDate,
 					urun: hld.request,
 					gerekce: hld.description,

@@ -2,6 +2,7 @@
 <div class="kt-header__topbar kt-grid__item">
 	<!-- <kt-cart [bgImage]="'./assets/media/misc/bg-1.jpg'"></kt-cart>
 	<kt-language-selector></kt-language-selector> -->
+	<!--<kt-cart [bgImage]="'./assets/playstore.png'">></kt-cart>-->
 	<kt-top-bar-search *ngIf="utils.hasOperation('Talep_Goruntuleme')"></kt-top-bar-search>
 	<!-- <kt-notification [bgImage]="'./assets/media/misc/bg-1-.jpg'" [pulse]="true" [pulseLight]="true" [skin]="'dark'"></kt-notification>
 	<div class="kt-header__topbar-item kt-header__topbar-item--user" routerLink="/customer/map" matTooltip="Harita">
@@ -30,6 +31,20 @@
 		<div class="kt-header__topbar-wrapper">
 			<span class="kt-header__topbar-icon">
 				<i [ngClass]="'flaticon-doc'"></i>
+			</span>
+		</div>
+	</div>
+	<div class="kt-header__topbar-item kt-header__topbar-item--user" routerLink="/contact-information" matTooltip="Güncel İletişim Bilgileri">
+		<div class="kt-header__topbar-wrapper">
+			<span class="kt-header__topbar-icon">
+				<i [ngClass]="'flaticon-comment'"></i>
+			</span>
+		</div>
+	</div>
+	<div class="kt-header__topbar-item kt-header__topbar-item--user" routerLink="/announcement" matTooltip="Duyurular">
+		<div class="kt-header__topbar-wrapper">
+			<span class="kt-header__topbar-icon">
+				<i [ngClass]="'flaticon2-notification'"></i>
 			</span>
 		</div>
 	</div>

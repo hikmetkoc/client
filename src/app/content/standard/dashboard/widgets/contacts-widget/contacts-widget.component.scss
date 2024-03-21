@@ -1,70 +1,46 @@
-.contacts-table{
+.contacts-table {
 	width: 100%;
-	border-collapse: collapse;
+	border-collapse: separate;
+	border-spacing: 0 10px; /* Satırlar arasındaki boşluğu buradan ayarlayabilirsiniz */
+	overflow-x: auto;
+	margin: 7px 0;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Gölgelendirme */
+}
+
+.contacts-table th, .contacts-table td {
+	padding: 15px;
 	text-align: center;
-	&,
-	& tr,
-	& td,
-	& th{
-		border: 1px solid #ccc;
-	}
-	td,th{
-		padding: 1px;
-	}
+	border: none;
+	border-bottom: 1px solid #ddd;
+}
 
-	table{
-		overflow-x: auto;
-		border-collapse: collapse;
-		margin: 7px 0;
-	}
+th {
+	text-align: center;
+	border-bottom: 2px solid #ddd;
+	font-weight: bold; /* Başlıkları kalın yap */
+	background-color: #0f695f; /* Başlık arka plan rengi */
+	color: #fff; /* Başlık metin rengi */
+}
 
-	thead {
-		background-color: #f0f0f0;
-	}
+tbody {
+	font-size: 14px;
+}
 
-	th {
-		padding: 10px;
+tr {
+	background-color: #f9f9f9; /* Satır arka plan rengi */
+	margin-bottom: 10px; /* Her satır arasına boşluk */
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Gölgelendirme */
+}
+
+@media (max-width: 768px) {
+	.contacts-table th, .contacts-table td {
+		display: block;
 		text-align: left;
+		border: none;
 		border-bottom: 1px solid #ddd;
 	}
 
-	/* Tablo içeriği stilleri */
-	tbody {
-		font-size: 14px;
-	}
-
-	tr {
-		border-bottom: 1px solid #ddd;
-	}
-
-	td {
-		padding: 3px;
-	}
-
-	/* Alternatif satır renklendirme */
-	tr:nth-child(even) {
-		background-color: #f2f2f2;
-	}
-
-	/* Hücre içeriğini ortala */
-	td {
-		text-align: center;
-	}
-
-	/* Tablo başlıklarını ortala */
 	th {
-		text-align: center;
-	}
-
-	@media (max-width: 768px) {
-		table{
-			overflow-x: auto;
-		}
-		th, td {
-			display: block;
-		}
-		th {
-			text-align: left;
-		}
+		padding: 12px;
 	}
 }

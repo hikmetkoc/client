@@ -24,6 +24,7 @@ import {
 	ShowPersonelContractComponent
 } from "../../detail/show-personel-contract-dialog/show-personel-contract.component";
 import {AreYouOkeyComponent} from "../are-you-okey-dialog/are-you-okey.component";
+import {formatCurrency} from "@angular/common";
 
 
 @Component({
@@ -74,7 +75,7 @@ export class AddSpendComponent implements OnInit {
 	}
 
 	onYesClick() {
-		if (this.selectedTypeId === undefined || this.selectedDate === undefined || this.selectedAmount === undefined) {
+		if (this.selectedDate === undefined || this.selectedAmount === undefined) {
 			Utils.showActionNotification('Lütfen tüm alanları doldurun!', 'error', 2000, true, false, 3000, this.snackBar);
 		} else {
 			const dialogRef = this.dialog.open(AreYouOkeyComponent, {
@@ -82,20 +83,24 @@ export class AddSpendComponent implements OnInit {
 			});
 			dialogRef.afterClosed().subscribe((result) => {
 				if (result === 'yes') {
-					/*const url = '/api/spends/addSpend';
+					const url = '/api/spends/addSpend';
 					const httpHeaders = this.httpUtils.getHTTPHeaders();
-					this.http.put(url + `?bank=${this.selectedTypeId}&moneyType=${this.selectedExchangeId}&customer=${this.current}&name=${this.description}&type=${this.selectedDate}&country=${this.selectedAmount}` , null, {headers: httpHeaders, responseType: 'text'}).subscribe(
+					const startDate1 = new Date(this.selectedDate);
+					const startDate = this.formatDate(startDate1);
+					const paymentOrder = this.current;
+					const amount = this.formatCurrency(this.selectedAmount);
+					this.http.put(url + `?&pid=${this.current.id}&description=${this.description}&date=${startDate.toString()}&amount=${this.selectedAmount}` , paymentOrder, {headers: httpHeaders, responseType: 'text'}).subscribe(
 						(res: any) => {
 							this.dialogRef.close(this.description);
-							Utils.showActionNotification('Kayıt Başarılı!', 'success', 10000, true, false, 3000, this.snackBar);
+							Utils.showActionNotification('Kayıt Başarılı!', 'success', 4000, true, false, 3000, this.snackBar);
 							},
 						(error) => {
 							// HTTP isteği tamamen başarısız oldu
-							console.error('Hata:', error);
-							Utils.showActionNotification('Bu Ödeme Bilgisi zaten kayıtlıdır!.', 'error', 10000, true, false, 3000, this.snackBar);
+							const errorr = JSON.parse(error.error);
+							console.log(errorr);
+							Utils.showActionNotification(errorr.detail, 'error', 4000, true, false, 3000, this.snackBar);
 						}
-					);*/
-					this.dialogRef.close(); // DENEMEDİR
+					);
 				}
 			});
 		}
@@ -105,6 +110,29 @@ export class AddSpendComponent implements OnInit {
 		this.model = this.data.model;
 		this.current = this.data.current;
 		this.getAttributeValues();
+	}
+	formatDate (date) {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		return `${year}-${month}-${day}`;
+	}
+
+	formatCurrency(amount, decimalCount = 2, decimal = ',', thousands = '.') {
+		try {
+			decimalCount = Math.abs(decimalCount);
+			decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+
+			const negativeSign = amount < 0 ? '-' : '';
+
+			const i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount), 0).toString();
+			const j = (i.length > 3) ? i.length % 3 : 0;
+
+			return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j)
+				.replace(/(\d{3})(?=\d)/g, '$1' + thousands) + (decimalCount ? decimal + Math.abs(amount - parseInt(i, 0)).toFixed(decimalCount).slice(2) : '');
+		} catch (e) {
+			console.error(e);
+		}
 	}
 
 	getAttributeValues() {

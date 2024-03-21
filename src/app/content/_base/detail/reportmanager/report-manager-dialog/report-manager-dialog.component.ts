@@ -125,45 +125,4 @@ export class ReportManagerDialogComponent implements OnInit {
 		windowPrt.print();
 		windowPrt.close();
 	}
-	/*getCont() {
-		const filters = new Set();
-		const queryParams = new QueryParamsModel(
-			Utils.makeFilter(filters),
-			[{ sortBy: 'startDate', sortOrder: 'DESC' }],
-			0,
-			5000
-		);
-		this.baseService.find(queryParams, 'holidays').subscribe(res => {
-			this.usersHoliday = [];
-			for (const hld of res.body) {
-				if (hld.approvalStatus.label === 'Reddedildi' || hld.id !== this.current.id) { continue; }
-				this.usersHoliday.push({
-					icon: 'kt-font-success',
-					kullanici: hld.owner.firstName + ' ' + hld.owner.lastName,
-					talep: hld.user.firstName + ' ' + hld.user.lastName,
-					yetkili: hld.assigner.firstName + ' ' + hld.assigner.lastName,
-					baslangic: hld.startDate,
-					bitis: hld.endDate,
-					donus: hld.comeDate,
-					aciklama: hld.description,
-					adres: hld.holidayAddress,
-					tc: hld.owner.tck,
-					isebaslangic: hld.owner.startDate,
-					izintur: hld.type.label,
-					onay: hld.approvalStatus.label,
-					sirket: hld.owner.sgksirket.label,
-					birim: hld.owner.sgkbirim.label,
-					unvan: hld.owner.sgkunvan.label,
-					izingun: hld.izingun,
-					id: hld.id
-				});
-			}
-			this.cdr.markForCheck();
-		});
-		const options = { timeZone: 'Europe/Istanbul', hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-		this.sd = this.usersHoliday[0].baslangic;
-		this.ed = this.usersHoliday[0].bitis;
-		this.dd = this.usersHoliday[0].donus;
-		this.bd = this.usersHoliday[0].isebaslangic;
-	}*/
 }

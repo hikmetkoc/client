@@ -1,0 +1,60 @@
+kt-holiday-detail-dialog {
+	.kt-form .kt-form__group {
+		padding-top: unset;
+		padding-bottom: unset;
+	}
+
+	.upload-numbering {
+		margin-top: 9px;
+	}
+
+	.flex-row-between {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+
+	.flex-row-start {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+	}
+}
+.deneme-suresi-degerlendirme-tablosu {
+	border-collapse: collapse;
+	width: 100%;
+	color: black;
+}
+
+.deneme-suresi-degerlendirme-tablosu th,
+.deneme-suresi-degerlendirme-tablosu td {
+	border: 1px solid #ddd;
+	padding: 3px;
+	text-align: left;
+	color: black;
+}
+
+.deneme-suresi-degerlendirme-tablosu th {
+	background-color: #f2f2f2;
+	color: black;
+}
+
+.onaylar {
+	border: 1px solid #ddd;
+	background-color: #f2f2f2;
+	color: black;
+	font-weight: bold;
+	padding: 3px;
+	text-align: center;
+}
+
+.deneme-suresi-ortala td {
+	border: 1px solid #ddd;
+	padding: 6px;
+	text-align: center;
+	color: black;
+}
+
+.genis-sutun {
+	width: 200px; /* Örnek bir genişlik */
+}

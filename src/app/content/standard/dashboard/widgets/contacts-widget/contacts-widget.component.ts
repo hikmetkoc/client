@@ -25,8 +25,4 @@ export class ContactsWidgetComponent implements OnInit {
 	ngOnInit() {
 
 	}
-
-	userRowClicked(row) {
-		this.router.navigate(['/user'], { queryParams: { id: row.id, sourceObject: 'dashboard', sourceId: row.id } });
-	}
 }

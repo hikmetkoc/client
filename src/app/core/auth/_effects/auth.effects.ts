@@ -28,6 +28,7 @@ export class AuthEffects {
             localStorage.setItem('attributeValues', JSON.stringify(action.payload.attributeValues));
             localStorage.setItem('operations', JSON.stringify(action.payload.operations ? action.payload.operations : []));
             localStorage.setItem('permissions', JSON.stringify(action.payload.permissions));
+			         localStorage.setItem('userPermissions', JSON.stringify(action.payload.userPermissions));
             localStorage.setItem('configurations', JSON.stringify(action.payload.configurations));
             localStorage.setItem('backendVersion', JSON.stringify(action.payload.backendVersion));
             this.menuAsideService.loadMenu();
@@ -76,11 +77,12 @@ export class AuthEffects {
         const attributeValues = JSON.parse(localStorage.getItem('attributeValues'));
         const operations = JSON.parse(localStorage.getItem('operations'));
         const permissions = JSON.parse(localStorage.getItem('permissions'));
+		      const userPermissions = JSON.parse(localStorage.getItem('userPermissions'));
         const configurations = JSON.parse(localStorage.getItem('configurations'));
         const backendVersion = JSON.parse(localStorage.getItem('backendVersion'));
         let observableResult = of({ type: 'NO_ACTION' });
         if (userToken) {
-            observableResult = of(new Login({ authToken: userToken, user, metadata, attributeValues, operations, permissions, configurations, backendVersion }));
+            observableResult = of(new Login({ authToken: userToken, user, metadata, attributeValues, operations, permissions, userPermissions, configurations, backendVersion }));
         }
         return observableResult;
     });

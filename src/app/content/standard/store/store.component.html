@@ -63,7 +63,7 @@
 				</h3>
 			</ng-container>
 			<ng-container ktPortletTools>
-				<button
+				<button [hidden]="!(current.buyStatus?.id === 'Buy_Status_Bek' && current.buyowner?.id === baseService.getUserId())"
 						(click)="buyGrid.add()" mat-raised-button matTooltip="Yeni Teklif oluştur" type="button">
 					Yeni Teklif
 				</button>

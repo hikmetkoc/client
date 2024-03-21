@@ -1,0 +1,179 @@
+<kt-portlet>
+
+	<div class="modal-header">
+		<h4 class="modal-title">Değerlendirme Formu</h4>
+		<div class="ml-auto">
+			<button mat-icon-button class="btn btn-label-brand" color="primary" matTooltip="Yazdır" (click)="showFiles()">
+				<mat-icon>print</mat-icon>
+			</button>
+			<button mat-icon-button class="btn btn-danger" color="primary" matTooltip="Kapat" (click)="onNoClick()">
+				<mat-icon>close</mat-icon>
+			</button>
+		</div>
+	</div>
+	<div id="print-section">
+		<div class="modal-body">
+			<table class="deneme-suresi-degerlendirme-tablosu">
+				<thead>
+				<tr>
+					<th></th>
+					<th>DEĞERLENDİRME FORMU</th>
+					<th></th>
+				</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<table class="deneme-suresi-degerlendirme-tablosu">
+				<thead>
+				<tr>
+					<th>DOKUMAN NO:</th>
+					<th>YAYIN TARİHİ</th>
+					<th>REV.NO:</th>
+					<th>REV.TARİHİ:</th>
+					<th>SAYFA NO:1/1</th>
+				</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<table class="deneme-suresi-degerlendirme-tablosu">
+				<thead>
+				<tr>
+					<th colspan="2">{{'PERSONELİN'}}</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>
+						<p>Adı Soyadı: {{chiefData[0].user.firstName + ' ' + chiefData[0].user.lastName}}</p>
+						<p>Görevi/Unvanı: {{chiefData[0].user.unvan.label}}</p>
+						<p>Bağlı Olduğu Birim: {{chiefData[0].user.birim.label}}</p>
+					</td>
+					<td>
+						<p>Çalıştığı Bölüm: </p>
+						<p>İşe Başlama Tarihi:  {{formatDate(chiefData[0].user.sgkStartDate)}}</p>
+						<p>Deneme Süresi Bitiş Tarihi: {{formatDate2(chiefData[0].user.sgkStartDate)}}</p>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<div class="degerlendirme-konulari">
+				<table class="deneme-suresi-degerlendirme-tablosu">
+					<thead>
+					<tr>
+						<th>{{ 'DEĞERLENDİRME KONULARI' }}</th>
+						<th>{{ 'BİRİM SORUMLUSU' }}</th>
+						<th>{{ 'BÖLÜM AMİRİ' }}</th>
+						<th>{{ 'İNSAN KAYNAKLARI' }}</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>İşe zamanında gelip gitme</td>
+						<td>{{ chiefData[0].isZamani ? chiefData[0].isZamani.label : '' }}</td>
+						<td>{{ managerData[0].isZamani ? managerData[0].isZamani.label : '' }}</td>
+						<td>{{ ikData[0].isZamani ? ikData[0].isZamani.label : '' }}</td>
+					</tr>
+					<tr>
+						<td>Kıyafet Uygunluğu</td>
+						<td>{{ chiefData[0].kiyafetUygunlugu ? chiefData[0].kiyafetUygunlugu.label : '' }}</td>
+						<td>{{ managerData[0].kiyafetUygunlugu ? managerData[0].kiyafetUygunlugu.label : '' }}</td>
+						<td>{{ ikData[0].kiyafetUygunlugu ? ikData[0].kiyafetUygunlugu.label : '' }}</td>
+					</tr>
+					<tr>
+						<td>İş Arkadaşları ile Uyum</td>
+						<td>{{ chiefData[0].uyum ? chiefData[0].uyum.label : '' }}</td>
+						<td>{{ managerData[0].uyum ? managerData[0].uyum.label : '' }}</td>
+						<td>{{ ikData[0].uyum ? ikData[0].uyum.label : '' }}</td>
+					</tr>
+					<tr>
+						<td>Müşteri/Tedarikçi ile İletişim</td>
+						<td>{{ chiefData[0].iletisim ? chiefData[0].iletisim.label : '' }}</td>
+						<td>{{ managerData[0].iletisim ? managerData[0].iletisim.label : '' }}</td>
+						<td>{{ ikData[0].iletisim ? ikData[0].iletisim.label : '' }}</td>
+					</tr>
+					<tr>
+						<td>İş ile İlgili Teknik Bilgi ve Becerisi</td>
+						<td>{{ chiefData[0].teknikBilgi ? chiefData[0].teknikBilgi.label : '' }}</td>
+						<td>{{ managerData[0].teknikBilgi ? managerData[0].teknikBilgi.label : '' }}</td>
+						<td>{{ ikData[0].teknikBilgi ? ikData[0].teknikBilgi.label : '' }}</td>
+					</tr>
+					<tr>
+						<td>İşine Olan Dikkati, Düzeni, Verdiği Önem</td>
+						<td>{{ chiefData[0].onem ? chiefData[0].onem.label : '' }}</td>
+						<td>{{ managerData[0].onem ? managerData[0].onem.label : '' }}</td>
+						<td>{{ ikData[0].onem ? ikData[0].onem.label : '' }}</td>
+					</tr>
+					<tr>
+						<td>Verilen işi Termin Tarihinde Tamamlama Başarısı</td>
+						<td>{{ chiefData[0].terminBasarisi ? chiefData[0].terminBasarisi.label : '' }}</td>
+						<td>{{ managerData[0].terminBasarisi ? managerData[0].terminBasarisi.label : '' }}</td>
+						<td>{{ ikData[0].terminBasarisi ? ikData[0].terminBasarisi.label : '' }}</td>
+					</tr>
+					<tr>
+						<td>Görev, Yetki ve Sorumlulukları Karşılayabilme</td>
+						<td>{{ chiefData[0].sorumluluklar ? chiefData[0].sorumluluklar.label : '' }}</td>
+						<td>{{ managerData[0].sorumluluklar ? managerData[0].sorumluluklar.label : '' }}</td>
+						<td>{{ ikData[0].sorumluluklar ? ikData[0].sorumluluklar.label : '' }}</td>
+					</tr>
+					<tr>
+						<td>Kurum Anlayışını ve Kültürünü Kavrama ve Uyma</td>
+						<td>{{ chiefData[0].kurumKulturu ? chiefData[0].kurumKulturu.label : '' }}</td>
+						<td>{{ managerData[0].kurumKulturu ? managerData[0].kurumKulturu.label : '' }}</td>
+						<td>{{ ikData[0].kurumKulturu ? ikData[0].kurumKulturu.label : '' }}</td>
+					</tr>
+					<tr>
+						<td>Deneme Süresi İçerisinde Personel Başarılı Oldu Mu?</td>
+						<td>{{ managerData[0].denemeSuresiBasarisi ? '&#10003;' : '&#10007;' }}</td>
+						<td>{{ managerData[0].denemeSuresiBasarisi ? '&#10003;' : '&#10007;' }}</td>
+						<td>{{ ikData[0].denemeSuresiBasarisi ? '&#10003;' : '&#10007;' }}</td>
+					</tr>
+					<tr>
+						<td>Personel Hakkında Belirtmek İstediğiniz İzlenimler</td>
+						<td>{{ chiefData[0].izlenimler ? chiefData[0].izlenimler : '' }}</td>
+						<td>{{ managerData[0].izlenimler ? chiefData[0].izlenimler : '' }}</td>
+						<td>{{ ikData[0].izlenimler ? chiefData[0].izlenimler : '' }}</td>
+					</tr>
+					<tr>
+						<td colspan="4">
+							<p>Personelin;</p>
+							<p> Adı Soyadı / İmzası: {{chiefData[0].user.firstName + ' ' + chiefData[0].user.lastName}}</p></td>
+					</tr>
+					<tr class="onaylar">
+						<td colspan="4">ONAYLAR</td>
+					</tr>
+					<tr>
+						<td>
+							<p>BÖLÜM SORUMLUSU:</p>
+							<p>Tarih: ...../...../.....</p>
+							<p>{{chiefData[0].assigner.firstName + ' ' + chiefData[0].assigner.lastName}}</p>
+						</td>
+						<td>
+							<p>BÖLÜM MÜDÜRÜ:</p>
+							<p>Tarih: ...../...../.....</p>
+							<p>{{managerData[0].assigner.firstName + ' ' + managerData[0].assigner.lastName}}</p>
+						</td>
+						<td>
+							<p>İNSAN KAYNAKLARI:</p>
+							<p>Tarih: ...../...../.....</p>
+							<p>{{ikData[0].assigner.firstName + ' ' + ikData[0].assigner.lastName}}</p>
+						</td>
+						<td>
+							<p>GENEL MÜDÜR:</p>
+							<p>Tarih: ...../...../.....</p>
+							<p>Ümit Yaşar</p>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4">
+							<p>DEĞERLENDİRME PUANLAMASI:</p>
+							<p>5 PUAN – ÇOK İYİ / 4 PUAN – İYİ / 3 PUAN ORTA / 2 PUAN ZAYIF / 1 PUAN ÇOK ZAYIF</p>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</kt-portlet>

@@ -140,7 +140,7 @@ export class PaymentOrderComponent extends BaseComponent implements OnInit, Afte
 		});
 		dialogRef.afterClosed().subscribe((result) => {
 			if (result !== '') {
-				// ÖDEMEYİ TABLOYA EKLE
+				this.resetCurrent();
 			}
 		});
 	}
@@ -313,7 +313,6 @@ export class PaymentOrderComponent extends BaseComponent implements OnInit, Afte
 			this.paymentPermList = res.body
 				.filter(gnl => (gnl.user.id === this.baseService.getUserId()))
 				.map(gnl => gnl.createPayment);
-			console.log(this.paymentPermList[0]);
 			if (this.paymentPermList[0] === true) {
 				this.buttons.push({
 						display: this.baseService.getPermissionRule(this.model.name, 'update'),

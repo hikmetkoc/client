@@ -67,6 +67,7 @@ import {
 	ShowChangeDbsInvoiceComponent
 } from '../detail/show-change-dbs-invoice-dialog/show-change-dbs-invoice.component';
 import {FullTextDialogComponent} from "../dialogs/full-text-dialog/full-text-dialog.component";
+import {GridOkeyComponent} from "../dialogs/grid-okey-dialog/grid-okey.component";
 
 @Component({
 	selector: 'kt-grid',
@@ -297,6 +298,15 @@ export class GridComponent implements AfterViewInit {
 			filters.add(f);
 		}
 		// SAYFA FİLTRELERİ
+		if (this.model.name === 'Customer') {
+			if (!this.utils.getUserPermission('secretCustomerView')) {
+				filters.add({
+					name: 'secret',
+					operator: FilterOperation.EQUALS,
+					value: false
+				});
+			}
+		}
 		if (this.model.name === 'User') {
 			if (this.baseService.getUserId() !== 2) {
 				filters.add({
@@ -309,7 +319,14 @@ export class GridComponent implements AfterViewInit {
 				filters.add({
 					name: 'birim',
 					operator: FilterOperation.IN,
-					value: ['Birimler_Loher', 'Birimler_Muh']
+					value: ['Birimler_Loher']
+				});
+			}
+			if (this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Mud') {
+				filters.add({
+					name: 'unvan',
+					operator: FilterOperation.IN,
+					value: ['Unvanlar_Muh_Uzm', 'Unvanlar_On_Muh']
 				});
 			}
 			if (this.baseService.getUser().birim.id === 'Birimler_Fin') {
@@ -319,7 +336,8 @@ export class GridComponent implements AfterViewInit {
 					value: 'Birimler_Fin'
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birimler_Muh') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Muh'
+				&& this.baseService.getUser().id !== 29600) {
 				filters.add({
 					name: 'id',
 					operator: FilterOperation.EQUALS,
@@ -353,14 +371,14 @@ export class GridComponent implements AfterViewInit {
 					value: this.baseService.getUserId()
 				});
 			}
-			if (this.baseService.getUserId() === 29600) {	// Selin AKBAYIRLI => Kendisinin, Elif Küçükkurt ve Ece Önver'in girdiği faturaları görebilsin.
+			if (this.baseService.getUserId() === 134) {	// Selin AKBAYIRLI => Kendisinin, Elif Küçükkurt ve Ece Önver'in girdiği faturaları görebilsin.
 				filters.add({
 					name: 'owner.id',
 					operator: FilterOperation.IN,
-					value: [this.baseService.getUserId(), 134, 40100]
+					value: [this.baseService.getUserId(), 40100]
 				});
 			}
-			if (this.baseService.getUserId() === 134 || this.baseService.getUserId() === 40100) {	// Elif Küçükkurt ve Eve Önver sadece kendisine atanan faturaları görebilsin.
+			if (this.baseService.getUserId() === 40100) {	// Eve Önver sadece kendisine atanan faturaları görebilsin.
 				filters.add({
 					name: 'owner.id',
 					operator: FilterOperation.EQUALS,
@@ -407,7 +425,7 @@ export class GridComponent implements AfterViewInit {
 					value: 'Payment_Status_Bek2'
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birimler_Muh' && this.baseService.getUserId() !== 71) {	// Serpil Hanım hariç Merkez Muhasebe Görüntüsü
+			if (this.baseService.getUser().birim.id === 'Birimler_Muh' && this.baseService.getUserId() !== 71 && this.baseService.getUserId() !== 29600) {	// Selin ve Serpil Hanım hariç Merkez Muhasebe Görüntüsü
 				filters.add({
 					name: 'muhasebeGoruntusu',
 					operator: FilterOperation.EQUALS,
@@ -439,7 +457,7 @@ export class GridComponent implements AfterViewInit {
 					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir', 'Cost_Place_MeteorIzmir']
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birimler_Loher' && this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Loher' && (this.baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm')) {
 				filters.add({
 					name: 'cost',
 					operator: FilterOperation.EQUALS,
@@ -555,7 +573,7 @@ export class GridComponent implements AfterViewInit {
 					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir', 'Cost_Place_MeteorIzmir']
 				});
 			}
-			if (this.baseService.getUser().birim.id === 'Birimler_Muh') {
+			if (this.baseService.getUser().birim.id === 'Birimler_Muh' && this.baseService.getUserId() !== 29600) {
 				filters.add({
 					name: 'createdBy',
 					operator: FilterOperation.EQUALS,
@@ -601,7 +619,7 @@ export class GridComponent implements AfterViewInit {
 				filters.add({
 					name: 'owner.birim',
 					operator: FilterOperation.IN,
-					value: ['Birimler_Loher', 'Birimler_Muh']
+					value: ['Birimler_Loher']
 				});
 			}
 			if (this.baseService.getUser().unvan.id === 'Unvanlar_Ic_Uzm') {
@@ -644,7 +662,7 @@ export class GridComponent implements AfterViewInit {
 						operator: FilterOperation.IN,
 						value: ['Dokuman_Sirketleri_Simya', 'Dokuman_Sirketleri_Genel']
 					});
-				} else if (this.baseService.getUserId() === 35750 || this.baseService.getUserId() === 14 || this.baseService.getUserId() === 18 || this.baseService.getUserId() === 94) {
+				} else if (this.baseService.getUserId() === 14 || this.baseService.getUserId() === 18 || this.baseService.getUserId() === 94) {
 					filters.add({
 						name: 'sirket',
 						operator: FilterOperation.IN,
@@ -1091,10 +1109,19 @@ export class GridComponent implements AfterViewInit {
 		const selectedData = this.selection.selected;
 		if (selectedData.length > 0) {
 			const selectedIds = selectedData.map(row => row.id);
-			this.dialog.open(SendSpendComponent, {
-				data: {model: this.model, current: selectedIds},
-				width: '800px'
-			});
+			const selectedDescriptions = selectedData.map(row => row.description);
+			if (selectedData.some(row => row.status.id !== 'Spend_Status_No' || (row.paymentStatus !== 'Onaylandı' && row.paymentStatus !== 'Kısmi Ödendi'))) {
+				Utils.showActionNotification('Talimat Onay durumu Onaylandı veya Kısmi Ödendi, Ödeme durumu Ödenmedi durumundaki ödemeler için TÖS dosyası oluşturabilirsiniz!', 'warning', 3000, true, false, 3000, this.snackBar);
+			} else {
+				const dialogRef = this.dialog.open(SendSpendComponent, {
+					data: {model: this.model, current: selectedIds, desc: selectedDescriptions},
+					width: '800px'
+				});
+				dialogRef.afterClosed().subscribe(res => {
+					Utils.showActionNotification('İşlem tamamlandı!', 'success', 3000, true, false, 3000, this.snackBar);
+					this.loadList();
+				});
+			}
 		}
 	}
 
@@ -1272,16 +1299,14 @@ export class GridComponent implements AfterViewInit {
 			entity[p.field] = p.value;
 		}
 		if (this.model.apiName === 'holidays') {
-			entity.approvalStatus = this.baseService.getAttrVal('Izin_Dur_Aktif');
-			this.baseService.update(entity, 'holidays').subscribe(() => {
-				this.loadList();
-			});
-		}
-		if (this.model.apiName === 'buys') {
-			entity.quoteStatus = this.baseService.getAttrVal('Sat_Dur_Onay');
-			this.baseService.update(entity, 'buys').subscribe(() => {
-				this.loadList();
-				this.change.emit(this.result);
+			// todo: Onay için bekleme ekranı
+			const changeStatus = entity.approvalStatus = this.baseService.getAttrVal('Izin_Dur_Aktif');
+			const dialogRef = this.dialog.open(GridOkeyComponent, {data: {current: entity, model: 'holidays', status: changeStatus}, disableClose: true });
+			dialogRef.afterClosed().subscribe(res => {
+				if (res) {
+					this.loadList();
+					this.change.emit(this.result);
+				}
 			});
 		}
 		if (this.model.apiName === 'payment_orders') {
@@ -1376,17 +1401,14 @@ export class GridComponent implements AfterViewInit {
 			entity[p.field] = p.value;
 		}
 		if (this.model.apiName === 'holidays') {
-			entity.approvalStatus = this.baseService.getAttrVal('Izin_Dur_Red');
-			this.baseService.update(entity, 'holidays').subscribe(() => {
-				this.loadList();
-				this.change.emit(this.result);
-			});
-		}
-		if (this.model.apiName === 'buys') {
-			entity.quoteStatus = this.baseService.getAttrVal('Sat_Dur_Red');
-			this.baseService.update(entity, 'buys').subscribe(() => {
-				this.loadList();
-				this.change.emit(this.result);
+			// todo: Onay için bekleme ekranı
+			const changeStatus = entity.approvalStatus = this.baseService.getAttrVal('Izin_Dur_Red');
+			const dialogRef = this.dialog.open(GridOkeyComponent, {data: {current: entity, model: 'holidays', status: changeStatus}, disableClose: true });
+			dialogRef.afterClosed().subscribe(res => {
+				if (res) {
+					this.loadList();
+					this.change.emit(this.result);
+				}
 			});
 		}
 		if (this.model.apiName === 'payment_orders') {
@@ -1570,25 +1592,6 @@ export class GridComponent implements AfterViewInit {
 			return true;
 		}
 	}
-	okeyQuote(entity, e?, presetValues = []) {
-		if (e) {
-			e.stopPropagation();
-		}
-		const httpHeaders = this.httpUtils.getHTTPHeaders();
-		const id = entity.id;
-		const storeId = entity.store.id;
-		const url = `api/buys/okey-quote-status?uuid=${id}&storeId=${storeId}`;
-		this.http.post(url, null, { headers: httpHeaders})
-			.subscribe(
-				() => {
-					this.loadList();
-					this.change.emit(this.result);
-				},
-				(error) => {
-					Utils.showActionNotification(JSON.stringify(error.error), 'warning', 10000, true, false, 3000, this.snackBar);
-				}
-			);
-	}
 
 	changeSuggest(entity, e?, presetValues = [], suggestValue?: any) {
 		if (e) {
@@ -1611,6 +1614,7 @@ export class GridComponent implements AfterViewInit {
 	}
 
 	correct(entity, e?, presetValues = []) {
+		console.log('İÇERDEEE');
 		if (e) {
 			e.stopPropagation();
 		}
@@ -1914,6 +1918,96 @@ export class GridComponent implements AfterViewInit {
 			this.change.emit(this.result);
 		});
 	}
+	cancelStore(entity, e?, presetValues = []) {
+		if (e) { e.stopPropagation(); }
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		entity.status = this.baseService.getAttrVal('Store_Status_Iptal');
+		entity.buyStatus = this.baseService.getAttrVal('Buy_Status_Ipt');
+		entity.deliveryStatus = this.baseService.getAttrVal('Store_Delivery_Ipt');
+		this.baseService.update(entity, 'stores').subscribe(() => {
+			this.loadList();
+			this.change.emit(this.result);
+		});
+	}
+	buyOkeyQuoteStatus(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		const url = `api/buys/okey-quote-status?uuid=${entity.id}&storeId=${entity.store.id}`;
+		console.log(url);
+		this.http.post(url, null, { headers: httpHeaders})
+			.subscribe(
+				() => {
+					this.loadList();
+					this.change.emit(this.result);
+				},
+		(error) => {
+			Utils.showActionNotification(JSON.stringify(error.error), 'warning', 4000, true, false, 3000, this.snackBar);
+		}
+		);
+	}
+	buyOkeyQuote(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		const url = `api/buys/okey-quote?uuid=${entity.id}&storeId=${entity.store.id}`;
+		console.log(url);
+		this.http.post(url, null, { headers: httpHeaders, responseType: 'text' })
+			.subscribe(
+				() => {
+					this.loadList();
+					this.change.emit(this.result);
+				},
+				(error) => {
+					Utils.showActionNotification(JSON.stringify(error.error), 'warning', 4000, true, false, 3000, this.snackBar);
+				}
+			);
+
+	}
+	buyCancelQuote(entity, e?, presetValues = []) {
+		if (e) {
+			e.stopPropagation();
+		}
+		for (const defaultValue of this.defaultValues) {
+			entity[defaultValue.field] = defaultValue.value;
+		}
+		for (const p of presetValues) {
+			entity[p.field] = p.value;
+		}
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		const url = `api/buys/cancel-quote?uuid=${entity.id}&storeId=${entity.store.id}`;
+		console.log(url);
+		this.http.post(url, null, { headers: httpHeaders, responseType: 'text' })
+			.subscribe(
+				() => {
+					this.loadList();
+					this.change.emit(this.result);
+				},
+				(error) => {
+					Utils.showActionNotification(JSON.stringify(error.error), 'warning', 4000, true, false, 3000, this.snackBar);
+				}
+			);
+
+	}
 	cancelBuyOwner(entity, e?, presetValues = []) {
 		if (e) { e.stopPropagation(); }
 		for (const defaultValue of this.defaultValues) {
@@ -1985,14 +2079,22 @@ export class GridComponent implements AfterViewInit {
 				(this.model.name === 'PaymentOrder' && row['status'] && row['status'].label === '2.Onay Bekleniyor' && row['secondAssigner'].id === this.baseService.getUserId()) ||
 				(this.model.name === 'Store' && row['status'] && row['status'].label === 'Onay Bekliyor' && row['assigner'].id === this.baseService.getUserId()) ||
 				(this.model.name === 'Store' && row['deliveryStatus'] && row['deliveryStatus'].id === 'Store_Delivery_Tek ' && row['buyowner'].id === this.baseService.getUserId()) ||
-				(this.model.name === 'Store' && row['deliveryStatus'] && row['deliveryStatus'].id === 'Store_Delivery_Sat' && row['buyowner'].id === this.baseService.getUserId()),
+				(this.model.name === 'Store' && row['deliveryStatus'] && row['deliveryStatus'].id === 'Store_Delivery_Sat' && row['buyowner'].id === this.baseService.getUserId()) ||
+				(this.model.name === 'Holiday' && row['approvalStatus'] && row['approvalStatus'].id === 'Izin_Dur_Pasif' && row['assigner'].id === this.baseService.getUserId()),
 			priority_spend_success: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Ödendi',
 			priority_spend_cancel: this.model.name === 'Spend' && row['status'] && row['status'].label === 'Reddedildi',
 			store_delivery_status_tes: (this.model.name === 'Store' && row['buyStatus'] && row['buyStatus'].id === 'Buy_Status_Merkezden')
 				|| (this.model.name === 'Store' && row['buyStatus'] && row['buyStatus'].id === 'Buy_Status_Onay' && row['deliveryStatus'] && row['deliveryStatus'].id === 'Store_Delivery_Tes'),
-			fuel_limit_okey: (this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Onaylandı'),
+			store_rejection: row['status'] && row['status'].id === 'Store_Status_Red',
+			store_cancel: row['status'] && row['status'].id === 'Store_Status_Iptal',
+			fuel_limit_okey: (this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Onaylandı') ||
+				(this.model.name === 'Holiday' && row['approvalStatus'] && row['approvalStatus'].label === 'Onaylandı'),
 			fuel_limit_cancel: (this.model.name === 'FuelLimit' && row['status'] && row['status'].label === 'Reddedildi')
-				|| (this.model.name === 'Task' && row['status'] && row['status'].label === 'Reddedildi')
+				|| (this.model.name === 'Holiday' && row['approvalStatus'] && row['approvalStatus'].label === 'Reddedildi')
+				|| (this.model.name === 'Task' && row['status'] && row['status'].label === 'Reddedildi'),
+			announcement_warning: this.model.name === 'Announcement' && row['type'] && row['type'].id === 'Duy_Tip_Uyarı',
+			announcement_success: this.model.name === 'Announcement' && row['type'] && row['type'].id === 'Duy_Tip_Başarı',
+			announcement_danger: this.model.name === 'Announcement' && row['type'] && row['type'].id === 'Duy_Tip_Tehlike',
 		};
 	}
 
@@ -2233,4 +2335,3 @@ export class GridComponent implements AfterViewInit {
 		return option ? option['instanceName'] : option;
 	}
 }
-

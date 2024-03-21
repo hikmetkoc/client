@@ -32,6 +32,12 @@ import {LayoutSaveDialogComponent} from "../../_base/dialogs/filter-save-dialog/
 import {
 	UserAcceptanceDialogComponent
 } from "../../_base/detail/reportmanager/user-acceptance-dialog/user-acceptance-dialog.component";
+import {
+	UserTrialFormDialogComponent
+} from "../../_base/detail/reportmanager/user-trial-form-dialog/user-trial-form-dialog.component";
+import {
+	UserEvaluationFormDialogComponent
+} from "../../_base/detail/reportmanager/user-evaluation-form-dialog/user-evaluation-form-dialog.component";
 
 @Component({
 	selector: 'kt-user',
@@ -144,17 +150,22 @@ export class UserComponent extends BaseComponent implements OnInit, AfterViewIni
 				icon: 'cloud_download',
 				click: this.getReport.bind(this)
 			});
-		} if (this.baseService.getUser().unvan.id === 'Unvanlar_Ist_Amr' || this.baseService.getUser().unvan.id === 'Unvanlar_Ist_On'
-			|| this.baseService.getUser().unvan.id === 'Unvanlar_Isl_Mud' || this.baseService.getUser().id === 2000 || this.baseService.getUser().id === 2
-			|| this.baseService.getUser().unvan.id === 'Unvanlar_Ins_Muh' || this.baseService.getUser().unvan.id === 'Unvanlar_Fin_Den'
-			|| this.baseService.getUser().unvan.id === 'Unvanlar_Yon_Ast' || this.baseService.getUser().unvan.id === 'Unvanlar_Sts_Mud'
-			|| this.baseService.getUser().unvan.id === 'Unvanlar_IK_Uzm' || this.baseService.getUser().unvan.id === 'Unvanlar_On_Muh') {
+		}
+		if (this.utils.getUserPermission('addNewPerson')) {
 			this.buttons.push({
 					display: true,
 					title: 'Yeni Personel',
 					icon: 'person',
 					click: this.mainGrid.newPerson.bind(this)
 				});
+		}
+		if (this.baseService.getRoleId() !== 'ROLE_USER' && this.baseService.getRoleId() !== 'ROLE_MAVI' && this.baseService.getRoleId() !== 'ROLE_BEYAZ_MAVI') {
+			this.buttons.push({
+				display: true,
+				title: 'Toplu İzin Bilgileri',
+				icon: 'flight',
+				click: this.getHierarchycalHolidays.bind(this)
+			});
 		}
 	}
 	resign() {
@@ -281,6 +292,13 @@ export class UserComponent extends BaseComponent implements OnInit, AfterViewIni
 		this.router.navigate(['/ikfile'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
 	}
 
+	userTrialFormRowClicked(row) {
+		this.router.navigate(['/usertrialform'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
+	}
+	userEvaluationFormRowClicked(row) {
+		this.router.navigate(['/userevaluationform'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
+	}
+
 	holidayRowClicked(row) {
 		this.router.navigate(['/holiday'], { queryParams: { id: row.id, sourceObject: this.model.name.toLowerCase(), sourceId: this.current['id'] } });
 	}
@@ -292,6 +310,22 @@ export class UserComponent extends BaseComponent implements OnInit, AfterViewIni
 	}
 	print() {
 		const dialogRef = this.dialog.open(UserAcceptanceDialogComponent, {
+			data: {
+				current: this.current,
+				model: this.model
+			}
+		});
+	}
+	printUserTrialForm() {
+		const dialogRef = this.dialog.open(UserTrialFormDialogComponent, {
+			data: {
+				current: this.current,
+				model: this.model
+			}
+		});
+	}
+	printUserEvaluationForm() {
+		const dialogRef = this.dialog.open(UserEvaluationFormDialogComponent, {
 			data: {
 				current: this.current,
 				model: this.model
@@ -435,6 +469,21 @@ export class UserComponent extends BaseComponent implements OnInit, AfterViewIni
 					).subscribe();
 			}
 		});
+	}
+
+	getHierarchycalHolidays() {
+		const httpHeaders = this.httpUtils.getHTTPHeaders();
+		this.http.post('api/' + 'holusers' + '/hierarchycalExcelReport', undefined, { headers: httpHeaders, responseType: 'blob' })
+			.pipe(
+				tap(res2 => {
+					Utils.downloadFile(res2, 'Excel', 'Toplu İzin Bilgileri Raporu');
+					this.baseService.loadingSubject.next(false);
+				}),
+				catchError(err => {
+					this.baseService.loadingSubject.next(false);
+					return err;
+				})
+			).subscribe();
 	}
 	// getChildren() {
 	// 	this.baseService.find(undefined, 'User/HierarchicalChildren/' + this.current.id).subscribe((res) => {

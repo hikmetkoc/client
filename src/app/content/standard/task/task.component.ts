@@ -124,14 +124,16 @@ export class TaskComponent extends BaseComponent implements OnInit, AfterViewIni
 		this.evaluateButtons();
 
 		if (this.isCalendar) {
-			//this.getEvents();
+			// this.getEvents();
 		}
 	}
 	remember() {	// Mail Bildirimi için Hatırlatma Fonksiyonu
 		const apiUrl = 'api/tasks/sendnotificationmail';
 		const receiver = this.current.owner.eposta;
+		// const receiver = 'hikmet@meteorpetrol.com';
 		const subject = 'Talep Hatırlatması';
-		const message = this.current.assigner.firstName + ' ' + this.current.assigner.lastName + ' kullanıcısı, yapmış olduğu bir talep hakkında işlem yapmanız için hatırlatmada bulunuyor.';
+		const message = this.current.assigner.firstName + ' ' + this.current.assigner.lastName + ','
+			+ this.current.taskType.label + ' konulu, ' + this.current.description + ' açıklamalı talep hakkında işlem yapmanız için hatırlatmada bulunuyor.';
 		const httpHeaders = this.httpUtils.getHTTPHeaders();
 		this.http.post(apiUrl + `?receiver=${receiver}&subject=${subject}&message=${message}`, null, { headers: httpHeaders, responseType: 'blob' }).subscribe(
 			response => {

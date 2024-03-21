@@ -144,7 +144,7 @@ export class Utils {
 				break;
 			case 'CTR':
 				// Set a default mask or handle unknown countries
-				this.ibanMask = ['T', 'R', /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/];
+				this.ibanMask = ['T', 'R', /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/];
 				break;
 			case 'COT':
 				// Set a default mask or handle unknown countries
@@ -347,11 +347,14 @@ export class Utils {
         } else if (type === 'Text') {
             mimeType = 'text/plain';
             fileName += '.txt';
-        } else {
+        }  else if (type === 'Apk') {
+			mimeType = 'application/vnd.android.package-archive';
+			fileName += '.apk';
+		}  else {
             mimeType = 'application/octet-stream';
             fileName += '';
         }
-        const blob = new Blob([data], { type: 'text/plain' });
+        const blob = new Blob([data], { type: mimeType });
         const url = window.URL.createObjectURL(blob);
         a.href = url;
         if (fileName) { a.download = fileName; }
@@ -552,6 +555,14 @@ export class Utils {
         }
         return false;
     }
+
+	public static getUserPermission(permission) {
+		const userPermissions = JSON.parse(localStorage.getItem('userPermissions'));
+		for (const usP of userPermissions) {
+			return usP[permission];
+		}
+		return false;
+	}
 	public static getDepartment() {
 		const user = JSON.parse(localStorage.getItem('user'));
 		if (user.birim.id === 'Birimler_IT' || user.id === 90) {
@@ -849,6 +860,7 @@ export class Utils {
         localStorage.removeItem('operations');
         localStorage.removeItem('permissions');
         localStorage.removeItem('configurations');
+		localStorage.removeItem('user_permissions');
         localStorage.removeItem('backendVersion');
     }
 }

@@ -4,32 +4,174 @@ kt-dashboard {
 		height: 30px !important;
 		line-height: unset !important;
 	}
-	#playlist-wrapper ul li{
+	#playlist-wrapper {
 		height: 500px;
-		overflow-y: hidden;
-		overflow: auto;
-		white-space: nowrap;
+		width: 100%;
+		overflow-y: auto;
 	}
 
-	#playlist-wrapper{
-		height: 500px;
-		width:100%;
-		overflow-y: hidden;
-		overflow: auto;
-		white-space: nowrap;
-	}
-	#playlist-wrapper ul li2{
-		height: 50px;
-		overflow-y: hidden;
-		overflow: auto;
-		white-space: nowrap;
+	#playlist-wrapper ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
 	}
 
-	#playlist-wrapper2{
-		height: 50px;
-		width:100%;
-		overflow-y: hidden;
-		overflow: auto;
-		white-space: nowrap;
+	#playlist-wrapper ul li {
+		padding: 15px;
+		border-bottom: 1px solid #eee;
+		transition: background-color 0.3s ease;
 	}
+
+	#playlist-wrapper ul li:hover {
+		background-color: #f0f0f0;
+	}
+
+	#playlist-wrapper2 {
+		height: 50px;
+		width: 100%;
+		overflow-y: auto;
+	}
+
+	#playlist-wrapper2 ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	#playlist-wrapper2 ul li {
+		padding: 10px;
+		border-bottom: 1px solid #eee;
+		transition: background-color 0.3s ease;
+	}
+
+	#playlist-wrapper2 ul li:hover {
+		background-color: #f0f0f0;
+	}
+
+	#birthDayListContainer {
+		overflow: auto;
+	}
+
+	#birthDayListTable {
+		max-height: 600px;
+		overflow-y: auto;
+		text-align: center;
+		table-layout: auto;
+		width: 100%;
+		border-collapse: separate; /* Hücreler arasında boşluk bırak */
+		border-spacing: 5px; /* Boşluk genişliği */
+		border: 0px solid #000;
+		font-size: medium;
+	}
+
+	#birthDayListTable th,
+	#birthDayListTable td {
+		padding: 10px; /* Sütunlara padding ekle */
+	}
+
+	#birthDayListTable thead tr {
+		background-color: #1b1e21;
+		color: #d7dbf7;
+	}
+	#birthDayListTable thead th {
+		text-align: center;
+		/* Diğer stil tanımlamaları... */
+	}
+
+	#birthDayListTable tbody tr {
+		/* Arka plan ve yazı rengi için koşullu stil */
+	}
+
+	#noBirthdaysMessage {
+		font-weight: bold;
+		color: #0f695f;
+	}
+
+	@keyframes blink {
+		0% { background-color: transparent; color: inherit; }
+		50% { background-color: #0f695f; color: white; }
+		100% { background-color: transparent; color: inherit; }
+	}
+
+	#birthDayListTable tbody tr.birthdayToday {
+		/* Arka plan ve yazı rengi için koşullu stil */
+		animation: blink 2s infinite; /* 2 saniyede bir yanıp sönme */
+	}
+	.custom-div {
+		border: 1px solid #000;
+		border-radius: 5px;
+		margin-bottom: 15px;
+	}
+
+	.custom-div-header {
+		background-color: #1b1e21;
+		color: #d7dbf7;
+		padding: 10px;
+		font-size: medium;
+		display: flex;
+		align-items: center;
+		font-weight: bold;
+	}
+	.custom-div-header div {
+		margin-left: 10px; /* İhtiyaca göre ayarlayabilirsiniz */
+	}
+	.custom-div-body {
+		padding: 15px;
+	}
+
+	.custom-table {
+		text-align: center;
+		table-layout: auto;
+		width: 100%;
+		font-size: medium;
+		border: 1px solid #000;
+	}
+	.custom-table td {
+		max-width: 200px; /* Maksimum genişliği istediğiniz değerle değiştirin */
+		overflow: hidden;
+		text-overflow: ellipsis; /* Metni gerektiğinde kırp ve üç nokta (...) göster */
+		white-space: nowrap; /* Metni bir satıra sığdır */
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	.custom-table td:hover {
+		overflow: visible;
+		white-space: normal;
+	}
+	.custom-table tr:nth-child(even) {
+		background-color: #f2f2f2; /* Gri arka plan */
+	}
+
+	.custom-table tr:nth-child(odd) {
+		background-color: #fff; /* Beyaz arka plan */
+	}
+
+	.custom-no-data {
+		font-weight: bold;
+		color: #0f695f;
+	}
+
+	@keyframes rowSlideIn {
+		from {
+			opacity: 0;
+			transform: translateY(-20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+	@keyframes blink {
+		 0% { opacity: 1; color: #b31217}
+		 50% { opacity: 0; color: #900f13}
+		 100% { opacity: 1; color: black}
+	 }
+	.row-animate {
+		animation: rowSlideIn 0.5s ease-out; /* Animasyonu tanımla */
+		animation: blink 1s infinite;
+		font-weight: bold;
+		font-size: 15px;
+	}
+
+
 }

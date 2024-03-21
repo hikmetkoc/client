@@ -156,6 +156,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 							attributeValues: res.body.attributeValues,
 							operations: res.body.operations,
 							permissions: res.body.permissions,
+							userPermissions: res.body.userPermissions,
 							configurations: res.body.configurations,
 							backendVersion: res.headers.get('backend-version')
 						}));

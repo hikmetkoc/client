@@ -33,7 +33,48 @@ kt-grid {
 		}
 	}
 
+	.store_rejection {
+		background-color: #900f13;
+		mat-cell {
+			font-weight: bold;
+			color: seashell;
+		}
+	}
+
+	.announcement_warning, .announcement_success, .announcement_danger {
+		margin-bottom: 7px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Hafif gölge efekti */
+	}
+
+	.announcement_warning mat-cell, .announcement_success mat-cell, .announcement_danger mat-cell {
+		font-weight: bold;
+		border-radius: 3px; /* Köşe kıvrımı */
+		padding: 1px;
+	}
+
+	.announcement_warning {
+		background-color: #ffc107; /* Sarı renk */
+	}
+
+	.announcement_success {
+		background-color: #28a745; /* Yeşil renk */
+		color: #fff;
+	}
+
+	.announcement_danger {
+		background-color: #dc3545; /* Kırmızı renk */
+		color: #fff;
+	}
+
 	.priority_cancel {
+		background-color: #36344d;
+		mat-cell {
+			font-weight: bold;
+			color: seashell;
+		}
+	}
+
+	.store_cancel {
 		background-color: #36344d;
 		mat-cell {
 			font-weight: bold;

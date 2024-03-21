@@ -75,6 +75,7 @@ import { UserComponent } from './standard/user/user.component';
 import { UserAdmComponent } from './admin/user/user.component';
 import { CustomerComponent } from './standard/customer/customer.component';
 import { AnnouncementComponent } from './admin/announcement/announcement.component';
+import { ContactInformationComponent } from './admin/contact_information/contact-information.component';
 import { AttributeComponent } from './admin/attribute/attribute.component';
 import { ParameterComponent } from './admin/parameter/parameter.component';
 import { ProductComponent } from './admin/product/product.component';
@@ -90,6 +91,8 @@ import { CampaignComponent } from './standard/campaign/campaign.component';
 import { ContactComponent } from './standard/contact/contact.component';
 import { ContProductComponent } from './standard/contproduct/contproduct.component';
 import { HolidayComponent } from './standard/holiday/holiday.component';
+import { UserTrialFormComponent } from './standard/usertrialform/usertrialform.component';
+import { UserEvaluationFormComponent} from './standard/userevaluationform/userevaluationform.component';
 import { ExuseHolidayComponent } from './standard/exuseholiday/exuseholiday.component';
 import { QuoteComponent } from './standard/quote/quote.component';
 import { ReportComponent } from './standard/report/report.component';
@@ -170,6 +173,13 @@ import { UserGuideComponent } from './standard/user-guide/user-guide.component';
 import {ShowChangeDbsInvoiceComponent} from './_base/detail/show-change-dbs-invoice-dialog/show-change-dbs-invoice.component';
 import {ChangePasswordDialogComponent} from './_base/dialogs/change-password-dialog/change-password-dialog.component';
 import {AddSpendComponent} from './_base/dialogs/add-spend-dialog/add-spend.component';
+import {GridOkeyComponent} from './_base/dialogs/grid-okey-dialog/grid-okey.component';
+import {
+	UserTrialFormDialogComponent
+} from './_base/detail/reportmanager/user-trial-form-dialog/user-trial-form-dialog.component';
+import {
+	UserEvaluationFormDialogComponent
+} from './_base/detail/reportmanager/user-evaluation-form-dialog/user-evaluation-form-dialog.component';
 
 
 
@@ -194,6 +204,10 @@ const routes: Routes = [
 	{
 		path: 'announcement',
 		component: AnnouncementComponent
+	},
+	{
+		path: 'contact-information',
+		component: ContactInformationComponent
 	},
 	{
 		path: 'user',
@@ -380,6 +394,14 @@ const routes: Routes = [
 		component: HolidayComponent
 	},
 	{
+		path: 'usertrialform',
+		component: UserTrialFormComponent
+	},
+	{
+		path: 'userevaluationform',
+		component: UserEvaluationFormComponent
+	},
+	{
 		path: 'exuseholiday',
 		component: ExuseHolidayComponent
 	},
@@ -448,7 +470,10 @@ const routes: Routes = [
 		FullTextDialogComponent,
 		HolidayDetailDialogComponent,
 		ExuseHolidayComponent,
+		UserTrialFormComponent,
+		UserEvaluationFormComponent,
 		AnnouncementComponent,
+		ContactInformationComponent,
 		AttributeComponent,
 		ParameterComponent,
 		ProductComponent,
@@ -514,6 +539,8 @@ const routes: Routes = [
 		ReportDialogComponent,
 		HolidayReportDialogComponent,
 		UserAcceptanceDialogComponent,
+		UserTrialFormDialogComponent,
+		UserEvaluationFormDialogComponent,
 		StoreDialogComponent,
 		SendSmsDialogComponent,
 		SendInvoiceComponent,
@@ -527,6 +554,7 @@ const routes: Routes = [
 		AddSpendComponent,
 		AreYouOkeyComponent,
 		PaymentOkeyComponent,
+		GridOkeyComponent,
 		LoadInvoiceComponent,
 		SendSpendComponent,
 		SpendToTlComponent,
@@ -566,6 +594,8 @@ const routes: Routes = [
 		ReportDialogComponent,
 		HolidayReportDialogComponent,
 		UserAcceptanceDialogComponent,
+		UserTrialFormDialogComponent,
+		UserEvaluationFormDialogComponent,
 		StoreDialogComponent,
 		SendSmsDialogComponent,
 		SendInvoiceComponent,
@@ -579,6 +609,7 @@ const routes: Routes = [
 		AddSpendComponent,
 		AreYouOkeyComponent,
 		PaymentOkeyComponent,
+		GridOkeyComponent,
 		LoadInvoiceComponent,
 		SendSpendComponent,
 		SpendToTlComponent,

@@ -1,87 +1,126 @@
 <div class="row">
-	<div class="col-md-3">
-		<kt-portlet>
-			<kt-portlet-header title="Talepler - Benim Taleplerim">
-			</kt-portlet-header>
-			<kt-portlet-body>
-				<div class="row">
-					<div class="col-md-6">
-						<kt-activity-widget *ngIf="activityWidget1Data" [title]="taskyeni" [desc]="'Bekleyen Talepler'" [data]="activityWidget1Data"></kt-activity-widget>
-					</div>
-					<div class="col-md-6">
-						<kt-activity-widget *ngIf="activityWidget3Data" [title]="tasktamam" [desc]="'Tamamlanan Talepler'" [data]="activityWidget3Data"></kt-activity-widget>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<kt-activity-widget *ngIf="activityWidget2Data" [title]="taskred" [desc]="'Reddedilen Talepler'" [data]="activityWidget2Data"></kt-activity-widget>
-					</div>
-					<div class="col-md-6">
-						<kt-activity-widget *ngIf="activityWidget4Data" [title]="taskdevam" [desc]="'Devam Eden Talepler'" [data]="activityWidget4Data"></kt-activity-widget>
-					</div>
-				</div>
-			</kt-portlet-body>
-		</kt-portlet>
-	</div>
-	<div class="col-md-9" style="overflow-y: auto;">
-		<kt-portlet>
-			<kt-portlet-header title="Fatura Listesi - İşlem Bekleyenler"></kt-portlet-header>
-			<kt-portlet-body>
-				<div style="overflow: auto;">
-					<div style="max-height: 400px; overflow-y: auto;">
-						<table *ngIf="invoiceList.length >0" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000; font-size: medium;">
-						<thead>
-						<tr style="background-color: #1b1e21; color: #d7dbf7">
-							<th>Ödeme Yapılacak Şirket</th>
-							<th>Fatura Kesilen Şirket</th>
-							<th>Fatura Tarihi</th>
-							<th>Fatura Numarası</th>
-							<th>Para Birimi</th>
-							<th>Tutar</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr *ngFor="let invoice of invoiceList">
-							<td>{{ invoice.customer !== undefined ? invoice.customer : '' }}</td>
-							<td>{{ invoice.faturaSirket !== undefined ? invoice.faturaSirket : '' }}</td>
-							<td>{{ invoice.invoiceDate !== undefined ? formatDate(invoice.invoiceDate) : '' }}</td>
-							<td>{{ invoice.invoiceNum !== undefined ? invoice.invoiceNum : '' }}</td>
-							<td>{{ invoice.moneyType !== undefined ? invoice.moneyType : '' }}</td>
-							<td>{{ invoice.amount !== undefined ? formatCurrency(invoice.amount) : '' }}</td>
-						</tr>
-						</tbody>
-					</table>
-				</div>
-				<div *ngIf="invoiceList.length < 1" style="font-weight: bold; color: #0f695f">İŞLEMİNİZİ BEKLEYEN E-FATURA BULUNMAMAKTADIR</div>
-				</div>
-			</kt-portlet-body>
-		</kt-portlet>
+	<div *ngIf="formList.length > 0" class="col-md-6" style="overflow-y: auto;">
+		<div class="custom-div">
+			<div class="custom-div-header">Personel Formları</div>
+			<div class="custom-div-body" style="overflow: auto; max-height: 350px;">
+				<table *ngIf="formList.length >0" class="custom-table">
+					<thead>
+					<tr style="background-color: #1b1e21; color: #d7dbf7">
+						<th>Personel Adı - Soyadı</th>
+						<th>İşe Başlangıç Tarihi</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let form1 of formList" class="row-animate">
+						<td>{{ form1.user !== undefined ? form1.user.firstName + ' ' + form1.user.lastName : '' }}</td>
+						<td>{{ form1.user.startDate !== undefined ? formatDate(form1.user.startDate) : '' }}</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-6">
-		<kt-portlet>
-			<kt-portlet-header title="Yaklaşan Doğum Günleri">
-			</kt-portlet-header>
-			<kt-portlet-body>
-				<div style="overflow: auto;">
-					<div style="max-height: 400px; overflow-y: auto;">
-						<table *ngIf="birthDayList.length >0" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000; font-size: medium;">
-							<thead>
-						<tr style="background-color: #1b1e21; color: #d7dbf7">
+	<div *ngIf="utils.getUserPermission('sendInvoice')" class="col-md-12" style="overflow-y: auto;">
+		<div class="custom-div">
+			<div class="custom-div-header">Fatura Listesi - İşlem Bekleyenler <div *ngIf="invoiceList.length>0">: {{invoiceList.length}}  ADET</div> </div>
+			<div class="custom-div-body" style="overflow: auto; max-height: 350px;">
+				<table *ngIf="invoiceList.length >0" class="custom-table">
+					<thead>
+					<tr style="background-color: #1b1e21; color: #d7dbf7">
+						<th>Ödeme Yapılacak Şirket</th>
+						<th>Fatura Kesilen Şirket</th>
+						<th>Fatura Tarihi</th>
+						<th>Fatura Numarası</th>
+						<th>Para Birimi</th>
+						<th>Tutar</th>
+						<th>İşlem Yap</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let invoice of invoiceList">
+						<td>{{ invoice.customer !== undefined ? invoice.customer.name : '' }}</td>
+						<td>{{ invoice.sirket !== undefined ? invoice.sirket.label : '' }}</td>
+						<td>{{ invoice.invoiceDate !== undefined ? formatDate(invoice.invoiceDate) : '' }}</td>
+						<td>{{ invoice.invoiceNum !== undefined ? invoice.invoiceNum : '' }}</td>
+						<td>{{ invoice.moneyType !== undefined ? invoice.moneyType.label : '' }}</td>
+						<td>{{ invoice.amount !== undefined ? formatCurrency(invoice.amount) : '' }}</td>
+						<td>
+							<button mat-icon-button color="primary" matTooltip="İşlem Yap"
+									(click)="correct(invoice, $event)">
+								<mat-icon>edit</mat-icon>
+							</button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<div *ngIf="invoiceList.length < 1" class="custom-no-data" style="font-weight: bold; color: #0f695f">İŞLEMİNİZİ BEKLEYEN E-FATURA BULUNMAMAKTADIR</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div *ngIf="utils.getUserPermission('paymentApprover')" class="col-md-12" style="overflow-y: auto;">
+		<div class="custom-div">
+			<div class="custom-div-header">Talimat Listesi - İşlem Bekleyenler <div *ngIf="paymentOrder.length>0">: {{paymentOrder.length}}  ADET</div> </div>
+			<div class="custom-div-body" style="overflow: auto; max-height: 400px;">
+				<table *ngIf="paymentOrder.length >0" class="custom-table">
+					<thead>
+					<tr style="background-color: #1b1e21; color: #d7dbf7">
+						<th>1.Onaycı</th>
+						<th>2.Onaycı</th>
+						<th>Ödeme Yapılacak Şirket</th>
+						<th>Fatura Kesilen Şirket</th>
+						<th>Para Birimi</th>
+						<th>Tutar</th>
+						<th>İşlemler</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let porder of paymentOrder">
+						<td>{{ porder.assigner !== undefined ? porder.assigner.firstName + ' ' + porder.assigner.lastName : '' }}</td>
+						<td>{{ porder.secondAssigner !== undefined ? porder.secondAssigner.firstName + ' ' + porder.secondAssigner.lastName : '' }}</td>
+						<td>{{ porder.customer !== undefined ? porder.customer.name : '' }}</td>
+						<td>{{ porder.sirket !== undefined ? porder.sirket.label : '' }}</td>
+						<td>{{ porder.moneyType !== undefined ? porder.moneyType.label : '' }}</td>
+						<td>{{ porder.amount !== undefined ? formatCurrency(porder.amount) : '' }}</td>
+						<td>
+							<button mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="okeyPayment(porder, $event)">
+								<mat-icon>check</mat-icon>
+							</button>
+							<button mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="cancelPayment(porder, $event)">
+								<mat-icon>cancel</mat-icon>
+							</button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<div *ngIf="paymentOrder.length < 1" class="custom-no-data" style="font-weight: bold; color: #0f695f">ONAYINIZI BEKLEYEN TALİMAT BULUNMAMAKTADIR</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-6" style="overflow-y: auto;">
+		<div class="custom-div">
+			<div class="custom-div-header">Yaklaşan Doğum Günleri</div>
+			<div class="custom-div-body" style="overflow: auto; max-height: 450px;">
+				<div id="birthDayListTable">
+					<table *ngIf="birthDayList.length > 0" class="custom-table">
+						<thead>
+						<tr>
 							<th>Ad Soyad</th>
 							<th>Şirket</th>
-							<!--<th>Birim</th> -->
 							<th>Unvan</th>
 							<th>Doğum Günü</th>
 							<th>Kalan Gün</th>
 						</tr>
 						</thead>
 						<tbody>
-						<tr *ngFor="let birth of birthDayList" [style.background-color]="birth.kalan === 0 ? 'green' : ''" [style.color]="birth.kalan === 0 ? 'white' : ''">
+						<tr *ngFor="let birth of birthDayList" [ngClass]="{ 'birthdayToday': birth.kalan === 0 }">
 							<td>{{ birth.adsoyad !== undefined ? birth.adsoyad : '' }}</td>
 							<td>{{ birth.sirket !== undefined ? birth.sirket : '' }}</td>
-							<!--<td>{{ birth.birim !== undefined ? birth.birim : '' }}</td> -->
 							<td>{{ birth.unvan !== undefined ? birth.unvan : '' }}</td>
 							<td>{{ birth.dogum !== undefined ? formatBirthDate(birth.dogum) : '' }}</td>
 							<td>
@@ -91,168 +130,120 @@
 						</tbody>
 					</table>
 				</div>
-				<div *ngIf="birthDayList.length < 1" style="font-weight: bold; color: #0f695f">15 GÜN İÇİNDE KİMSENİN DOĞUM GÜNÜ OLMAYACAKTIR</div>
-				</div>
-			</kt-portlet-body>
-		</kt-portlet>
+				<div *ngIf="birthDayList.length < 1" class="custom-no-data">15 GÜN İÇİNDE KİMSENİN DOĞUM GÜNÜ OLMAYACAKTIR</div>
+			</div>
+		</div>
 	</div>
-	<div class="col-md-6">
-		<kt-portlet>
-			<kt-portlet-header title="Talimat Listesi - Onay Bekleyenler : {{paymentStat}} {{baseService.getUser().unvan.id === 'Unvanlar_Muh_Uzm' ? ' - Muhasebe Onayları Gözükmez' : ''}}">
-			</kt-portlet-header>
-			<kt-portlet-body>
-				<div style="overflow: auto;">
-					<div style="max-height: 400px; overflow-y: auto;">
-						<table *ngIf="paymentOrder.length >0" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000; font-size: medium;">
-							<thead>
-							<tr style="background-color: #1b1e21; color: #d7dbf7">
-								<th>1.Onaycı</th>
-								<th>2.Onaycı</th>
-								<th>Ödeme Yapılacak Şirket</th>
-								<th>Fatura Kesilen Şirket</th>
-								<th>Para Birimi</th>
-								<th>Tutar</th>
-							</tr>
-							</thead>
-							<tbody>
-							<tr *ngFor="let porder of paymentOrder">
-								<td>{{ porder.assigner !== undefined ? porder.assigner : '' }}</td>
-								<td>{{ porder.secondAssigner !== undefined ? porder.secondAssigner : '' }}</td>
-								<td>{{ porder.customer !== undefined ? porder.customer : '' }}</td>
-								<td>{{ porder.faturaSirket !== undefined ? porder.faturaSirket : '' }}</td>
-								<td>{{ porder.moneyType !== undefined ? porder.moneyType : '' }}</td>
-								<td>{{ porder.amount !== undefined ? formatCurrency(porder.amount) : '' }}</td>
-							</tr>
-							</tbody>
-						</table>
-						<div *ngIf="paymentOrder.length < 1" style="font-weight: bold; color: #0f695f">ONAYINIZI BEKLEYEN TALİMAT BULUNMAMAKTADIR</div>
-					</div>
-				</div>
-			</kt-portlet-body>
-		</kt-portlet>
+	<div class="col-md-6" style="overflow-y: auto;">
+		<div class="custom-div custom-fluid">
+			<div class="custom-div-header">
+				Tamamlanması Gereken Talepler
+				<div *ngIf="tasks.length>0">: {{tasks.length}}  ADET</div>
+			</div>
+			<div class="custom-div-body" style="overflow: auto; max-height: 450px;">
+				<table *ngIf="tasks.length >0" class="custom-table">
+					<thead>
+					<tr style="background-color: #1b1e21; color: #d7dbf7">
+						<th>Talep Eden</th>
+						<th>Yetkili</th>
+						<th>Birim</th>
+						<th>Konu</th>
+						<th>Durum</th>
+						<th>Tahmini Tamamlanma Zamanı</th>
+						<th>Görüntüle</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let task of tasks">
+						<td>{{ task.assigner !== undefined ? task.assigner.firstName + ' ' + task.assigner.lastName : '' }}</td>
+						<td>{{ task.owner !== undefined ? task.owner.firstName + ' ' + task.owner.lastName : '' }}</td>
+						<td>{{ task.birim !== undefined ? task.birim.label : '' }}</td>
+						<td>{{ task.taskType !== undefined ? task.taskType.label : '' }}</td>
+						<td>{{ task.status !== undefined ? task.status.label : '' }}</td>
+						<td>{{ task.dueTime !== undefined ? formatDate(task.dueTime) : '' }}</td>
+						<button color="primary" mat-icon-button (click)="taskInfoClicked(task)">
+								<mat-icon>info</mat-icon>
+						</button>
+					</tr>
+					</tbody>
+				</table>
+				<div *ngIf="tasks.length < 1" style="font-weight: bold; color: #0f695f">TAMAMLAMANIZ GEREKEN BİR TALEP BULUNMAMAKTADIR</div>
+			</div>
+		</div>
 	</div>
 </div>
 
 <div class="row">
-	<div class="col-md-6">
-		<kt-portlet [class]="'kt-portlet--height-fluid'">
-			<kt-portlet-header>
-				<ng-container ktPortletTitle>
-					<h3 class="kt-portlet__head-title">
-						İzinde Olan Personeller
-					</h3>
-				</ng-container>
-			</kt-portlet-header>
-			<kt-portlet-body>
-				<div style="overflow: auto;">
-					<div style="max-height: 400px; overflow-y: auto;">
-						<table *ngIf="holidayList.length >0" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000; font-size: medium;">
-							<thead>
-							<tr style="background-color: #1b1e21; color: #d7dbf7;">
-								<th>İzni Kullanan</th>
-								<th>Başlangıç</th>
-								<th>Bitiş</th>
-								<th>Dönüş</th>
-								<th>İzin Türü</th>
-							</tr>
-							</thead>
-							<tbody>
-							<tr *ngFor="let holi of holidayList">
-								<td>{{ holi.owner !== undefined ? holi.owner : '' }}</td>
-								<td>{{ holi.start !== undefined ? formatDate(holi.start) : '' }}</td>
-								<td>{{ holi.end !== undefined ? formatDate(holi.end) : '' }}</td>
-								<td>{{ holi.come !== undefined ? formatDate(holi.come) : '' }}</td>
-								<td>{{ holi.tur !== undefined ? holi.tur : '' }}</td>
-							</tr>
-							</tbody>
-						</table>
-						<div *ngIf="holidayList.length < 1" style="font-weight: bold; color: #0f695f">İZİN KULLANAN PERSONEL BULUNMAMAKTADIR</div>
-					</div>
-				</div>
-			</kt-portlet-body>
-		</kt-portlet>
+	<div *ngIf="utils.getUserPermission('permitApprover')" class="col-md-6" style="overflow-y: auto;">
+		<div class="custom-div">
+			<div class="custom-div-header">
+				Onay Bekleyen İzinler
+				<div *ngIf="waitHolidayList.length>0">: {{waitHolidayList.length}}  ADET</div>
+			</div>
+			<div class="custom-div-body" style="overflow: auto; max-height: 350px;">
+				<table *ngIf="waitHolidayList.length >0" class="custom-table">
+					<thead>
+					<tr style="background-color: #1b1e21; color: #d7dbf7;">
+						<th>İzni Kullanan</th>
+						<th>Onaycı</th>
+						<th>Başlangıç</th>
+						<th>Bitiş</th>
+						<th>Dönüş</th>
+						<th>Gün</th>
+						<th>İzin Türü</th>
+						<th>İşlemler</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let holi of waitHolidayList">
+						<td>{{ holi.owner !== undefined ? holi.owner.firstName + ' ' + holi.owner.lastName : '' }}</td>
+						<td>{{ holi.assigner !== undefined ? holi.assigner.firstName + ' ' + holi.assigner.lastName : '' }}</td>
+						<td>{{ holi.startDate !== undefined ? formatDate(holi.startDate) : '' }}</td>
+						<td>{{ holi.endDate !== undefined ? formatDate(holi.endDate) : '' }}</td>
+						<td>{{ holi.comeDate !== undefined ? formatDate(holi.comeDate) : '' }}</td>
+						<td>{{ holi.izingun !== undefined ? holi.izingun : '' }}</td>
+						<td>{{ holi.type !== undefined ? holi.type.label : '' }}</td>
+						<td>
+							<button mat-icon-button color="success" matTooltip="Onayla" type="button" (click)="changeHoliday(holi, $event, [],'Izin_Dur_Aktif')">
+								<mat-icon>check</mat-icon>
+							</button>
+							<button mat-icon-button color="warn" matTooltip="Reddet" type="button" (click)="changeHoliday(holi, $event, [],'Izin_Dur_Red')">
+								<mat-icon>cancel</mat-icon>
+							</button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<div *ngIf="waitHolidayList.length < 1" style="font-weight: bold; color: #0f695f">ONAY BEKLEYEN İZİN BULUNMAMAKTADIR</div>
+			</div>
+		</div>
 	</div>
-	<div class="col-md-6">
-		<kt-portlet [class]="'kt-portlet--height-fluid'">
-			<kt-portlet-header>
-				<ng-container ktPortletTitle>
-					<h3 class="kt-portlet__head-title">
-						Onay Bekleyen İzinler
-					</h3>
-				</ng-container>
-			</kt-portlet-header>
-			<kt-portlet-body>
-				<div class="row" style="width: 100%">
-					<div style="overflow: auto; width: 100%">
-						<div style="max-height: 400px; overflow-y: auto; width: 100%">
-							<table *ngIf="waitHolidayList.length >0" style="text-align: center; table-layout: auto; width: 100%; border: 1px solid #000; font-size: medium;">
-								<thead>
-							<tr style="background-color: #1b1e21; color: #d7dbf7;">
-								<th>İzni Kullanan</th>
-								<th>Onaycı</th>
-								<th>Başlangıç</th>
-								<th>Bitiş</th>
-								<th>Dönüş</th>
-								<th>İzin Türü</th>
-							</tr>
-							</thead>
-							<tbody>
-							<tr *ngFor="let holi of waitHolidayList">
-								<td>{{ holi.owner !== undefined ? holi.owner : '' }}</td>
-								<td>{{ holi.assigner !== undefined ? holi.assigner : '' }}</td>
-								<td>{{ holi.start !== undefined ? formatDate(holi.start) : '' }}</td>
-								<td>{{ holi.end !== undefined ? formatDate(holi.end) : '' }}</td>
-								<td>{{ holi.come !== undefined ? formatDate(holi.come) : '' }}</td>
-								<td>{{ holi.tur !== undefined ? holi.tur : '' }}</td>
-							</tr>
-							</tbody>
-						</table>
-						<div *ngIf="waitHolidayList.length < 1" style="font-weight: bold; color: #0f695f">ONAY BEKLEYEN İZİN BULUNMAMAKTADIR</div>
-					</div>
-					</div>
-				</div>
-			</kt-portlet-body>
-		</kt-portlet>
-	</div>
-	<div class="col-md-6" style="max-height: 300px; overflow-y: auto;">
-		<kt-portlet [class]="'kt-portlet--height-fluid'">
-			<kt-portlet-header [title]="'Bugün Tamamlanması Gereken Talepler'">
-			</kt-portlet-header>
-			<kt-portlet-body>
-				<kt-task-widget [data]="tasks"></kt-task-widget>
-				<div *ngIf="tasks.length < 1" style="font-weight: bold; color: #0f695f">BUGÜN TAMAMLAMANIZ GEREKEN BİR TALEP BULUNMAMAKTADIR</div>
-			</kt-portlet-body>
-		</kt-portlet>
-	</div>
-	<div class="col-md-6" style="max-height: 300px; overflow-y: auto;">
-		<kt-portlet [class]="'kt-portlet--height-fluid'">
-			<kt-portlet-header [title]="'Duyurular'">
-			</kt-portlet-header>
-			<kt-portlet-body>
-				<kt-announcement-widget [data]="announcements">
-					<ng-template #actionTemplate let-item="item">
-						<span class="kt-widget4__number" [ngClass]="item.valueColor">{{item.value | date}}</span>
-					</ng-template>
-				</kt-announcement-widget>
-			</kt-portlet-body>
-		</kt-portlet>
-	</div>
-	<div class="col-md-12">
-		<kt-portlet [class]="'kt-portlet--height-fluid'">
-			<kt-portlet-header>
-				<ng-container ktPortletTitle>
-					<h3 class="kt-portlet__head-title">
-						Güncel İletişim Bilgileri
-					</h3>
-				</ng-container>
-			</kt-portlet-header>
-			<kt-portlet-body>
-				 <div id="playlist-wrapper">
-				<div class="mat-h3">
-					<kt-contact-widget [data]="usersContact"></kt-contact-widget>
-				</div>
-				 </div>
-			</kt-portlet-body>
-		</kt-portlet>
+	<div class="col-md-6" style="overflow-y: auto;">
+		<div class="custom-div">
+			<div class="custom-div-header">İzinde Olan Personeller</div>
+			<div class="custom-div-body" style="overflow: auto; max-height: 350px;">
+				<table *ngIf="holidayList.length >0" class="custom-table">
+					<thead>
+					<tr style="background-color: #1b1e21; color: #d7dbf7;">
+						<th>İzni Kullanan</th>
+						<th>Başlangıç</th>
+						<th>Bitiş</th>
+						<th>Dönüş</th>
+						<th>İzin Türü</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let holi of holidayList">
+						<td>{{ holi.owner !== undefined ? holi.owner : '' }}</td>
+						<td>{{ holi.start !== undefined ? formatDate(holi.start) : '' }}</td>
+						<td>{{ holi.end !== undefined ? formatDate(holi.end) : '' }}</td>
+						<td>{{ holi.come !== undefined ? formatDate(holi.come) : '' }}</td>
+						<td>{{ holi.tur !== undefined ? holi.tur : '' }}</td>
+					</tr>
+					</tbody>
+				</table>
+				<div *ngIf="holidayList.length < 1" style="font-weight: bold; color: #0f695f">İZİN KULLANAN PERSONEL BULUNMAMAKTADIR</div>
+			</div>
+		</div>
 	</div>
 </div>

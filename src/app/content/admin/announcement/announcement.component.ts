@@ -45,23 +45,10 @@ export class AnnouncementComponent extends BaseComponent implements OnInit, Afte
 		this.buttons = [];
 
 		this.buttons.push({
-			display: this.baseService.getPermissionRule(this.model.name, 'update'),
+			display: this.baseService.getPermissionRule(this.model.name, 'update') && this.baseService.getUserId() === 2,
 			title: 'Yeni Duyuru',
 			icon: 'add_box',
 			click: this.mainGrid.add.bind(this.mainGrid)
-		},
-			{
-				display: this.baseService.getPermissionRule(this.model.name, 'update'),
-				title: 'Yeni SMS',
-				icon: 'send',
-				click: this.sendSms.bind(this)
-			});
-	}
-
-	sendSms() {
-		const dialogRef = this.dialog.open(SendSmsDialogComponent, {data: {current: this.current, model: this.model}});
-		dialogRef.afterClosed().subscribe(res => {
-			Utils.showActionNotification('Gönderildi', 'success', 10000, true, false, 3000, this.snackBar);
 		});
 	}
 }

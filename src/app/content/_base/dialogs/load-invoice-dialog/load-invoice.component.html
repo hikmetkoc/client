@@ -4,10 +4,26 @@
 			<h3 class="kt-portlet__head-title" style="display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100%;">
 				<span style="font-size: 30px; color: #343a40; margin-top: 10px; margin-left: 35px">METEORPANEL FATURA LİSTESİ YÜKLEME SERVİSİ</span>
 			</h3>
+			<button [hidden]="clickedButton" mat-icon-button class="btn btn btn-danger kt-margin-l-10" color="warn" matTooltip="Kapat" (click)="onNoClick()">
+				<mat-icon>exit_to_app</mat-icon>
+			</button>
 		</ng-container>
 	</kt-portlet-header>
 	<kt-portlet-body>
-		<div class="loading-container" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+		<mat-form-field>
+			<mat-label>Şirket Seçiniz</mat-label>
+			<mat-select [(value)]="selectedDbName">>
+				<mat-option *ngFor="let dbName of dbList" [value]="dbName.ilgilibirim">{{dbName.label}}</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<button [hidden]="clickedButton" mat-raised-button
+				color="primary"
+				matTooltip="Faturaları Yükle"
+				type="button"
+				(click)="runInvoiceService()">
+			Faturaları Yükle
+		</button>
+		<div *ngIf="clickedButton" class="loading-container" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
 			<mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
 			<span style="font-size: 20px; color: #333; margin-top: 10px;">FATURALAR YÜKLENMEYE DEVAM EDİYOR...</span>
 		</div>

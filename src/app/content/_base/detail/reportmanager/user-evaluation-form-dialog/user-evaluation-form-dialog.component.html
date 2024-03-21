@@ -1,0 +1,320 @@
+<kt-portlet>
+
+	<div class="modal-header">
+		<h4 class="modal-title">2 Aylık Deneme Formu</h4>
+		<div class="ml-auto">
+			<button mat-icon-button class="btn btn-label-brand" color="primary" matTooltip="Yazdır" (click)="showFiles()">
+				<mat-icon>print</mat-icon>
+			</button>
+			<button mat-icon-button class="btn btn-danger" color="primary" matTooltip="Kapat" (click)="onNoClick()">
+				<mat-icon>close</mat-icon>
+			</button>
+		</div>
+	</div>
+	<div id="print-section">
+		<div class="modal-body">
+			<table class="deneme-suresi-ortala">
+				<tbody>
+				<tr>
+					<td class="genis-sutun" rowspan="4"></td>
+					<td class="onaylar" rowspan="4">DENEME SÜRESİ DEĞERLENDİRME FORMU</td>
+					<td>DOKÜMAN NO</td>
+					<td class="genis-sutun"></td>
+				</tr>
+				<tr>
+					<td>YAYIN TARİHİ</td>
+					<td class="genis-sutun"></td>
+				</tr>
+				<tr>
+					<td>REVİZYON TARİHİ</td>
+					<td class="genis-sutun"></td>
+				</tr>
+				<tr>
+					<td>REVİZYON NO</td>
+					<td class="genis-sutun"></td>
+				</tr>
+				</tbody>
+			</table>
+			<table class="deneme-suresi-degerlendirme-tablosu">
+				<thead>
+				<tr class="onaylar">
+					<th class="onaylar" colspan="3">İŞVEREN BİLGİLERİ</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>
+						UNVANI
+					</td>
+					<td>:</td>
+					<td>{{chiefData[0].user.insuranceCompany.officialName}}</td>
+				</tr>
+				<tr>
+					<td>
+						ADRESİ
+					</td>
+					<td>:</td>
+					<td>{{chiefData[0].user.insuranceCompany.address}}</td>
+				</tr>
+				<tr>
+					<td>
+						SGK SİCİL NO
+					</td>
+					<td>:</td>
+					<td>{{chiefData[0].user.insuranceCompany.sskNumber}}</td>
+				</tr>
+				</tbody>
+			</table>
+			<table class="deneme-suresi-degerlendirme-tablosu">
+				<thead>
+				<tr class="onaylar">
+					<th class="onaylar" colspan="3">PERSONEL BİLGİLERİ</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>
+						Adı Soyadı
+					</td>
+					<td>:</td>
+					<td>{{chiefData[0].user.firstName + ' ' + chiefData[0].user.lastName}}</td>
+				</tr>
+				<tr>
+					<td>
+						Tc Kimlik No
+					</td>
+					<td>:</td>
+					<td>{{chiefData[0].user.tck}}</td>
+				</tr>
+				<tr>
+					<td>
+						Görevi
+					</td>
+					<td>:</td>
+					<td>{{chiefData[0].user.unvan.label}}</td>
+				</tr>
+				<tr>
+					<td>
+						İşe Başlama Tarihi
+					</td>
+					<td>:</td>
+					<td>{{formatDate(chiefData[0].user.startDate)}}</td>
+				</tr>
+				<tr>
+					<td>
+						Deneme Süresi Bitiş Tarihi
+					</td>
+					<td>:</td>
+					<td>{{formatDate2(chiefData[0].user.startDate)}}</td>
+				</tr>
+				</tbody>
+			</table>
+			<div class="degerlendirme-konulari">
+				<table class="deneme-suresi-degerlendirme-tablosu">
+					<thead>
+					<tr><th class="onaylar" colspan="6">DEĞERLENDİRME</th></tr>
+					<tr>
+						<th class="onaylar">{{ 'BAŞARI KRİTERLERİ' }}</th>
+						<th>
+							<p>ÇOK YETERSİZ</p>
+							<p>(2 PUAN)</p>
+						</th>
+						<th>
+							<p>YETERSİZ</p>
+							<p>(4 PUAN)</p>
+						</th>
+						<th>
+							<p>NORMAL</p>
+							<p>(6 PUAN)</p>
+						</th>
+						<th>
+							<p>YETERLİ</p>
+							<p>(8 PUAN)</p>
+						</th>
+						<th>
+							<p>ÇOK YETERLİ</p>
+							<p>(10 PUAN)</p>
+						</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>
+							<p>1. İŞ BİLGİSİ</p>
+							<p>Sahip olduğu teorik ve pratik bilgilerin yeterliliği</p>
+						</td>
+						<td>{{ chiefData[0].isBilgisi.id === 'Evaluation_Form_Point_2' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].isBilgisi.id === 'Evaluation_Form_Point_4' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].isBilgisi.id === 'Evaluation_Form_Point_6' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].isBilgisi.id === 'Evaluation_Form_Point_8' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].isBilgisi.id === 'Evaluation_Form_Point_10' ? '&#10003;' : '' }}</td>
+					</tr>
+					<tr>
+						<td>
+							<p>2. KARAR VERME</p>
+							<p>Kararlarını zamanında ve etkin vermesi</p>
+						</td>
+						<td>{{ chiefData[0].kararVerme.id === 'Evaluation_Form_Point_2' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].kararVerme.id === 'Evaluation_Form_Point_4' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].kararVerme.id === 'Evaluation_Form_Point_6' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].kararVerme.id === 'Evaluation_Form_Point_8' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].kararVerme.id === 'Evaluation_Form_Point_10' ? '&#10003;' : '' }}</td>
+					</tr>
+					<tr>
+						<td>
+							<p>3. PLANLAMA-ORGANİZASYON</p>
+							<p>Kendi işini planlaması ve düzenlemesi</p>
+						</td>
+						<td>{{ chiefData[0].planlama.id === 'Evaluation_Form_Point_2' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].planlama.id === 'Evaluation_Form_Point_4' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].planlama.id === 'Evaluation_Form_Point_6' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].planlama.id === 'Evaluation_Form_Point_8' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].planlama.id === 'Evaluation_Form_Point_10' ? '&#10003;' : '' }}</td>
+					</tr>
+					<tr>
+						<td>
+							<p>4. KAYNAK KULLANIMI</p>
+							<p>İşgücü ve araçların doğru kullanımı</p>
+						</td>
+						<td>{{ chiefData[0].kaynakKullanimi.id === 'Evaluation_Form_Point_2' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].kaynakKullanimi.id === 'Evaluation_Form_Point_4' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].kaynakKullanimi.id === 'Evaluation_Form_Point_6' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].kaynakKullanimi.id === 'Evaluation_Form_Point_8' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].kaynakKullanimi.id === 'Evaluation_Form_Point_10' ? '&#10003;' : '' }}</td>
+					</tr>
+					<tr>
+						<td>
+							<p>5. LİDERLİK</p>
+							<p>İnsiyatif kullanma, öncü olma</p>
+						</td>
+						<td>{{ chiefData[0].liderlik.id === 'Evaluation_Form_Point_2' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].liderlik.id === 'Evaluation_Form_Point_4' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].liderlik.id === 'Evaluation_Form_Point_6' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].liderlik.id === 'Evaluation_Form_Point_8' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].liderlik.id === 'Evaluation_Form_Point_10' ? '&#10003;' : '' }}</td>
+					</tr>
+					<tr>
+						<td>
+							<p>6. İŞYERİ KURALLARINA UYMA</p>
+						</td>
+						<td>{{ chiefData[0].kurallaraUyma.id === 'Evaluation_Form_Point_2' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].kurallaraUyma.id === 'Evaluation_Form_Point_4' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].kurallaraUyma.id === 'Evaluation_Form_Point_6' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].kurallaraUyma.id === 'Evaluation_Form_Point_8' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].kurallaraUyma.id === 'Evaluation_Form_Point_10' ? '&#10003;' : '' }}</td>
+					</tr>
+					<tr>
+						<td>
+							<p>7. MESLEKİ ÖZELLİKLER</p>
+							<p>İş Yapma Kalitesi</p>
+						</td>
+						<td>{{ chiefData[0].meslekiOzellikler.id === 'Evaluation_Form_Point_2' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].meslekiOzellikler.id === 'Evaluation_Form_Point_4' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].meslekiOzellikler.id === 'Evaluation_Form_Point_6' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].meslekiOzellikler.id === 'Evaluation_Form_Point_8' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].meslekiOzellikler.id === 'Evaluation_Form_Point_10' ? '&#10003;' : '' }}</td>
+					</tr>
+					<tr>
+						<td>
+							<p>Yapılan İşin Kalitesi</p>
+						</td>
+						<td>{{ chiefData[0].isKalitesi.id === 'Evaluation_Form_Point_2' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].isKalitesi.id === 'Evaluation_Form_Point_4' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].isKalitesi.id === 'Evaluation_Form_Point_6' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].isKalitesi.id === 'Evaluation_Form_Point_8' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].isKalitesi.id === 'Evaluation_Form_Point_10' ? '&#10003;' : '' }}</td>
+					</tr>
+					<tr>
+						<td>
+							<p>Takım Çalışması</p>
+						</td>
+						<td>{{ chiefData[0].takimCalismasi.id === 'Evaluation_Form_Point_2' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].takimCalismasi.id === 'Evaluation_Form_Point_4' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].takimCalismasi.id === 'Evaluation_Form_Point_6' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].takimCalismasi.id === 'Evaluation_Form_Point_8' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].takimCalismasi.id === 'Evaluation_Form_Point_10' ? '&#10003;' : '' }}</td>
+					</tr>
+					<tr>
+						<td>
+							<p>8. BEŞERİ İLİŞKİLER</p>
+							<p>Çevresi ile uyum ve saygılı davranış</p>
+						</td>
+						<td>{{ chiefData[0].beseriIliskiler.id === 'Evaluation_Form_Point_2' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].beseriIliskiler.id === 'Evaluation_Form_Point_4' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].beseriIliskiler.id === 'Evaluation_Form_Point_6' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].beseriIliskiler.id === 'Evaluation_Form_Point_8' ? '&#10003;' : '' }}</td>
+						<td>{{ chiefData[0].beseriIliskiler.id === 'Evaluation_Form_Point_10' ? '&#10003;' : '' }}</td>
+					</tr>
+					</tbody>
+				</table>
+				<table class="deneme-suresi-degerlendirme-tablosu">
+					<thead>
+
+					</thead>
+					<tbody>
+					<tr class="onaylar">
+						<td colspan="6">DEĞERLENDİRME SONUCU</td>
+					</tr>
+					<tr>
+						<td>
+							İlk Amiri
+						</td>
+						<td>
+							:
+						</td>
+						<td>
+							{{chiefData[0].assigner.firstName + ' ' + chiefData[0].assigner.lastName}}
+						</td>
+						<td rowspan="3">TOPLAM PUAN</td>
+						<td rowspan="3">:</td>
+						<td rowspan="3">{{totalPoint}}</td>
+					</tr>
+					<tr>
+						<td>
+							Değerlendirme Yapan
+						</td>
+						<td>
+							:
+						</td>
+						<td>
+							{{chiefData[0].assigner.firstName + ' ' + chiefData[0].assigner.lastName}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Değerlendirme Tarihi
+						</td>
+						<td>
+							:
+						</td>
+						<td>
+							{{formatDate(chiefData[0].okeyDate)}}
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							İLGİLİ PERSONEL YETERLİ GÖRÜLMÜŞTÜR
+						</td>
+						<td>
+							:
+						</td>
+						<td colspan="2" class="genis-sutun"></td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							İLGİLİ PERSONEL YETERSİZ GÖRÜLMÜŞTÜR
+						</td>
+						<td>
+							:
+						</td>
+						<td colspan="2" class="genis-sutun"></td>
+					</tr>
+					<tr>
+						<td colspan="6">İMZA</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</kt-portlet>

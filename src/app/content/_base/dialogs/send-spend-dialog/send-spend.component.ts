@@ -6,6 +6,10 @@ import {BaseService} from "../../base.service";
 import {catchError, tap} from "rxjs/operators";
 import {HttpClient} from "@angular/common/http";
 import {HttpUtilsService} from "../../http-utils.service";
+import {AreYouOkeyComponent} from "../are-you-okey-dialog/are-you-okey.component";
+import {MatDialog} from "@angular/material/dialog";
+import {SpendOkeyComponent} from "../spend-okey-dialog/spend-okey.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
 	selector: 'kt-send-invoice',
@@ -14,6 +18,7 @@ import {HttpUtilsService} from "../../http-utils.service";
 export class SendSpendComponent implements OnInit {
 
 	@Input() current: any;
+	@Input() desc: any;
 	@Input() model: any;
 	typeList = [];
 	quafList = [];
@@ -26,6 +31,8 @@ export class SendSpendComponent implements OnInit {
 		public baseService: BaseService,
 		public dialogRef: MatDialogRef<any>,
 		private http: HttpClient,
+		public dialog: MatDialog,
+		public snackBar: MatSnackBar,
 		private httpUtils: HttpUtilsService,
 		@Inject(MAT_DIALOG_DATA) public data: any,
 		private dateAdapter: DateAdapter<Date>
@@ -36,6 +43,9 @@ export class SendSpendComponent implements OnInit {
 		if (data && data.current) {
 			this.current = data.current;
 		}
+		if (data && data.desc) {
+			this.desc = data.desc;
+		}
 	}
 
 	onNoClick() {
@@ -43,40 +53,50 @@ export class SendSpendComponent implements OnInit {
 	}
 
 	onYesClick() {
-		/*this.current.owner = this.selectedUserId;
-		this.current.invoiceStatus = this.baseService.getAttrVal('Fatura_Durumlari_Atandi');
-		this.baseService.update(this.current, 'invoice_lists').subscribe(() => {
-			this.dialogRef.close();
-		});*/
-
-		this.baseService.loadingSubject.next(false);
-		if (this.baseService.loadingSubject.value) { return; }
-		const httpHeaders = this.httpUtils.getHTTPHeaders();
-		const type = this.selectedTypeId;
-		const qualification = this.selectedQuafId;
-		const description = this.selectedDescId;
-		const url = `api/spends/selectedExcelSpendReport?type=${type}&qualification=${qualification}&description=${description}`;
-		const requestData = { ids: this.current };
-		console.log('CURRENTS : ' + this.current);
-		this.http.post(url, requestData, { headers: httpHeaders, responseType: 'blob' })
-			.pipe(
-				tap(res => {
-					if (res) {
-						Utils.downloadFile(res, 'Excel', 'Seçili Ödemeler Raporu');
-						this.baseService.loadingSubject.next(true);
-						this.dialogRef.close();
-					}
-				}),
-				catchError(err => {
-					this.baseService.loadingSubject.next(false);
-					return err;
-				})
-			).subscribe();
+		const dialogRef = this.dialog.open(AreYouOkeyComponent, {
+			width: '800px'
+		});
+		dialogRef.afterClosed().subscribe((result) => {
+			if (result === 'yes') {
+				this.baseService.loadingSubject.next(false);
+				if (this.baseService.loadingSubject.value) {
+					return;
+				}
+				const httpHeaders = this.httpUtils.getHTTPHeaders();
+				const type = this.selectedTypeId;
+				const qualification = this.selectedQuafId;
+				const description = this.selectedDescId;
+				const url = `api/spends/selectedExcelSpendReport?type=${type}&qualification=${qualification}&description=${description}`;
+				const requestData = {ids: this.current};
+				this.http.post(url, requestData, {headers: httpHeaders, responseType: 'blob'})
+					.pipe(
+						tap(res => {
+							if (res) {
+								Utils.downloadFile(res, 'Excel', 'Tös Dosyası');
+								this.baseService.loadingSubject.next(true);
+								this.dialogRef.close();
+							}
+						}),
+						catchError(err => {
+							this.baseService.loadingSubject.next(false);
+							return err;
+						})
+					).subscribe();
+				this.current.forEach(item => {
+					const dialogRef2 = this.dialog.open(SpendOkeyComponent, {data: {current: item, model: this.model, durum: 'Spend_Status_Yes'}, disableClose: true });
+					dialogRef2.afterClosed().subscribe(res => {
+						// Utils.showActionNotification('Ödeme Onayı verildi.', 'success', 3000, true, false, 3000, this.snackBar);
+					});
+				});
+				this.dialogRef.close();
+			}
+		});
 	}
 
 	ngOnInit() {
 		this.model = this.data.model;
 		this.current = this.data.current;
+		this.desc = this.data.desc;
 		this.getAttributeValues();
 	}
 

@@ -46,6 +46,12 @@
 							<mat-icon matSuffix>phone</mat-icon>
 						</mat-form-field>
 					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Mail Adresi </mat-label>
+							<input matInput [(ngModel)]="email">
+						</mat-form-field>
+					</td>
 				</tr>
 				<tr>
 					<td>
@@ -68,9 +74,19 @@
 							</mat-error>
 						</mat-form-field>
 					</td>
+				</tr>
+					<tr>
 					<td>
 						<mat-form-field>
 							<mat-label>Sigortalı Olduğu Şirket</mat-label>
+							<mat-select [(value)]="selectedInsuranceCompanyId">
+								<mat-option *ngFor="let attr of insuranceCompanyList" [value]="attr.id">{{attr.name}}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</td>
+					<td>
+						<mat-form-field>
+							<mat-label>Bağlı Olduğu Şirket</mat-label>
 							<mat-select [(value)]="selectedSirketId">
 								<mat-option *ngFor="let attr of sirketList" [value]="attr.id">{{attr.label}}</mat-option>
 							</mat-select>
@@ -249,6 +265,14 @@
 						</td>
 						<td>
 							<mat-checkbox [(ngModel)]="tcv"></mat-checkbox>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<mat-label>Beyaz Yaka Mı?</mat-label>
+						</td>
+						<td>
+							<mat-checkbox [(ngModel)]="whiteCollar"></mat-checkbox>
 						</td>
 					</tr>
 			</table>

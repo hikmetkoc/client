@@ -1,0 +1,24 @@
+<kt-grid #mainGrid [entity]="model.name" [showButtons]="true" owner="HIERARCHY_D" (rowClick)="rowClicked($event)" (change)="listChange()" [buttons]="buttons" [hidden]="current || isCalendar"></kt-grid>
+<ng-container *ngIf="current">
+
+	<kt-portlet>
+		<kt-portlet-header>
+			<ng-container ktPortletTitle>
+				<button mat-icon-button mat-button matTooltip="Geri dön" (click)="resetCurrent()" class="kt-margin-r-5">
+					<mat-icon>keyboard_arrow_left</mat-icon>
+				</button>
+				<h3 class="kt-portlet__head-title">
+					<span>2 Aylık Deneme Formu Detayı<span style="color: #999999">&nbsp;({{current.instanceName}})</span></span>
+				</h3>
+			</ng-container>
+			<ng-container ktPortletTools>
+				<div class="page-header-buttons">
+					<kt-filemanager [(current)]="current" [model]="model"></kt-filemanager>
+				</div>
+			</ng-container>
+		</kt-portlet-header>
+		<kt-portlet-body>
+			<kt-detail [(current)]="current" [model]="model" naked="true"></kt-detail>
+		</kt-portlet-body>
+	</kt-portlet>
+</ng-container>

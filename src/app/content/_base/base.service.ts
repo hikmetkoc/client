@@ -7,7 +7,7 @@ import { QueryParamsModel } from './models/query-params.model';
 import { QueryResultsModel } from './models/query-results.model';
 import { Utils } from './utils';
 import { MatSnackBar } from '@angular/material';
-import { Filter } from './models/filter';
+import {Filter, FilterOperation} from './models/filter';
 import { Store } from '@ngrx/store';
 import { Logout } from '../../core/auth';
 import { AppState } from '../../core/reducers';
@@ -197,29 +197,6 @@ export class BaseService {
 			this.loadingSubject.next(false);
 		}
 	}
-
-	/*webPushSettings(title: string, message: string) {
-		if ('Notification' in window && Notification.permission === 'granted') {
-			// Kullanıcı izni zaten alındı, bildirim gönder
-			this.sendNotification(title, message);
-		} else if ('Notification' in window) {
-			// Kullanıcı izni alınmamış, izin iste
-			Notification.requestPermission().then(permission => {
-				if (permission === 'granted') {
-					// Kullanıcı izni verildi, bildirim gönder
-					this.sendNotification(title, message);
-				}
-			});
-		}
-	}
-
-	sendNotification(title: string, message: string) {
-		if (Notification.permission === 'granted') {
-			const notification = new Notification(title, {
-				body: message
-			});
-		}
-	}*/
 	execute(requestData: PendingRequest) {
 		// this.baseService.isAuthorized().subscribe(res => {
 		// });
@@ -368,18 +345,11 @@ export class BaseService {
 		return role ? role[0].id : undefined;
 	}
 
-	public getIzinCheck(): boolean {
+	/*public getIzinCheck(): boolean {
 		// todo: USERPERMISSION TABLOSUNDAKİ MAVİ YAKA İZİN GÖRÜNTÜLEME YETKİSİNİ KONTROL ET...
 		const izin = this.getUser();
 		return izin ? izin.izinGoruntuleme : false;
-
-		/*const httpHeaders = this.httpUtils.getHTTPHeaders();
-		const url = `api/user_permissions/controlholiday?id=${this.getUserId()}`;
-		this.http.put(url, null, {headers: httpHeaders, responseType: 'text'})
-			.subscribe((res) => {
-				return true;
-			});*/
-	}
+	}*/
 }
 
 export class PendingRequest {
