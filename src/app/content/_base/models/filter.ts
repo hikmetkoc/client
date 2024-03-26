@@ -11,7 +11,8 @@ export enum FilterOperation {
     LESS_OR_EQUAL_THAN = 'LESS_OR_EQUAL_THAN',
     BETWEEN = 'BETWEEN',
     IN = 'IN',
-    SPECIFIED = 'SPECIFIED'
+    SPECIFIED = 'SPECIFIED',
+	NOT_IN = 'NOT_IN'
 }
 export class Filter {
     filterList = [];

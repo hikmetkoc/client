@@ -433,21 +433,15 @@ export class GridComponent implements AfterViewInit {
 				});
 				filters.add({
 					name: 'cost',
-					operator: FilterOperation.IN,
-					value: ['Cost_Place_MeteorMerkez' , 'Cost_Place_Terminal' , 'Cost_Place_Mudanya' ,
-						'Cost_Place_Ncc' , 'Cost_Place_Cemcan' , 'Cost_Place_Birce' , 'Cost_Place_Simya' ,
-						'Cost_Place_Vitalyum' , 'Cost_Place_Vita' , 'Cost_Place_Tepe' , 'Cost_Place_Samanli' ,
-						'Cost_Place_Ciftlikkoy' , 'Cost_Place_Sarj' , 'Cost_Place_Charge' , 'Cost_Place_Otobil']
+					operator: FilterOperation.NOT_IN,
+					value: ['Cost_Place_Avelice', 'Cost_Place_MeteorIgdir', 'Cost_Place_MeteorIzmir']
 				});
 			}
 			if (this.baseService.getUserId() === 71) { // Serpil TÜRKOĞLU ; Saha Primi hariç tüm talimatları görebilsin.
 				filters.add({
 					name: 'paymentSubject',
-					operator: FilterOperation.IN,
-					value: ['Payment_Sub_Avans' , 'Payment_Sub_BES' , 'Payment_Sub_Cihaz' ,
-						'Payment_Sub_Diger' , 'Payment_Sub_Fatura' , 'Payment_Sub_Iade' , 'Payment_Sub_Icra' ,
-						'Payment_Sub_Kargo' , 'Payment_Sub_Masraf' , 'Payment_Sub_On' , 'Payment_Sub_Personel' ,
-						'Payment_Sub_Prim' , 'Payment_Sub_Sehven' , 'Payment_Sub_Seyehat' , 'Payment_Sub_Sigorta' , 'Payment_Sub_Tra', 'Payment_Sub_Acik']
+					operator: FilterOperation.NOT_IN,
+					value: ['Payment_Sub_Saha']
 				});
 			}
 			if (this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas_Yrd' || this.baseService.getUser().unvan.id === 'Unvanlar_San_Bas') {
